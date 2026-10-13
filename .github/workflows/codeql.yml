@@ -14,7 +14,10 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    # Job-level permissions replace the workflow-level block: list every scope.
     permissions:
+      actions: read
+      contents: read
       security-events: write
     steps:
       - uses: actions/checkout@v5

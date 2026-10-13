@@ -32,7 +32,20 @@ _No entries yet._
 
 ## CI/CD
 
-_No entries yet._
+### Checkout fails with "Repository not found" in a job with its own `permissions`
+
+**Symptom:** `actions/checkout` fails on the private repository with `remote: Repository not found.` and `fatal: repository 'https://github.com/goniti/portfolio/' not found` (seen in the CodeQL workflow).
+
+**Cause:** a job-level `permissions:` block replaces the workflow-level one instead of merging with it, so a job declaring only `security-events: write` gets a `GITHUB_TOKEN` with no `contents` access.
+
+**Fix:** list every scope the job needs at job level. For CodeQL on a private repository:
+
+```yaml
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+```
 
 ---
 
