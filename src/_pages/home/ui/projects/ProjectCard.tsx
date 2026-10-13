@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Box, Flex, Link, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
+import { withBasePath } from '@/shared/lib/base-path';
 import { CtaButton, OWN_CURSOR_TARGET, Surface, Tag } from '@/shared/ui/atoms';
 import type { Project } from '../../model/projects';
 
@@ -43,7 +44,7 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
       <Box className={projectMediaVariants({ tint: project.tint })}>
         {project.image ? (
           <Image
-            src={project.image.src}
+            src={withBasePath(project.image.src)}
             alt={copy.title}
             fill
             sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"

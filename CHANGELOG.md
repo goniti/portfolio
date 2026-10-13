@@ -4,6 +4,15 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Added
+
+- Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main`, on demand, and on the `sanity-content-published` dispatch event.
+- `NEXT_PUBLIC_BASE_PATH` environment variable (validated) and the `withBasePath()` helper for public asset URLs.
+
+### Changed
+
+- The site is built as a static export (`out/`): `pnpm start` no longer applies; serve `out/` with a static server.
+
 ## [0.1.0] - 2026-10-13
 
 First public release: the home page implements the Portfolio v2 design.

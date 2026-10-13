@@ -6,7 +6,21 @@ Format: **Symptom → Cause → Fix**.
 
 ## Build & tooling
 
-_No entries yet._
+### Image or PDF 404 on GitHub Pages only
+
+**Symptom:** `https://goniti.github.io/carlos.png` (or `/resume.pdf`) returns 404 on the deployed site; locally everything loads.
+
+**Cause:** the site is served under the `/portfolio` base path; `next/image` sources and plain `<a href>` do not get the base path automatically.
+
+**Fix:** wrap the root-relative URL with `withBasePath()` from `@/shared/lib/base-path`. Check locally with `NEXT_PUBLIC_BASE_PATH=/portfolio pnpm build` and the preview steps in the README.
+
+### `pnpm start` fails after `pnpm build`
+
+**Symptom:** `"next start" does not work with "output: export" configuration`.
+
+**Cause:** the app is a static export (ADR-003): there is no Next.js server.
+
+**Fix:** serve `out/` with a static server (README, "Deployment").
 
 ## Tests
 
@@ -18,7 +32,20 @@ _No entries yet._
 
 ## CI/CD
 
-_No entries yet._
+### Checkout fails with "Repository not found" in a job with its own `permissions`
+
+**Symptom:** `actions/checkout` fails on the private repository with `remote: Repository not found.` and `fatal: repository 'https://github.com/goniti/portfolio/' not found` (seen in the CodeQL workflow).
+
+**Cause:** a job-level `permissions:` block replaces the workflow-level one instead of merging with it, so a job declaring only `security-events: write` gets a `GITHUB_TOKEN` with no `contents` access.
+
+**Fix:** list every scope the job needs at job level. For CodeQL on a private repository:
+
+```yaml
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+```
 
 ---
 

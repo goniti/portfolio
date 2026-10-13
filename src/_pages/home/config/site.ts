@@ -1,3 +1,5 @@
+import { withBasePath } from '@/shared/lib/base-path';
+
 /** Fixed configuration of the portfolio page (the mockup's tweakable props, frozen). */
 
 /** Shows the "Open to work" state (badge, footer status). */
@@ -24,7 +26,7 @@ export const CONTACT_EMAIL = 'gonzalezlovullocarlos@gmail.com';
 export const SITE_LINKS = {
   github: 'https://github.com/goniti',
   linkedin: 'https://www.linkedin.com/in/carlos-gonzalez-lo-vullo',
-  resume: '/resume.pdf',
+  resume: withBasePath('/resume.pdf'),
   email: `mailto:${CONTACT_EMAIL}`,
 } as const;
 

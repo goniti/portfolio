@@ -46,6 +46,25 @@ pnpm dev
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
 | `pnpm lint:language`   | Flags exclusionary terms                                |
 
+## Deployment
+
+The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-sanity-cms-bilingual-content.md)) published to GitHub Pages at <https://goniti.github.io/portfolio/>.
+
+- `.github/workflows/deploy.yml` builds `out/` and deploys it on every push to `main`, on demand (`workflow_dispatch`), and on the `sanity-content-published` `repository_dispatch` event (reserved for the future Sanity webhook).
+- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts`. Locally they default to the domain root, so `pnpm dev` and the e2e tests run at `/`.
+- `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
+- There is no server at runtime: no route handlers, server actions, `cookies()`/`headers()` or ISR. `pnpm start` (`next start`) does not serve an export; preview the build with any static server instead.
+
+Preview the production build under its base path:
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/portfolio pnpm build
+mkdir -p /tmp/site && rm -rf /tmp/site/portfolio && cp -r out /tmp/site/portfolio
+python3 -m http.server 8080 --directory /tmp/site   # http://localhost:8080/portfolio/
+```
+
+One-time repository setting: Settings → Pages → Source: **GitHub Actions** (see [`docs/engineering/repository-settings.md`](docs/engineering/repository-settings.md)).
+
 ## Structure
 
 ```text
