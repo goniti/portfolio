@@ -6,17 +6,23 @@ const en = {
   lead: 'Hiring a tech lead or senior front-end engineer? Send a message or reach out directly.',
   channelsLabel: 'Direct contact',
   channels: {
-    email: { label: 'EMAIL' },
+    email: {
+      label: 'EMAIL',
+      copy: 'Copy email',
+      copied: 'Copied!',
+      copyFailed: 'Copy failed, select the address instead',
+    },
     linkedin: { label: 'LINKEDIN', value: 'Carlos Gonzalez Lo Vullo' },
     github: { label: 'GITHUB', value: 'goniti' },
   },
   external: '↗',
   newTab: '(opens in a new tab)',
   tabs: {
-    message: { number: '01', label: 'Send a message' },
-    call: { number: '02', label: 'Book a call' },
+    call: 'Book a call',
+    message: 'Send a message',
   },
   calendlyTitle: 'Book a 30-min intro call',
+  calendlyLoading: 'Loading the booking calendar…',
   form: {
     name: 'Name',
     namePlaceholder: 'Jane Doe',
@@ -48,12 +54,22 @@ export const contactMessages: Localized<typeof en> = {
     title: 'Construisons le prochain ensemble.',
     lead: 'Vous recrutez un tech lead ou un développeur front-end senior ? Écrivez-moi ou contactez-moi directement.',
     channelsLabel: 'Contact direct',
+    channels: {
+      ...en.channels,
+      email: {
+        ...en.channels.email,
+        copy: 'Copier l’email',
+        copied: 'Copié !',
+        copyFailed: 'Échec de la copie, sélectionnez l’adresse',
+      },
+    },
     newTab: '(nouvel onglet)',
     tabs: {
-      message: { number: '01', label: 'Envoyer un message' },
-      call: { number: '02', label: 'Réserver un appel' },
+      call: 'Réserver un appel',
+      message: 'Envoyer un message',
     },
     calendlyTitle: 'Réserver un appel de 30 min',
+    calendlyLoading: 'Chargement du calendrier…',
     form: {
       ...en.form,
       name: 'Nom',

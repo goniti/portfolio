@@ -1,5 +1,10 @@
+'use client';
+
+import type { MouseEvent } from 'react';
 import { Button, type ButtonProps } from 'goniui';
 import { tv, type VariantProps } from 'tailwind-variants';
+import { useMagnet } from '../../../lib/motion';
+import { MAGNET_CURSOR_TARGET } from '../cursor-follower';
 
 export const ctaButtonVariants = tv({
   base: 'gap-2.5 font-semibold whitespace-nowrap duration-300 ease-spring',
@@ -23,23 +28,57 @@ export const ctaButtonVariants = tv({
       true: 'w-full',
       false: '',
     },
+    magnetic: {
+      true: 'magnet-offset',
+      false: '',
+    },
   },
-  defaultVariants: { tone: 'gradient', size: 'lg', block: false },
+  defaultVariants: { tone: 'gradient', size: 'lg', block: false, magnetic: false },
 });
 
 export interface CtaButtonProps
   extends Omit<ButtonProps, 'variant' | 'size'>, VariantProps<typeof ctaButtonVariants> {}
 
+/** The primary (gradient) call to action is magnetic unless told otherwise. */
+function isMagneticByDefault(tone: CtaButtonProps['tone']): boolean {
+  return (tone ?? 'gradient') === 'gradient';
+}
+
 /**
  * The portfolio's call-to-action look on top of goniui's `Button` (gradient, outline, inverse…).
- * Use `asChild` to render a link.
+ * A magnetic button leans towards the mouse and is wrapped by the cursor follower, whatever its
+ * width; the primary `gradient` tone is magnetic by default. Use `asChild` to render a link.
  */
-export function CtaButton({ tone, size, block, className, ...props }: CtaButtonProps) {
+export function CtaButton({
+  tone,
+  size,
+  block,
+  magnetic,
+  className,
+  onMouseMove,
+  onMouseLeave,
+  ...props
+}: CtaButtonProps) {
+  const isMagnetic = magnetic ?? isMagneticByDefault(tone);
+  const magnet = useMagnet<HTMLButtonElement>({ enabled: isMagnetic });
+
+  const handleMouseMove = (event: MouseEvent<HTMLButtonElement>) => {
+    onMouseMove?.(event);
+    magnet.onMouseMove(event);
+  };
+  const handleMouseLeave = (event: MouseEvent<HTMLButtonElement>) => {
+    onMouseLeave?.(event);
+    magnet.onMouseLeave(event);
+  };
+
   return (
     <Button
       variant="unstyled"
       size="none"
-      className={ctaButtonVariants({ tone, size, block, className })}
+      className={ctaButtonVariants({ tone, size, block, magnetic: isMagnetic, className })}
+      onMouseMove={isMagnetic ? handleMouseMove : onMouseMove}
+      onMouseLeave={isMagnetic ? handleMouseLeave : onMouseLeave}
+      {...(isMagnetic ? MAGNET_CURSOR_TARGET : {})}
       {...props}
     />
   );

@@ -18,7 +18,7 @@ First public release: the home page implements the Portfolio v2 design.
 - Projects section with filters.
 - Tech-watch notes, each readable in a dialog.
 - Contact section with a form that opens your mail client (`mailto:`).
-- Optional "Book a call" tab: set `NEXT_PUBLIC_CALENDLY_URL` to a Calendly page to show it; leave it empty to hide it.
+- Optional "Book a call" tab: set `CALENDLY_URL` in `src/_pages/home/config/site.ts` to a Calendly page to show it; leave it empty to hide it.
 - Footer.
 - Custom cursor follower effect, disabled when reduced motion is requested or the pointer is coarse (touch).
 - Design tokens from the Meeple design system in `app/globals.css`.

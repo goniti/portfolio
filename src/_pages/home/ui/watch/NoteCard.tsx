@@ -1,5 +1,5 @@
 import { Button, Flex, Text } from 'goniui';
-import { surfaceVariants } from '@/shared/ui/atoms';
+import { CARD_CURSOR_TARGET, surfaceVariants } from '@/shared/ui/atoms';
 import type { Tint } from '../../model/tints';
 import { tintVariants } from '../tint';
 
@@ -20,6 +20,7 @@ export function NoteCard({ category, tint, meta, title, excerpt, cta, onOpen }: 
       variant="unstyled"
       size="none"
       onClick={onOpen}
+      {...CARD_CURSOR_TARGET}
       className={surfaceVariants({
         radius: 'md',
         hover: 'note',

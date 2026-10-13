@@ -1,45 +1,68 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import * as Tabs from 'goniui/tabs';
 import { Flex, Link, Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';
+import { REVEAL } from '@/shared/lib/motion';
 import { useTheme } from '@/shared/lib/theme';
-import { Surface } from '@/shared/ui/atoms';
+import { CARD_CURSOR_TARGET, Surface } from '@/shared/ui/atoms';
+import { CopyButton } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
-import { CALENDLY_URL, CONTACT_EMAIL, SITE_LINKS } from '../../config/site';
+import { CALENDLY_URL, CONTACT_EMAIL, PAST_HERO_VIEWPORTS, SITE_LINKS } from '../../config/site';
 import { calendlyEmbedUrl } from '../../model/contact';
+import { CalendlyEmbed } from './CalendlyEmbed';
 import { ContactForm } from './ContactForm';
 import { contactMessages } from './messages';
 
-interface ChannelLinkProps {
+/** Booking a call comes first: it is the quickest way to talk. */
+const CONTACT_TABS = ['call', 'message'] as const;
+
+interface ChannelItemProps {
   href: string;
   label: string;
   value: string;
   external: boolean;
+  /** Actions shown right after the value (a copy button…), above the row's link. */
+  children?: ReactNode;
 }
 
-function ChannelLink({ href, label, value, external }: ChannelLinkProps) {
+/**
+ * One direct channel: the whole row opens it (and the cursor outlines the whole row), its
+ * actions sit next to the value.
+ */
+function ChannelItem({ href, label, value, external, children }: ChannelItemProps) {
   const copy = useMessages(contactMessages);
   return (
-    <Link
-      href={href}
-      kind={external ? 'external' : 'internal'}
-      variant="unstyled"
-      className="flex min-h-13 items-center gap-3 rounded-2xl border border-border bg-chip px-4.5 text-foreground hover:border-tint-indigo/45 hover:text-foreground-strong"
+    <Flex
+      as="li"
+      align="center"
+      {...CARD_CURSOR_TARGET}
+      className="relative min-h-13 gap-3 rounded-2xl border border-border bg-chip px-4.5 text-foreground transition-colors hover:border-tint-indigo/45 hover:text-foreground-strong"
     >
-      <Text
-        as="span"
-        variant="bodySm"
-        className="w-17 flex-none font-mono text-2xs font-medium text-foreground-subtle"
+      <Link
+        href={href}
+        kind={external ? 'external' : 'internal'}
+        variant="unstyled"
+        className="flex min-w-0 items-center gap-3 text-inherit after:absolute after:inset-0 after:rounded-2xl"
       >
-        {label}
-      </Text>
-      <Text as="span" variant="body" className="min-w-0 flex-1 truncate font-medium text-inherit">
-        {value}
-      </Text>
-      <span aria-hidden="true">{copy.external}</span>
-      {external ? <span className="sr-only">{copy.newTab}</span> : null}
-    </Link>
+        <Text
+          as="span"
+          variant="bodySm"
+          className="w-17 flex-none font-mono text-2xs font-medium text-foreground-subtle"
+        >
+          {label}
+        </Text>
+        <Text as="span" variant="body" className="min-w-0 truncate font-medium text-inherit">
+          {value}
+        </Text>
+        {external ? <span className="sr-only">{copy.newTab}</span> : null}
+      </Link>
+      {children}
+      <span aria-hidden="true" className="ml-auto">
+        {copy.external}
+      </span>
+    </Flex>
   );
 }
 
@@ -51,7 +74,12 @@ export function ContactSection() {
 
   return (
     <PageSection id="contact" labelledBy="contact-title" spacing="closing">
-      <Surface fill="contact" radius="xl" className="flex flex-wrap gap-10 p-5.5 md:p-10 lg:p-16">
+      <Surface
+        fill="contact"
+        radius="xl"
+        {...REVEAL.columns}
+        className="flex flex-wrap gap-10 p-5.5 md:p-10 lg:p-16"
+      >
         <Flex direction="col" gap="lg" className="min-w-0 grow basis-90 gap-5">
           <Text
             as="span"
@@ -72,54 +100,60 @@ export function ContactSection() {
             {copy.lead}
           </Text>
           <Flex as="ul" direction="col" gap="sm" aria-label={copy.channelsLabel} className="mt-1.5">
-            <li>
-              <ChannelLink
-                href={SITE_LINKS.email}
-                label={copy.channels.email.label}
+            <ChannelItem
+              href={SITE_LINKS.email}
+              label={copy.channels.email.label}
+              value={CONTACT_EMAIL}
+              external={false}
+            >
+              <CopyButton
                 value={CONTACT_EMAIL}
-                external={false}
+                label={copy.channels.email.copy}
+                copiedLabel={copy.channels.email.copied}
+                failedLabel={copy.channels.email.copyFailed}
               />
-            </li>
+            </ChannelItem>
             {SITE_LINKS.linkedin ? (
-              <li>
-                <ChannelLink
-                  href={SITE_LINKS.linkedin}
-                  label={copy.channels.linkedin.label}
-                  value={copy.channels.linkedin.value}
-                  external
-                />
-              </li>
-            ) : null}
-            <li>
-              <ChannelLink
-                href={SITE_LINKS.github}
-                label={copy.channels.github.label}
-                value={copy.channels.github.value}
+              <ChannelItem
+                href={SITE_LINKS.linkedin}
+                label={copy.channels.linkedin.label}
+                value={copy.channels.linkedin.value}
                 external
               />
-            </li>
+            ) : null}
+            <ChannelItem
+              href={SITE_LINKS.github}
+              label={copy.channels.github.label}
+              value={copy.channels.github.value}
+              external
+            />
           </Flex>
         </Flex>
         <Flex direction="col" gap="md" className="min-w-0 grow basis-90">
           {calendlySrc ? (
-            <Tabs.Root variant="segment" defaultValue="message" className="flex flex-col gap-3">
+            <Tabs.Root variant="segment" defaultValue="call" className="flex flex-col gap-3">
               <Tabs.List className="bg-chip">
-                {(['message', 'call'] as const).map((tab) => (
-                  <Tabs.Trigger key={tab} value={tab} className="min-h-11 gap-2 text-sm">
-                    <span className="font-mono text-xs opacity-80">{copy.tabs[tab].number}</span>
-                    {copy.tabs[tab].label}
+                {CONTACT_TABS.map((tab) => (
+                  <Tabs.Trigger key={tab} value={tab} className="min-h-11 text-sm">
+                    {copy.tabs[tab]}
                   </Tabs.Trigger>
                 ))}
               </Tabs.List>
-              <Tabs.Content value="message" className="mt-0">
-                <ContactForm />
-              </Tabs.Content>
-              <Tabs.Content value="call" className="mt-0">
-                <iframe
+              {/* Both panels stay mounted: switching tabs never reloads Calendly nor clears the form. */}
+              <Tabs.Content value="call" forceMount className="mt-0 data-[state=inactive]:hidden">
+                <CalendlyEmbed
                   src={calendlySrc}
                   title={copy.calendlyTitle}
-                  className="h-160 w-full rounded-3xl border border-border bg-surface-form"
+                  loadingLabel={copy.calendlyLoading}
+                  loadAfterViewports={PAST_HERO_VIEWPORTS}
                 />
+              </Tabs.Content>
+              <Tabs.Content
+                value="message"
+                forceMount
+                className="mt-0 data-[state=inactive]:hidden"
+              >
+                <ContactForm />
               </Tabs.Content>
             </Tabs.Root>
           ) : (

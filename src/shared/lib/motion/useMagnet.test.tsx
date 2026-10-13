@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { stubMatchMedia } from '@/shared/lib/testing';
+import { stubMatchMedia } from '../testing';
 import { magnetOffset, useMagnet } from './useMagnet';
 
-function MagneticLink() {
-  const magnet = useMagnet<HTMLAnchorElement>();
+function MagneticLink({ enabled }: { enabled?: boolean }) {
+  const magnet = useMagnet<HTMLAnchorElement>({ enabled });
   return (
     <a href="#projects" onMouseMove={magnet.onMouseMove} onMouseLeave={magnet.onMouseLeave}>
       Projects
@@ -19,6 +19,14 @@ describe('magnetOffset', () => {
 
   it('pulls towards the pointer, more vertically', () => {
     expect(magnetOffset(new DOMRect(0, 0, 100, 50), { x: 90, y: 45 })).toEqual({ x: 10, y: 7 });
+  });
+
+  it('caps the pull on wide elements', () => {
+    const wideButton = new DOMRect(0, 0, 480, 52);
+    const corner = magnetOffset(wideButton, { x: 480, y: 52 });
+    expect(corner.x).toBe(28);
+    expect(corner.y).toBeCloseTo(9.1);
+    expect(magnetOffset(wideButton, { x: 0, y: -100 })).toEqual({ x: -28, y: -14 });
   });
 });
 
@@ -42,6 +50,15 @@ describe('useMagnet', () => {
     stubMatchMedia([]);
     render(<MagneticLink />);
     const link = screen.getByRole('link');
+    fireEvent.mouseMove(link, { clientX: 90, clientY: 45 });
+    expect(link.style.getPropertyValue('--magnet-x')).toBe('');
+  });
+
+  it('stays still when disabled', () => {
+    stubMatchMedia(['(pointer: fine)']);
+    render(<MagneticLink enabled={false} />);
+    const link = screen.getByRole('link');
+    link.getBoundingClientRect = () => new DOMRect(0, 0, 100, 50);
     fireEvent.mouseMove(link, { clientX: 90, clientY: 45 });
     expect(link.style.getPropertyValue('--magnet-x')).toBe('');
   });

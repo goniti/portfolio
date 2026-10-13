@@ -9,7 +9,9 @@ describe('HomePage', () => {
 
   it('pitches the engineer in the main heading', () => {
     render(<HomePage />);
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('AI-driven workflows');
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
+      'AI-Augmented Workflows',
+    );
   });
 
   it('renders every section with its heading', () => {
@@ -31,8 +33,12 @@ describe('HomePage', () => {
     expect(projectLinks[0]?.getAttribute('href')).toBe('#projects');
   });
 
-  it('hides the Calendly tab without a Calendly URL', () => {
+  it('opens on the Calendly tab, ahead of the message form', () => {
     render(<HomePage />);
-    expect(screen.queryByRole('tab', { name: /book a call/i })).toBeNull();
+    const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent);
+    expect(tabs).toEqual(['Book a call', 'Send a message']);
+    expect(screen.getByRole('tab', { name: 'Book a call' }).getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 });

@@ -19,15 +19,17 @@ const terminal = {
     buildLabel: 'Build',
     buildValue: 'passing',
     focusLabel: 'Focus',
-    focusValue: 'Vue 3 · AI',
+    focusValue: 'React · AI',
   },
 };
 
 const en = {
   badge: 'Tech Lead & Senior Front-End Engineer • Lyon, France',
-  titleStart: 'Front-End Engineer & Tech Lead fusing modern React architectures with ',
-  titleHighlight: 'AI-driven workflows',
-  titleEnd: ' to ship faster.',
+  // Non-breaking hyphen (\u2011) and space (\u00a0) keep “Front-End |” on one line;
+  // the balanced headline would otherwise wrap “Front-/End” or start a line with “|”.
+  titleStart: 'Lead Front\u2011End\u00a0| Modern Web Architecture & ',
+  titleHighlight: 'AI-Augmented Workflows',
+  titleEnd: '.',
   lead: '5 years & 2 startups: led 2 full rebrandings and built 2 zero-to-one apps. Specializing in React, Vue, TS, and AI-Driven Workflows (Claude Code, Cursor).',
   exploreWork: 'Explore My Work',
   arrow: '→',
@@ -41,9 +43,9 @@ export const heroMessages: Localized<typeof en> = {
   en,
   fr: {
     ...en,
-    titleStart: 'Front-End Engineer & Tech Lead, j’allie architectures React modernes et ',
-    titleHighlight: 'workflows pilotés par l’IA',
-    titleEnd: ' pour livrer plus vite.',
+    titleStart: 'Tech Lead Front\u2011End\u00a0| Architecture Web Moderne & ',
+    titleHighlight: 'Productivité augmentée par l’IA',
+    titleEnd: '',
     lead: '5 ans & 2 startups : 2 refontes de marque menées et 2 apps construites de zéro. Spécialisé en React, Vue, TS et workflows pilotés par l’IA (Claude Code, Cursor).',
     exploreWork: 'Voir mes projets',
     getInTouch: 'Me contacter',

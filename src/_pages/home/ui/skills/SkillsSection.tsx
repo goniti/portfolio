@@ -2,6 +2,7 @@
 
 import { Badge, Flex, Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';
+import { REVEAL } from '@/shared/lib/motion';
 import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
@@ -19,8 +20,13 @@ export function SkillsSection() {
 
   return (
     <PageSection id="skills" labelledBy="skills-title">
-      <SectionHeading eyebrow={copy.eyebrow} title={copy.title} titleId="skills-title" />
-      <Flex wrap="wrap" gap="lg">
+      <SectionHeading
+        eyebrow={copy.eyebrow}
+        title={copy.title}
+        titleId="skills-title"
+        {...REVEAL.left}
+      />
+      <Flex wrap="wrap" gap="lg" {...REVEAL.columns}>
         <Surface
           fill="indigo"
           hover="indigo"

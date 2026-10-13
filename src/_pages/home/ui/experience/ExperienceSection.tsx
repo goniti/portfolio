@@ -2,6 +2,7 @@
 
 import { Flex, Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';
+import { REVEAL } from '@/shared/lib/motion';
 import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
@@ -15,10 +16,16 @@ export function ExperienceSection() {
 
   return (
     <PageSection id="experience" labelledBy="experience-title">
-      <SectionHeading eyebrow={copy.eyebrow} title={copy.title} titleId="experience-title" />
+      <SectionHeading
+        eyebrow={copy.eyebrow}
+        title={copy.title}
+        titleId="experience-title"
+        {...REVEAL.zoom}
+      />
       <Flex
         as="ol"
         direction="col"
+        {...REVEAL.stagger}
         className="relative gap-5 pl-8 before:absolute before:inset-y-2.5 before:left-1.75 before:w-0.5 before:rounded-xs before:bg-timeline-rail"
       >
         {JOBS.map((job) => {

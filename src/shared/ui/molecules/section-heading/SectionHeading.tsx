@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { Flex, Text } from 'goniui';
 
-export interface SectionHeadingProps {
+export interface SectionHeadingProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   /** Numbered mono label above the title ("01 — Experience"). */
   eyebrow: ReactNode;
   title: ReactNode;
@@ -9,13 +9,12 @@ export interface SectionHeadingProps {
   titleId?: string;
   /** Rendered next to the eyebrow (a status pill…). */
   badge?: ReactNode;
-  className?: string;
 }
 
 /** Eyebrow + `<h2>` opening every section of a long page. */
-export function SectionHeading({ eyebrow, title, titleId, badge, className }: SectionHeadingProps) {
+export function SectionHeading({ eyebrow, title, titleId, badge, ...props }: SectionHeadingProps) {
   return (
-    <Flex direction="col" gap="md" className={className}>
+    <Flex direction="col" gap="md" {...props}>
       <Flex align="center" wrap="wrap" gap="md">
         <Text
           as="span"

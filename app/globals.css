@@ -61,6 +61,21 @@
   --shadow-tint: rgb(15 18 34 / 0.15);
   --gradient-sheen: linear-gradient(90deg, #4f46e5, #0891b2, #7c3aed, #4f46e5);
   --cursor-tint: 79 70 229;
+  /* Scrollbar: a tinted thumb on a track that blends with the page. */
+  color-scheme: light;
+  --scrollbar-thumb: rgb(79 70 229 / 0.4);
+  --scrollbar-thumb-hover: rgb(79 70 229 / 0.65);
+
+  /* Entrance motion (scroll reveal, floating buttons): identical in both themes. */
+  --motion-rise-duration: 700ms;
+  --motion-rise-distance: 1rem;
+  /* Scroll reveal: how far an element travels and how much it grows as it enters. */
+  --motion-reveal-duration: 750ms;
+  --motion-reveal-rise: 1.75rem;
+  --motion-reveal-drop: 1.25rem;
+  --motion-reveal-shift: 2.5rem;
+  --motion-reveal-zoom: 0.96;
+  --motion-reveal-stagger: 70ms;
 }
 
 .dark {
@@ -103,6 +118,9 @@
   --shadow-tint: rgb(0 0 0 / 0.6);
   --gradient-sheen: linear-gradient(90deg, #a5b4fc, #67e8f9, #c4b5fd, #a5b4fc);
   --cursor-tint: 165 180 252;
+  color-scheme: dark;
+  --scrollbar-thumb: rgb(129 140 248 / 0.5);
+  --scrollbar-thumb-hover: rgb(165 180 252 / 0.7);
 }
 
 @theme inline {
@@ -192,10 +210,15 @@
   --shadow-segment-active:
     inset 0 0 0 1px rgb(129 140 248 / 0.45), 0 0 20px -6px rgb(99 102 241 / 0.7);
   --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Fast start, long settle: entrances that glide to rest. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --animate-pulse-ring: pulse-ring 2s infinite;
   --animate-blink: blink 1s steps(1) infinite;
   --animate-sheen: sheen 8s linear infinite;
+  /* `backwards`: once played, the element falls back to its own styles (hover lifts keep working). */
+  --animate-rise-in: rise-in var(--motion-rise-duration) var(--ease-spring) backwards;
+  --animate-reveal-in: reveal-in var(--motion-reveal-duration) var(--ease-out-expo) backwards;
 
   @keyframes pulse-ring {
     0% {
@@ -211,6 +234,20 @@
   @keyframes blink {
     50% {
       opacity: 0;
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      translate: 0 var(--motion-rise-distance);
+    }
+  }
+  /* Reads the offsets of `[data-reveal-from]` (scroll reveal): translate and scale only. */
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      translate: var(--reveal-x, 0) var(--reveal-y, 0);
+      scale: var(--reveal-scale, 1);
     }
   }
   @keyframes sheen {
@@ -365,6 +402,53 @@
   background-color: rgb(var(--cursor-tint) / 0.16);
   border: 1.5px solid rgb(var(--cursor-tint) / 0.7);
 }
+/* Outline tracing a whole card: no fill, so the dot is gone and the card stays readable. */
+@utility cursor-card {
+  border: 1.5px solid rgb(var(--cursor-tint) / 0.8);
+  box-shadow: 0 0 24px -6px rgb(var(--cursor-tint) / 0.6);
+}
+
+/* Scroll reveal: elements marked `data-reveal` (see `REVEAL` in shared/lib/motion) are only
+   hidden once the reveal hook arms them (`data-reveal-state`), so content stays visible
+   without JavaScript. `self` plays the element, `stagger` its children one after the other;
+   `data-reveal-from` picks the offset (set per child for `stagger`), `data-reveal-zoom` adds
+   a slight zoom-in. Sideways offsets are clipped by the page's `main` (no horizontal scroll). */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal-from] {
+      --reveal-x: 0;
+      --reveal-y: 0;
+    }
+    [data-reveal-from='up'] {
+      --reveal-y: var(--motion-reveal-rise);
+    }
+    [data-reveal-from='down'] {
+      --reveal-y: calc(var(--motion-reveal-drop) * -1);
+    }
+    [data-reveal-from='left'] {
+      --reveal-x: calc(var(--motion-reveal-shift) * -1);
+    }
+    [data-reveal-from='right'] {
+      --reveal-x: var(--motion-reveal-shift);
+    }
+    [data-reveal='self'][data-reveal-zoom],
+    [data-reveal='stagger'][data-reveal-zoom] > * {
+      --reveal-scale: var(--motion-reveal-zoom);
+    }
+
+    [data-reveal='self'][data-reveal-state='pending'],
+    [data-reveal='stagger'][data-reveal-state='pending'] > * {
+      opacity: 0;
+      translate: var(--reveal-x, 0) var(--reveal-y, 0);
+      scale: var(--reveal-scale, 1);
+    }
+    [data-reveal='self'][data-reveal-state='shown'],
+    [data-reveal='stagger'][data-reveal-state='shown'] > * {
+      animation: var(--animate-reveal-in);
+      animation-delay: calc(var(--reveal-index, 0) * var(--motion-reveal-stagger));
+    }
+  }
+}
 
 @layer base {
   html {
@@ -375,5 +459,34 @@
   }
   ::selection {
     background-color: rgb(129 140 248 / 0.35);
+  }
+
+  /* Thin themed scrollbars, on the page and every inner scroll area (note panel, dialogs). The
+     track stays transparent so no grey strip shows next to the page; the bar is never hidden.
+     `scrollbar-color` is inherited, `scrollbar-width` is not: set on every element. */
+  html {
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  * {
+    scrollbar-width: thin;
+  }
+  /* Safari and older Chromium (newer engines use the standard properties above). */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background-color: var(--scrollbar-thumb);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-hover);
   }
 }

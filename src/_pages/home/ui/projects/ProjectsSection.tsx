@@ -4,6 +4,7 @@ import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid } from 'goniui';
 import { tv } from 'tailwind-variants';
 import { useMessages } from '@/shared/lib/i18n';
+import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
 import { filterProjects, PROJECT_FILTERS, PROJECTS } from '../../model/projects';
@@ -28,7 +29,7 @@ export function ProjectsSection() {
 
   return (
     <PageSection id="projects" labelledBy="projects-title">
-      <Flex justify="between" align="end" wrap="wrap" className="gap-6">
+      <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.columns}>
         <SectionHeading eyebrow={copy.eyebrow} title={copy.title} titleId="projects-title" />
         <SegmentedControl.Root
           aria-label={copy.filtersLabel}
@@ -47,7 +48,12 @@ export function ProjectsSection() {
           ))}
         </SegmentedControl.Root>
       </Flex>
-      <Grid as="ul" cols={{ base: 1, md: 2, lg: 3 }} gap="lg">
+      <Grid
+        as="ul"
+        cols={{ base: 1, md: 2, lg: 3 }}
+        gap="lg"
+        {...revealStagger({ from: 'rows', zoom: true })}
+      >
         {visibleItems.map((project) => {
           const projectCopy = copy.projects[project.id];
           return (

@@ -5,6 +5,7 @@ import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
 import { useMessages } from '@/shared/lib/i18n';
+import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { PulseDot } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
@@ -40,7 +41,7 @@ export function WatchSection() {
 
   return (
     <PageSection id="watch" labelledBy="watch-title">
-      <Flex justify="between" align="end" wrap="wrap" className="gap-6">
+      <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.stagger}>
         <SectionHeading
           eyebrow={copy.eyebrow}
           title={copy.title}
@@ -73,7 +74,12 @@ export function WatchSection() {
           ))}
         </SegmentedControl.Root>
       </Flex>
-      <Grid as="ul" cols={{ base: 1, md: 2, lg: 4 }} className="gap-3.5">
+      <Grid
+        as="ul"
+        cols={{ base: 1, md: 2, lg: 4 }}
+        className="gap-3.5"
+        {...revealStagger({ from: 'down' })}
+      >
         {visibleItems.map((note) => {
           const noteCopy = copy.notes[note.id];
           return (

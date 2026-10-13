@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Box } from 'goniui';
-import { CursorFollower } from '@/shared/ui/atoms';
+import { CursorFollower, ScrollReveal } from '@/shared/ui/atoms';
+import { BackToTopButton } from './back-to-top/BackToTopButton';
 import { ContactSection } from './contact/ContactSection';
 import { ExperienceSection } from './experience/ExperienceSection';
 import { HeroSection } from './hero/HeroSection';
@@ -34,6 +35,8 @@ export function HomePage() {
         <ContactSection />
       </Box>
       <SiteFooter />
+      <BackToTopButton />
+      <ScrollReveal />
       <CursorFollower />
     </>
   );

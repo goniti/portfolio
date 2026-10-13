@@ -6,7 +6,6 @@ import { CtaButton, PulseDot } from '@/shared/ui/atoms';
 import { CLOCK_TIME_ZONE, SITE_LINKS, TYPE_SPEED_MS } from '../../config/site';
 import { buildTerminalScript } from '../../model/terminal';
 import { useClock } from '../../model/useClock';
-import { useMagnet } from '../../model/useMagnet';
 import { useTypewriter } from '../../model/useTypewriter';
 import { heroMessages } from './messages';
 import { TerminalCard } from './TerminalCard';
@@ -20,7 +19,6 @@ export function HeroSection() {
   const { terminal } = copy;
   const lines = useTypewriter(buildTerminalScript(terminal.script), TYPE_SPEED_MS);
   const clock = useClock(CLOCK_TIME_ZONE);
-  const magnet = useMagnet<HTMLAnchorElement>();
 
   return (
     <Box
@@ -57,12 +55,8 @@ export function HeroSection() {
             {copy.lead}
           </Text>
           <Flex align="center" wrap="wrap" gap="md">
-            <CtaButton asChild className="magnet-offset">
-              <a
-                href="#projects"
-                onMouseMove={magnet.onMouseMove}
-                onMouseLeave={magnet.onMouseLeave}
-              >
+            <CtaButton asChild>
+              <a href="#projects">
                 {copy.exploreWork}
                 <span aria-hidden="true">{copy.arrow}</span>
               </a>

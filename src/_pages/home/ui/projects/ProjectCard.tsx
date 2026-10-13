@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Box, Flex, Link, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
-import { CtaButton, Surface, Tag } from '@/shared/ui/atoms';
+import { CtaButton, OWN_CURSOR_TARGET, Surface, Tag } from '@/shared/ui/atoms';
 import type { Project } from '../../model/projects';
 
 const projectMediaVariants = tv({
@@ -33,7 +33,10 @@ export interface ProjectCardProps {
   copy: ProjectCardCopy;
 }
 
-/** A project: screenshot (or placeholder), pitch, technologies and links. */
+/**
+ * A project: screenshot (or placeholder), pitch, technologies and links. The cursor outlines
+ * each action on its own.
+ */
 export function ProjectCard({ project, copy }: ProjectCardProps) {
   return (
     <Surface as="article" hover="project" className="flex w-full flex-col overflow-hidden">
@@ -79,13 +82,13 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
         </Flex>
         <Flex gap="sm" className="pt-2">
           {project.demoUrl ? (
-            <CtaButton asChild tone="soft" size="md" block>
+            <CtaButton {...OWN_CURSOR_TARGET} asChild tone="soft" size="md" block>
               <Link href={project.demoUrl} variant="unstyled" aria-label={copy.demoLabel}>
                 {copy.demo}
               </Link>
             </CtaButton>
           ) : null}
-          <CtaButton asChild tone="quiet" size="md" block>
+          <CtaButton {...OWN_CURSOR_TARGET} asChild tone="quiet" size="md" block>
             <Link href={project.sourceUrl} variant="unstyled" aria-label={copy.sourceLabel}>
               {copy.source}
             </Link>

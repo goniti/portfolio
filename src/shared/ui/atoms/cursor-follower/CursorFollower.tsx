@@ -12,6 +12,8 @@ export const cursorFollowerVariants = tv({
       dot: 'cursor-dot',
       ring: 'cursor-ring',
       magnet: 'cursor-magnet',
+      card: 'cursor-card',
+      target: 'cursor-card',
     },
     visible: {
       true: 'opacity-100',
@@ -37,7 +39,8 @@ function CursorFollowerLayer() {
 }
 
 /**
- * A spring-animated dot following the mouse, wrapping small interactive targets.
+ * A spring-animated dot following the mouse, wrapping small interactive targets and
+ * outlining the cards marked with `CARD_CURSOR_TARGET`.
  * Rendered only for a fine pointer (mouse) and when the visitor accepts motion.
  */
 export function CursorFollower() {

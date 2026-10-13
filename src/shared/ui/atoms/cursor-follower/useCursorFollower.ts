@@ -5,9 +5,11 @@ import {
   classifyHoverTarget,
   DOT_SIZE,
   shapeAround,
+  snapsOnExit,
   stepSpring,
   targetShape,
   ZERO_SHAPE,
+  wrapsElement,
   type CursorMode,
   type CursorShape,
 } from './cursorPhysics';
@@ -57,23 +59,34 @@ export function useCursorFollower(followerRef: RefObject<HTMLElement | null>): C
       setVisible(true);
     };
     const onOver = (event: MouseEvent) => {
-      hover = classifyHoverTarget(event.target);
+      const next = classifyHoverTarget(event.target);
+      const snaps = snapsOnExit(hover.mode, next.mode);
+      hover = next;
+      if (snaps) {
+        // Jump now, before the new style paints, so no frame shows it on the card's shape.
+        position = currentTarget();
+        velocity = ZERO_SHAPE;
+        writeGeometry(follower, position);
+      }
       setMode(hover.mode);
     };
     const onOut = (event: MouseEvent) => {
       if (!event.relatedTarget) setVisible(false);
     };
 
-    const frame = () => {
+    const currentTarget = () => {
       const element = hover.element?.isConnected ? hover.element : null;
-      const target = targetShape(pointer, {
-        mode: element || hover.mode !== 'magnet' ? hover.mode : 'dot',
+      return targetShape(pointer, {
+        mode: element || !wrapsElement(hover.mode) ? hover.mode : 'dot',
         rect: element ? element.getBoundingClientRect() : null,
         borderRadius: element
           ? Number.parseFloat(getComputedStyle(element).borderTopLeftRadius) || 0
           : 0,
       });
-      ({ position, velocity } = stepSpring(position, velocity, target));
+    };
+
+    const frame = () => {
+      ({ position, velocity } = stepSpring(position, velocity, currentTarget()));
       writeGeometry(follower, position);
       frameId = requestAnimationFrame(frame);
     };
