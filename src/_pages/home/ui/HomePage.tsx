@@ -1,15 +1,40 @@
-import { Flex, Text } from 'goniui';
-import { Counter } from './counter/Counter';
-import { appMessages } from './messages';
+import type { Metadata } from 'next';
+import { Box } from 'goniui';
+import { CursorFollower } from '@/shared/ui/atoms';
+import { ContactSection } from './contact/ContactSection';
+import { ExperienceSection } from './experience/ExperienceSection';
+import { HeroSection } from './hero/HeroSection';
+import { homeMessages } from './messages';
+import { PageBackdrop } from './page-backdrop/PageBackdrop';
+import { ProjectsSection } from './projects/ProjectsSection';
+import { ScrollProgress } from './scroll-progress/ScrollProgress';
+import { SiteFooter } from './site-footer/SiteFooter';
+import { SiteNav } from './site-nav/SiteNav';
+import { SkillsSection } from './skills/SkillsSection';
+import { WatchSection } from './watch/WatchSection';
 
+export const homeMetadata: Metadata = {
+  title: homeMessages.metadataTitle,
+  description: homeMessages.metadataDescription,
+};
+
+/** The portfolio: hero, experience, skills, projects, tech watch and contact on one page. */
 export function HomePage() {
   return (
-    <Flex as="main" direction="col" align="start" gap="lg" className="mx-auto my-16 max-w-2xl px-4">
-      <Text variant="title" as="h1">
-        {appMessages.title}
-      </Text>
-      <Text tone="muted">{appMessages.lead}</Text>
-      <Counter />
-    </Flex>
+    <>
+      <ScrollProgress />
+      <SiteNav />
+      <Box as="main" className="relative overflow-hidden">
+        <PageBackdrop />
+        <HeroSection />
+        <ExperienceSection />
+        <SkillsSection />
+        <ProjectsSection />
+        <WatchSection />
+        <ContactSection />
+      </Box>
+      <SiteFooter />
+      <CursorFollower />
+    </>
   );
 }

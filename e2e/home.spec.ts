@@ -1,8 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-const TITLE = 'my-portfolio';
-
-test('the home page shows the project name', async ({ page }) => {
+test('the home page pitches the engineer', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(TITLE);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('AI-driven workflows');
+});
+
+test('the language switch translates the page', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Français' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('workflows pilotés par l’IA');
+});
+
+test('a watch note opens in a dialog', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /real-time web architectures/i }).click();
+  await expect(page.getByRole('dialog')).toContainText('WebSockets when both sides talk.');
 });

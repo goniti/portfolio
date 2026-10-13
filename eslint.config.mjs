@@ -14,5 +14,7 @@ export default defineConfig([
     'coverage/**',
     'next-env.d.ts',
     'storybook-static/**',
+    // Design mockups and their runtime: reference material, not application code.
+    'EXEMPLE/**',
   ]),
 ]);

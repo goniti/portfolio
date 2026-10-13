@@ -1,0 +1,152 @@
+'use client';
+
+import { useState } from 'react';
+import * as Collapsible from 'goniui/collapsible';
+import { Box, Flex, Text } from 'goniui';
+import { useMessages } from '@/shared/lib/i18n';
+import { CtaButton } from '@/shared/ui/atoms';
+import { SITE_LINKS } from '../../config/site';
+import { formatIndex } from '../../model/format';
+import { SECTION_IDS, type SectionId } from '../../model/sections';
+import { useScrollSpy } from '../../model/useScrollSpy';
+import { AvatarLink } from './AvatarLink';
+import { LanguageSegments, LanguageToggle } from './LanguageSwitch';
+import { SectionLink } from './SectionLink';
+import { ThemeToggle } from './ThemeToggle';
+import { siteNavMessages } from './messages';
+
+const GLASS_BAR =
+  'border border-border bg-surface-glass shadow-nav backdrop-blur-xl backdrop-saturate-150';
+
+function ResumeLink() {
+  const copy = useMessages(siteNavMessages);
+  if (!SITE_LINKS.resume) return null;
+
+  return (
+    <CtaButton asChild tone="inverse" size="pill">
+      <a href={SITE_LINKS.resume} download>
+        {copy.resume}
+        <span aria-hidden="true" className="font-mono">
+          {copy.downloadGlyph}
+        </span>
+      </a>
+    </CtaButton>
+  );
+}
+
+interface NavBarProps {
+  activeSection: SectionId;
+}
+
+/** Floating pill navigation for large screens. */
+function WideNavBar({ activeSection }: NavBarProps) {
+  const copy = useMessages(siteNavMessages);
+
+  return (
+    <Flex
+      as="header"
+      justify="center"
+      className="pointer-events-none fixed inset-x-0 top-4 z-50 hidden px-4 lg:flex"
+    >
+      <Flex
+        as="nav"
+        align="center"
+        aria-label={copy.navLabel}
+        className={`${GLASS_BAR} pointer-events-auto gap-1.5 rounded-full p-1.5`}
+      >
+        <AvatarLink href="#home" label={copy.homeLink} />
+        <Flex as="ul" gap="none" className="gap-0.5 px-1">
+          {SECTION_IDS.map((sectionId) => (
+            <li key={sectionId}>
+              <SectionLink href={`#${sectionId}`} active={sectionId === activeSection}>
+                {copy.sections[sectionId]}
+              </SectionLink>
+            </li>
+          ))}
+        </Flex>
+        <LanguageSegments />
+        <ThemeToggle />
+        <ResumeLink />
+      </Flex>
+    </Flex>
+  );
+}
+
+/** Compact bar with a collapsible section menu for small screens. */
+function CompactNavBar({ activeSection }: NavBarProps) {
+  const copy = useMessages(siteNavMessages);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <Box as="header" className="fixed inset-x-2.5 top-2.5 z-50 lg:hidden">
+      <Collapsible.Root open={isMenuOpen} onOpenChange={setMenuOpen}>
+        <Flex
+          as="nav"
+          align="center"
+          gap="sm"
+          aria-label={copy.navLabel}
+          className={`${GLASS_BAR} rounded-2xl p-1.5`}
+        >
+          <AvatarLink href="#home" label={copy.homeLink} size="lg" onClick={closeMenu} />
+          <Flex direction="col" className="min-w-0 flex-1 leading-tight">
+            <Text as="span" variant="label" className="truncate font-bold">
+              {copy.ownerName}
+            </Text>
+            <Text as="span" variant="caption" className="font-mono text-2xs text-foreground-subtle">
+              {copy.sections[activeSection]}
+            </Text>
+          </Flex>
+          <LanguageToggle />
+          <ThemeToggle size="lg" />
+          <Collapsible.Trigger
+            aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
+            className="size-11 flex-none rounded-xl bg-surface-inverse font-mono text-base font-semibold text-foreground-inverse"
+          >
+            <span aria-hidden="true">
+              {isMenuOpen ? copy.menuGlyph.open : copy.menuGlyph.closed}
+            </span>
+          </Collapsible.Trigger>
+        </Flex>
+        <Collapsible.Content className={`${GLASS_BAR} mt-2 flex flex-col gap-0.5 rounded-2xl p-2`}>
+          {SECTION_IDS.map((sectionId, index) => (
+            <SectionLink
+              key={sectionId}
+              href={`#${sectionId}`}
+              layout="menu"
+              active={sectionId === activeSection}
+              onClick={closeMenu}
+            >
+              {copy.sections[sectionId]}
+              <Text as="span" variant="caption" className="font-mono text-foreground-subtle">
+                {formatIndex(index)}
+              </Text>
+            </SectionLink>
+          ))}
+          {SITE_LINKS.resume ? (
+            <CtaButton asChild size="md" className="mt-1.5 min-h-12">
+              <a href={SITE_LINKS.resume} download>
+                {copy.resume} {copy.downloadGlyph}
+              </a>
+            </CtaButton>
+          ) : null}
+        </Collapsible.Content>
+      </Collapsible.Root>
+    </Box>
+  );
+}
+
+/**
+ * Site navigation: a floating pill on large screens, a compact bar with a menu below `lg`.
+ * Highlights the section being read.
+ */
+export function SiteNav() {
+  const activeSection = useScrollSpy();
+
+  return (
+    <>
+      <WideNavBar activeSection={activeSection} />
+      <CompactNavBar activeSection={activeSection} />
+    </>
+  );
+}
