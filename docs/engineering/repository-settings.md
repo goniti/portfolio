@@ -32,3 +32,9 @@ gh repo edit OWNER/REPO --enable-squash-merge --enable-merge-commit=false --enab
 - **Private vulnerability reporting**: Settings → Code security → enable it (referenced by `SECURITY.md`).
 - **Secret scanning and push protection**: Settings → Code security → enable both.
 - **Dependabot security updates**: Settings → Code security → enable them (version updates come from `.github/dependabot.yml`).
+
+## GitHub Pages
+
+`.github/workflows/deploy.yml` publishes the static export to <https://goniti.github.io/portfolio/>. Enable it once: Settings → Pages → Build and deployment → Source: **GitHub Actions**. The workflow deploys to the `github-pages` environment; keep its deployment branch rule on `main`.
+
+Later, the Sanity webhook triggers a rebuild through the `sanity-content-published` `repository_dispatch` event (ADR-003, step 10).

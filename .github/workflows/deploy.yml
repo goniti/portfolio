@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+# Static export (`out/`) served at https://goniti.github.io/portfolio/ (ADR-003).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Sent by the Sanity webhook once content is published (ADR-003, step 10).
+  repository_dispatch:
+    types: [sanity-content-published]
+
+# One deployment at a time: a newer push or publish replaces the one in progress.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build static export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - uses: actions/configure-pages@v6
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /portfolio
+          NEXT_PUBLIC_SITE_URL: https://goniti.github.io/portfolio
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: out
+          # Ships `.nojekyll`.
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
