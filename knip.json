@@ -1,0 +1,5 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["src/shared/{ui,lib}/**/*.{ts,tsx}", "steiger.config.js"],
+  "ignoreDependencies": ["@secretlint/secretlint-rule-preset-recommend"]
+}

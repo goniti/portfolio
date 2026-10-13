@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest a new capability or an improvement
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: User need
+      description: As a [persona], I need [action] so that [benefit].
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - Given … when … then …
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

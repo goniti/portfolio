@@ -1,0 +1,250 @@
+# rust-wizard manifest: wizard answers and fingerprints of the generated files.
+# Edit [config], then run `rust-wizard update` to regenerate the project.
+# Do not edit [files]: these fingerprints detect your local changes.
+
+wizard_version = "0.2.0"
+generated = "2026-10-13"
+package_manager = "pnpm@10.32.1"
+
+[config]
+name = "my-portfolio"
+description = "I created this portfolio to showcase my projects, share my ongoing tech watch, and highlight my skill set. Download my CV directly from the site or use the contact section to drop a message—I’d love to connect!"
+framework = "next"
+package_manager = "pnpm"
+bundler = "turbopack"
+tooling = [
+    "eslint",
+    "prettier",
+    "husky",
+    "lint-staged",
+    "commitlint",
+    "vitest",
+    "playwright",
+    "knip",
+    "secretlint",
+]
+architecture = "fsd"
+delivery = [
+    "github-ci",
+    "dependabot",
+    "security",
+    "governance",
+]
+docs = [
+    "readme",
+    "contributing",
+    "adr",
+    "changelog",
+]
+license = "mit"
+author = ""
+repository = ""
+secrets = "none"
+post_actions = [
+    "git-init",
+    "install",
+    "first-commit",
+]
+
+[config.ui]
+styling = "tailwind"
+library = "goniui"
+package = ""
+
+[config.agents]
+enabled = [
+    "product",
+    "architect",
+    "dev",
+    "qa",
+    "docs",
+    "reviewer",
+    "debugger",
+    "lead",
+]
+targets = [
+    "agents-md",
+    "claude-code",
+]
+
+[config.agents.settings.product]
+context_path = ""
+instructions = """
+Write user stories as "As a… I want… so that…".
+Acceptance criteria in Gherkin.
+Cite the specification section for each story."""
+
+[config.agents.settings.architect]
+context_path = ""
+instructions = "Favor simplicity. Record every structural decision in an ADR."
+
+[config.agents.settings.dev]
+context_path = ""
+instructions = "Strict TypeScript, no `any`. One test per business module."
+
+[config.agents.settings.qa]
+context_path = ""
+instructions = "Cover critical paths first, then edge cases."
+
+[config.agents.settings.docs]
+context_path = ""
+instructions = "Clear, direct tone. Runnable examples for every feature."
+
+[config.agents.settings.reviewer]
+context_path = ""
+instructions = "Any security flaw is blocking. Check the actual diff, never the summary."
+
+[config.agents.settings.debugger]
+context_path = ""
+instructions = "State a hypothesis before any fix. Document every new fix."
+
+[config.agents.settings.lead]
+context_path = ""
+instructions = "You do not code: you plan, delegate, review diffs and keep the memory up to date."
+
+[config.agents.domain]
+domain = "Web"
+audience = ""
+constraints = ""
+language = "en"
+
+[config.spec]
+mode = "generate"
+path = ""
+
+[config.spec.answers]
+vision = "The ProblemA static CV lists skills but doesn't prove them. It lacks context on how I actually write code, solve problems, and keep up with new technologies.The VisionTo create an interactive platform that transforms abstract qualifications into concrete proof of work."
+features = """
+Live Project Demos
+Continuous Tech Watch
+Dynamic Sanity.io CMS
+Modern UI/UX & Responsive Design
+One-Click Resume Access
+Direct Contact Integration
+Interactive Career Timeline
+Filterable Skill Matrix
+Detailed Project Showcase"""
+non_functional = "Fast Load Times,lighthouse score higher,Optimized Assets,Responsive Design,Accessibility (a11y),Secure API Integration,HTTPS Protocol,Headless Architecture,Clean & Scalable Code,SEO Optimization"
+out_of_scope = ""
+milestones = ""
+
+[config.kit]
+enabled = true
+personas = ""
+entities = ""
+surfaces = ""
+rules = "Book a Call / Schedule a 15-min Chat / Let's Connect"
+glossary = ""
+integrations = ""
+ai = "coding-agent"
+
+[config.workspace]
+apps = [
+    "web",
+    "api",
+    "shared",
+]
+languages = "typescript-only"
+
+[files]
+".agents/architect.md" = "328583d5d77594da02dbec1c8881d44e4293ca353cd14a75ff3331dc39e16eda"
+".agents/debugger.md" = "b9324becdbe46de7f551675313ff69e6ebe878c7997979972236967c673d7550"
+".agents/dev.md" = "f68821824bb7e45417bbea77b864a246a194337293d529c2376b4ff1e8b91be6"
+".agents/docs.md" = "aaa5d82f07cd68554f5885b26419c80b1a63c1c42739a6a8d92a42c72e1062b8"
+".agents/lead.md" = "a7b9e4d2a852fef8838416e68eff1aac813a1844d7a133606bd82d674ceb830e"
+".agents/product.md" = "c69685a5a306067e3749c738b66bb0182f2fe18de6da039fbc408b25464ed86f"
+".agents/qa.md" = "de376c023dcce4ebb7206c003917ecb2612e5c5feaeef733f503eb59544fa32c"
+".agents/react-feature-builder.md" = "6b430edf67bcd34ac490cb5f6abc72952102d42a7da4f45e7d4c61befa357e8a"
+".agents/reviewer.md" = "3131bd30dae65d08d9d2ccc13d3c5b2baf3f35913bf54f90bbc1183126455ee7"
+".agents/rules/agent-routing.md" = "f58e1063b35e65ff2322bb795303858441a401f0452999183feff7a17d7fe00a"
+".agents/rules/architecture.md" = "b752121d5c985c0793c30d93b1d5d28ccd9300061c1e404fed7f64204aeb82e0"
+".agents/rules/code-quality.md" = "1a865869c2d78a9b8b0bfad4b473ce93a6f2032ec4dac2135e93d33a72c07422"
+".agents/rules/documentation.md" = "be070ed8be602273cba73a7fe84b56903cb16caa6d61133b9943e269aac580e2"
+".agents/rules/frontend.md" = "af222ec002d43f20efbb481b7f2cec132f8669bf37a98ee018d553428c20870b"
+".agents/rules/git-workflow.md" = "b5a548090c24432c3512c86b5da7af5a13bb501c29f04046d9550cb702af0f85"
+".agents/rules/stack-conventions.md" = "6bc0abacc439a004b680a21a56487f5d0d86b1aa2cc52d69db3b14b6faaeb0e2"
+".claude/agents/architect.md" = "22cf738f3d6e6760c2fe74565bd0e1eb28145b68c4a7a38a8c9adb54fb369146"
+".claude/agents/debugger.md" = "3a1fdee96ef5a16324fbb72cbabe70dd84f0bd42ede748a0252c2c14170a9e60"
+".claude/agents/dev.md" = "6ca3cc1fb3df116f0e2625ac5fca1352130eb48cacfcce79d0ca098987bc7211"
+".claude/agents/docs.md" = "15d2948a66cf7b907d534a2a8889a56b1dc50d1b3412f67791ccebade0f5186a"
+".claude/agents/lead.md" = "90e17a15c22e715092e7e099fe5759b08764f3138707713b741bf0cfcff35c97"
+".claude/agents/product.md" = "debfd5a9a6a490f9c4b83a24f486862391bd80f78145413a40ad18ab1a61ee2e"
+".claude/agents/qa.md" = "33720d009dd75c6020c8984257abb17581193dd3a80eb838029c28949958f69b"
+".claude/agents/react-feature-builder.md" = "31ddff5c7e90d89f0c822332757da30d6402abd7d21533be8a252bb78b387999"
+".claude/agents/reviewer.md" = "7bbf577d20e0fd506fe2e1f203f3e25d9a9d49f7ad14eed9f7562123850bccf0"
+".dependency-cruiser.cjs" = "ff20b562e364f392ac91c4f5c695adb1b4c34d3efb9643f9e20e3d0ec18b8153"
+".editorconfig" = "6d6796f174b736bcd7a68999e30d2f19a3719ad92355dcc0cfdfce8a66864553"
+".env.example" = "1e7a8244804c53791137fd61ac64964e3d26db3a0569b944461e7047348d017f"
+".github/ISSUE_TEMPLATE/bug_report.yml" = "c95a9e3a8eb875df532d291c4c757ec5841f07b67cf42b72979d82d8b10c023c"
+".github/ISSUE_TEMPLATE/config.yml" = "1f103c6a9dd07cd13a9a6f17ace6b813f47747eb9cb7e00488cb2073caaf91bb"
+".github/ISSUE_TEMPLATE/feature_request.yml" = "36fd02cedd157d8272fae22d8a68455a8404700425e888d5b429c2c7c833f291"
+".github/dependabot.yml" = "215ec67bb80f8c056e5fc8bdcf7b4775babdbb519e123fd136d8129ef0a46c8a"
+".github/pull_request_template.md" = "1280ce52f67dbd886ef8d5df1e4f3170f7a137d481a360ed55b3c06e8eeec7af"
+".github/workflows/ci.yml" = "fa18091d81544182aef8c5d91656b8d361064a9f92aae65a0abeb10045f18750"
+".github/workflows/codeql.yml" = "985dbaaf6a5f19e7906a0e3567ed4bf6a705c3891760885c8500116eb4c68f52"
+".gitignore" = "740a87ab8434b65ede45f7ca812199effc6ff880dffe79a76ab50687bbc2e7af"
+".husky/commit-msg" = "fcfc227fe0e950deadcef148e6b460d3570b2d722ed523786a63ab00e73155c9"
+".husky/pre-commit" = "aad3507759b5b03c40f17cb27ca0e2203edebcd8820c48addadc16104b1e011c"
+".nvmrc" = "68ca3fba3b7e864770cb61aeb306d4bd4354b68ab4dd38450860c5d823e42a53"
+".prettierignore" = "0e18b47ba4b08c78bef451cf5ab44e4b10489dc0395bb1e72251524e85954719"
+".prettierrc.json" = "d471a99b65438098436b2b6bc6d03234e9ca9821e6923b1ae2601e84d6f140ba"
+".secretlintignore" = "88164bd1228b3d8e49bf42603faf1685e65df5f338d353c058b09e202ce32e96"
+".secretlintrc.json" = "80198081b4fc35e4d7a4619c1694d83ee5845bf85b0b790990373f4a5b50b9f0"
+".storybook/main.ts" = "d7f658ce2bf0f1f3b29f7feadd3afdec4bb72f39c4c7a0ef5f3af2344f8f9841"
+".storybook/preview.ts" = "41da944360316797b245357fa1556382b718679e30c2d2e15a6ac7acdfe605e3"
+"AGENTS.md" = "2350b21cccee9040022f2765439cb0794a042f21ec195bce529702958bee15da"
+"CHANGELOG.md" = "dc2f6be71e1f2fe0ff55ed81c44fbdcdca27a75e54bf9ed4e1edefa1036d9671"
+"CLAUDE.md" = "a2387cb0ad79a171f89cc883abd62302c8b73095fbe17dde1d387e73a9ad459d"
+"CODE_OF_CONDUCT.md" = "433b33764ed2ce09b72cb9d2823799973f2bf9d3d4a1edc52ea73ef19ba8546d"
+"CONTEXT.md" = "29ba01cd9f99fe6a666a7553adc0a5db050123d1f249eb60410a3026828a57e8"
+"CONTRIBUTING.md" = "06319785b7b002ab918c5bbfb1fd1ef453c705dec09709f3fb24ffc3c8f42ee6"
+LICENSE = "979f68d85f545eee179a072dd396b367f3eb7d697f91a441e9da7a523da9c652"
+"README.md" = "e1c3a1b881ad90443c0799dbfeab916fdcaff4aee2db37f1c5ceceb8f1eec46c"
+"SECURITY.md" = "d2d9884d014ef9e4c51d169654d82061b71a530f4da99add727edf3fb74aabfd"
+"app/globals.css" = "7c0a29cc9b42026d8a094fb4c33282b7380215dd3e1b7dbd1c3017dc6331266d"
+"app/layout.tsx" = "3ffb0549fdb59859628ad6ae8dd91530b7c09a649da5528456219235e5573046"
+"app/page.tsx" = "7fd0f16ee90b539d77a63355b30510c4728fd5af630b7654f1822a5b3d9276cd"
+"commitlint.config.mjs" = "b0acbdafc17f8ffc98a1858f0be9b9453f4e359800b7ca7b0a11e7dc0cf2bcee"
+"docs/SPEC.md" = "527bfe88e461e4d212f7d64eed505beaa4cbf1c1b1fb31587df7a1ad79824bf3"
+"docs/adr/0001-record-architecture-decisions.md" = "d9ec297e31cfc86729fa722cb1d7fcca7cd68ec4571a622c1e12f9c8a77cb037"
+"docs/adr/0002-frontend-architecture.md" = "6634fba15be663d233a367a35adff7d5396c5cbcfd5a901c73e5d54eb4210ada"
+"docs/adr/template.md" = "988c26fc3b0b52c8ac616de2c0009ebd6ab37a47edd0ce40e2227ee86fa536ba"
+"docs/agents/issue-tracker.md" = "63ede7ff294fc222669987200268a386666629479f5fee4ca2198ca5c5c27f2b"
+"docs/agents/triage-labels.md" = "296cb125d36c7b64205675e90cf7f1fedbcfff12398e0ced24de744589bd9773"
+"docs/ai/ADAPT_PROMPT.md" = "613c9d98734042a4cbba976442f65003eff849d7cd22797c1ff7cc4831cb9095"
+"docs/ai/KIT.md" = "d23f73f373d77e8dfbd7db67f86886e34022314d9202e8a00bf4a4e2991cd16b"
+"docs/engineering/repository-settings.md" = "f7dc2ff063194c73e7cefa945405563311482bb982ad332fa4a6247e1412b70d"
+"docs/engineering/testing.md" = "3b199ce955fd4956e56538e9174d035596b1c2cf183a05271c3aa76edada9f97"
+"docs/engineering/troubleshooting.md" = "903185f0616b480da7d24016e75825fa2fb6351c47a33f3e8f138dcd19752b99"
+"docs/patterns/README.md" = "0882ae503cd1403f41b66cc95964798bade9eb747f16c560e413948d58118f5a"
+"docs/patterns/_template.md" = "c3a0809046ac853ed0be915ac00083d06dd7ebe701fe0a0d0c1f929289c53588"
+"docs/product/domain-model.md" = "462fd9b1ee57a78296964f03cb2b92776f16b67eaa5b1d2cfae53150ef25164f"
+"docs/product/features.md" = "c21f9a2aef578c06df98caa5341aaea1ca6f9d105eaa97a6e2fee87c3437db63"
+"docs/product/use-cases.md" = "399c13e3e301601681a52ae354a5f61ae2157c0d2ac843c40c770e58f001f225"
+"docs/product/vision.md" = "cacdc723285f867fb49efcabf23db925ac204f496077c9bc0a3a09a1dbf7020c"
+"e2e/home.spec.ts" = "b6d5449f9fe3cce23279be1414872c146ffc4838e72595117a4b9035e7e7bd94"
+"eslint.config.mjs" = "283aa86f1f09c1df219e6fa0ea17ad4744d135a4221b03369d0f107c275fd4c0"
+"knip.json" = "d8946742953dab5f4cfe5aafc9b5299b7363499c8db91c565feceade8e83fa79"
+"memory/MEMORY.md" = "e67f67c708732d2b8c67616708f307b2e3d7f17c772bdf3d87ec2903651c85f8"
+"memory/session-notes.md" = "c550daec7bf3d545344e31c7cbd76e8e60ebc5808d190cb36dac2f68bc555976"
+"next-env.d.ts" = "f2b3bca04d1bfe583daae1e1f798c92ec24bb6693bd88d0a09ba6802dee362a8"
+"next.config.ts" = "dd151a4712c27559cb17bc849140ead6d865010f7cdbcb09ddc7b6079574353f"
+"package.json" = "99d11665cf32d009bedd28e16d75b69e8627e5b6ca22249eb88643b82a1ad5d2"
+"playwright.config.ts" = "1db850a7ef6900a2f669c8007973dc36e49daca57d6dbbeb29a4774000ad32b5"
+"postcss.config.mjs" = "150003dc09e7f1cde920c5a85ccc5122081d67713a6f1fd98fa8615afd88c978"
+"public/.gitkeep" = "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+"scripts/check-inclusive-language.mjs" = "5b3cb2439f5b0818ffb757f96fd459ef65f97b691d75444cd54ecd392e9b1b58"
+"src/_pages/home/index.ts" = "0080b8c0936f5a6098e3c8de3b783fa15a3660c3e050dc1ec05152711bcf2ad9"
+"src/_pages/home/ui/HomePage.test.tsx" = "05fbfbccdec440ee9a55a8014b7e3ab02e6657592e2c5a43642516db131965ae"
+"src/_pages/home/ui/HomePage.tsx" = "5b9288cb62d5f07cbd06cc291e9925dff5f8f533ca78140b5923776e253a890a"
+"src/_pages/home/ui/counter/Counter.stories.tsx" = "1ec8b5ff62afe9040e5a8a67f875874b30cd43e24bcd5498e76b88bdb70f8206"
+"src/_pages/home/ui/counter/Counter.test.tsx" = "a8340f56e640dda1774b17c0bfe013f0f66f5b53a62fb9f66de508546fcd6266"
+"src/_pages/home/ui/counter/Counter.tsx" = "bd56faa486a0c2e4e787c0617e47baa3a55022c3d35775101bad664d7a06df13"
+"src/_pages/home/ui/counter/messages.ts" = "ec515bef29d91788edbf1dacce05c6c0bf5119f15f9418fb9cfe8a5ed840621a"
+"src/_pages/home/ui/messages.ts" = "9a27f54d56be7cad391d800c7daebbb34950c076798b59376432c980c31b0415"
+"src/shared/config/env.test.ts" = "7bba5ae8186ebd6442f5cfcf99a85b0f1424b00db7786833b86b293516535d55"
+"src/shared/config/env.ts" = "7e99b4dd2f8023ba5fb4e319370651cfd556a70b837a1910a7d0be00ebfc50b4"
+"src/shared/config/index.ts" = "602086f5a98e8e42ff40f505266ce8bc6f879cdb42725130f9c4b69dc052f191"
+"steiger.config.js" = "1ef9ec1f9862c314f49e940c1f08a80dd7be0239e99de873343d6d0ad879acc3"
+"tsconfig.json" = "bbfefa7363030375e3f4398a22a82ee54b351200259014bab576046fef78183b"
+"vitest.config.ts" = "be75eab18f0c9cdd5ff6575da335275e0db4ca4c97d79a665bbeb9cfc91a0f55"

@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+/* goniui: design tokens (black & white, `.dark` theme), reset and component styles.
+   Re-skin the app by overriding its variables (`--primary-400`, `--background`…) below. */
+@import 'goniui/styles.css';
+
+@layer base {
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}

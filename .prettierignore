@@ -1,0 +1,15 @@
+dist
+build
+coverage
+pnpm-lock.yaml
+.next
+next-env.d.ts
+storybook-static
+playwright-report
+test-results
+# Documents extracted automatically for the agents
+.agents/context
+docs/specs
+# Adaptation prompt: contains embedded files
+docs/ai/ADAPT_PROMPT.md
+docs/ai/batches/

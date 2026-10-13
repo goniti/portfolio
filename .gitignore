@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+out/
+next-env.d.ts
+storybook-static/
+*.tsbuildinfo
+
+# Tests
+coverage/
+playwright-report/
+test-results/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Misc
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Conflicting `rust-wizard update` proposals (merge, then delete)
+*.rw-new
+
+# Adaptation prompt batches (`rust-wizard adapt split`)
+docs/ai/batches/
