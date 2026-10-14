@@ -33,6 +33,19 @@ gh repo edit OWNER/REPO --enable-squash-merge --enable-merge-commit=false --enab
 - **Secret scanning and push protection**: Settings → Code security → enable both.
 - **Dependabot security updates**: Settings → Code security → enable them (version updates come from `.github/dependabot.yml`).
 
+## Repository variables
+
+`ci.yml` and `deploy.yml` read these GitHub Actions **variables** (not secrets: nothing in them is private). Settings → Secrets and variables → Actions → Variables, or:
+
+```bash
+gh variable set SANITY_PROJECT_ID --body 8i6zw2b7
+gh variable set SANITY_DATASET --body production
+gh variable set SANITY_API_VERSION --body 2026-10-01
+gh variable set NEXT_PUBLIC_CALENDLY_URL --body https://calendly.com/<user>/<event>
+```
+
+`NEXT_PUBLIC_CALENDLY_URL` is optional: without it, the site builds without the "Book a call" tab. An unset variable expands to an empty string, which counts as unset.
+
 ## GitHub Pages
 
 `.github/workflows/deploy.yml` publishes the static export to <https://goniti.github.io/portfolio/>. Enable it once: Settings → Pages → Build and deployment → Source: **GitHub Actions**. The workflow deploys to the `github-pages` environment; keep its deployment branch rule on `main`.

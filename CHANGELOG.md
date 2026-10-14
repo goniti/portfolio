@@ -12,6 +12,8 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - `SANITY_PROJECT_ID`, `SANITY_DATASET` and `SANITY_API_VERSION` environment variables (validated).
 - Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main`, on demand, and on the `sanity-content-published` dispatch event.
 - `NEXT_PUBLIC_BASE_PATH` environment variable (validated) and the `withBasePath()` helper for public asset URLs.
+- `NEXT_PUBLIC_CALENDLY_URL` environment variable (optional, validated as a Calendly page): sets the "Book a call" page. CI and the deploy read it from the `NEXT_PUBLIC_CALENDLY_URL` repository variable, which the owner must create.
+- `portfolio-content-model` workspace package (`packages/content-model`, ADR-004): the locales, tints, categories and locale-completeness rules, shared by the site and the Studio.
 
 ### Changed
 
@@ -22,7 +24,16 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - The site is built as a static export (`out/`): `pnpm start` no longer applies; serve `out/` with a static server.
 - Studio list previews show `Missing: fr` for every localized field, including list items and optional fields once set.
 - `pnpm studio:seed` refuses to overwrite documents that have Studio drafts unless run with `--discard-drafts`, and ends by running `pnpm content:check` on the seeded dataset.
-- `pnpm test:e2e` builds the static export and runs Playwright against `out/` (served on port 3100), as deployed.
+- `pnpm test:e2e` builds the static export under `/portfolio` and serves it like GitHub Pages on port 3100. Every run rebuilds; a server already on the port fails the run.
+- The "Book a call" tab comes from `NEXT_PUBLIC_CALENDLY_URL` instead of a constant in `src/_pages/home/config/site.ts`; unset or empty hides it.
+- Public variables are validated by a client-safe `clientEnv` (`src/shared/config/clientEnv.ts`); the server env (`env.ts`) is validated lazily. Only `src/shared/config/` reads `process.env`.
+- The Studio no longer keeps copies of the locales, tints and categories, or its own locale checks: it imports them from `portfolio-content-model`.
+- Code names say "locale", not "language" (`LocaleSwitch`, `LOCALE_OPTIONS`, `localeLabel`, `missingLocales`…). Missing locales are listed in locale order.
+- Shared helpers replace duplicated code: `mailtoHref` for the owner's email links, plus id mapping, localized line lists and problem lists in the Sanity layer.
+
+### Removed
+
+- The `ScrollReveal` atom: `HomeView` is a client component and calls `useScrollReveal()` directly.
 
 ## [0.1.0] - 2026-10-13
 

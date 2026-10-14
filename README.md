@@ -20,11 +20,13 @@ Prerequisites: Node.js 24 (`nvm use`) and pnpm.
 
 ```bash
 pnpm install
-cp .env.example .env.local    # validated by src/shared/config/env.ts
+cp .env.example .env.local    # validated by src/shared/config/{env,clientEnv}.ts
 pnpm dev
 ```
 
 `pnpm dev` and `pnpm build` fetch the content from Sanity (public dataset, no token): `.env.local` needs `SANITY_PROJECT_ID`. Unit tests and Storybook use fixtures and never fetch.
+
+`NEXT_PUBLIC_CALENDLY_URL` is optional: a Calendly page (`https://calendly.com/<user>/<event>`) shows the "Book a call" tab of the contact section; unset or empty hides it. It is inlined into the static export at build time.
 
 ## Scripts
 
@@ -68,9 +70,9 @@ Content lives in Sanity, project `8i6zw2b7`, dataset `production`; UI copy (labe
 The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-sanity-cms-bilingual-content.md)) published to GitHub Pages at <https://goniti.github.io/portfolio/>.
 
 - `.github/workflows/deploy.yml` checks the content (`pnpm content:check`), builds `out/` and deploys it on every push to `main`, on demand (`workflow_dispatch`), and on the `sanity-content-published` `repository_dispatch` event sent by the Sanity webhook.
-- `SANITY_PROJECT_ID`, `SANITY_DATASET` and `SANITY_API_VERSION` are GitHub Actions repository **variables** (not secrets), used by `ci.yml` and `deploy.yml`.
+- `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION` and `NEXT_PUBLIC_CALENDLY_URL` are GitHub Actions repository **variables** (not secrets), used by `ci.yml` and `deploy.yml`. Without `NEXT_PUBLIC_CALENDLY_URL`, the deployed site has no "Book a call" tab (setup: [`docs/engineering/repository-settings.md`](docs/engineering/repository-settings.md#repository-variables)).
 - Images come from the Sanity CDN (`https://cdn.sanity.io/…`, sized by URL): absolute URLs, untouched by the base path.
-- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
+- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/clientEnv.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
 - `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
 - There is no server at runtime: no route handlers, server actions, `cookies()`/`headers()` or ISR. `pnpm start` (`next start`) does not serve an export; preview the build with any static server instead.
 

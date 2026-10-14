@@ -120,6 +120,8 @@ Rule: **content** is what the owner writes about themselves and their work. **UI
 
 `*` marks a localized field (an internationalized array). Proper nouns (company, technologies, owner name) and URLs are **not** localized: a field is localized only when its text depends on the language.
 
+Since then, `model/tints.ts` has moved to the `portfolio-content-model` workspace package ([ADR-004](0004-shared-content-model-package.md)).
+
 ### Content model (Studio, `studio/schemaTypes/`)
 
 - Singletons, with fixed `_id` and pinned in the Structure: `siteSettings`, `homePage`.
@@ -252,5 +254,5 @@ Implemented as decided, with Sanity Studio v6, `sanity-plugin-internationalized-
 - **Tooling.** `pnpm typecheck` also type-checks `studio/`, Vitest also runs `studio/**/*.test.ts` (the pure validation helpers), ESLint ignores `studio/` and the generated types, knip runs per workspace. `pnpm studio:deploy` runs `sanity deploy --schema-required`, which also deploys the schema.
 - **Audit.** The Sanity CLI pulls vulnerable `js-yaml`/`smol-toml` (overridden to patched versions in `pnpm-workspace.yaml`) and `braces` ≤ 3.0.3, which has no patched release: `GHSA-vfj7-8cjw-p6xm` is ignored in `auditConfig` (dev-time file watcher of the CLI, nothing ships with the site).
 - **Studio previews.** Every localized field of each document feeds the `Missing: fr` subtitle, including fields inside arrays of objects. Optional fields are checked only once set, and `hero.titleEnd` follows its `allowBlank` rule.
-- **E2e against the static export** (step 8, as decided). Precision: Playwright's `webServer` runs `pnpm build && pnpm exec serve out` with `serve` as a devDependency (not `npx serve`), on port 3100 (not 3000, so `reuseExistingServer` never reuses a running `pnpm dev`), with GitHub Pages-like trailing slashes (`e2e/serve.json`). The export is served at the domain root: the config forces `NEXT_PUBLIC_BASE_PATH` to `''`.
+- **E2e against the static export** (step 8, as decided). Precision: Playwright's `webServer` runs `pnpm build && pnpm exec serve out` with `serve` as a devDependency (not `npx serve`), on port 3100 (not 3000, so `reuseExistingServer` never reuses a running `pnpm dev`), with GitHub Pages-like trailing slashes (`e2e/serve.json`). The export is served at the domain root: the config forces `NEXT_PUBLIC_BASE_PATH` to `''`. **Superseded (2026-10-14):** the export is now built with `NEXT_PUBLIC_BASE_PATH=/portfolio` and served under `/portfolio/` like GitHub Pages, every run rebuilds it (`reuseExistingServer: false`), and a server already on port 3100 fails the run before the build (see `docs/engineering/testing.md`).
 - **Failure path verified** on a throwaway `development` dataset (since deleted): a document missing `fr` made `pnpm content:check` exit 1 and `pnpm build` fail with `project "project-meeple" › description › fr: missing translation`, and `pnpm dev` showed `[missing fr] …` with a grouped warning.
