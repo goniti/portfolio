@@ -7,6 +7,10 @@ Only the **last 5** sessions; older ones are deleted.
 **Goal:** … **Result:** … **Decisions:** … **Left to do:** … **Blockers:** …
 -->
 
+## Session 2026-10-14 — Review follow-ups of PR #6 (Sanity)
+
+**Goal:** fix the 12 review findings on a69ad51. **Result:** all 12 done in 13 commits on `fix/sanity-review-followups`; typecheck, lint, lint:arch, test (210), knip, format:check and e2e (5/5 against the export) green. **Decisions:** `localizedText` alias removed; `useLocalized` in shared/lib/i18n; e2e on port 3100; screenshots `fill` recorded as an ADR-003 deviation. **Left to do:** push and open the PR (owner); try the seed changes and the Studio previews on a throwaway `development` dataset. **Blockers:** none.
+
 ## Session 2026-10-14 — Sanity content (ADR-003)
 
 **Goal:** move the portfolio content to Sanity, EN/FR, without ever shipping a half-translated page. **Result:** Studio deployed, `production` seeded and verified, site reads Sanity at build time, CI runs `content:check` and the TypeGen drift check, PR opened. **Decisions:** see ADR-003 "Implementation notes". **Left to do:** webhook (owner's PAT). **Blockers:** none.
