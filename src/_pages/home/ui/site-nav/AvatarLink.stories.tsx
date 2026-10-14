@@ -1,10 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { AvatarLink } from './AvatarLink';
 
 const meta = {
   title: 'Pages/Home/AvatarLink',
   component: AvatarLink,
-  args: { href: '#home', label: 'Back to top', size: 'md' },
+  args: {
+    href: '#home',
+    src: HOME_CONTENT_FIXTURE.site.avatarUrl,
+    label: 'Back to top',
+    size: 'md',
+  },
 } satisfies Meta<typeof AvatarLink>;
 
 export default meta;

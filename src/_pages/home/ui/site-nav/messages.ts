@@ -1,10 +1,9 @@
 import type { Localized } from '@/shared/lib/i18n';
 import type { SectionId } from '../../model/sections';
 
+// The owner's name and portrait are content (Sanity `siteSettings`).
 const en = {
   navLabel: 'Main',
-  ownerName: 'Carlos G. Lo Vullo',
-  avatarAlt: 'Carlos',
   homeLink: 'Back to top',
   sections: {
     home: 'Home',

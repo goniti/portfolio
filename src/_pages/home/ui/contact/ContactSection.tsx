@@ -3,14 +3,15 @@
 import type { ReactNode } from 'react';
 import * as Tabs from 'goniui/tabs';
 import { Flex, Link, Text } from 'goniui';
-import { useMessages } from '@/shared/lib/i18n';
+import { useLocale, useMessages } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
 import { useTheme } from '@/shared/lib/theme';
 import { CARD_CURSOR_TARGET, Surface } from '@/shared/ui/atoms';
 import { CopyButton } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
-import { CALENDLY_URL, CONTACT_EMAIL, PAST_HERO_VIEWPORTS, SITE_LINKS } from '../../config/site';
+import { CALENDLY_URL, PAST_HERO_VIEWPORTS } from '../../config/site';
 import { calendlyEmbedUrl } from '../../model/contact';
+import type { ContactContent, OwnerLinks } from '../../model/content';
 import { CalendlyEmbed } from './CalendlyEmbed';
 import { ContactForm } from './ContactForm';
 import { contactMessages } from './messages';
@@ -66,8 +67,14 @@ function ChannelItem({ href, label, value, external, children }: ChannelItemProp
   );
 }
 
+export interface ContactSectionProps {
+  contact: ContactContent;
+  links: OwnerLinks;
+}
+
 /** Closing call to action: direct channels, the message form and, when configured, Calendly. */
-export function ContactSection() {
+export function ContactSection({ contact, links }: ContactSectionProps) {
+  const { locale } = useLocale();
   const copy = useMessages(contactMessages);
   const { theme } = useTheme();
   const calendlySrc = calendlyEmbedUrl(CALENDLY_URL, theme);
@@ -94,37 +101,37 @@ export function ContactSection() {
             id="contact-title"
             className="text-4xl leading-none font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl"
           >
-            {copy.title}
+            {contact.title[locale]}
           </Text>
           <Text variant="bodyLg" tone="muted" className="max-w-110 text-lg leading-relaxed">
-            {copy.lead}
+            {contact.lead[locale]}
           </Text>
           <Flex as="ul" direction="col" gap="sm" aria-label={copy.channelsLabel} className="mt-1.5">
             <ChannelItem
-              href={SITE_LINKS.email}
+              href={`mailto:${links.email}`}
               label={copy.channels.email.label}
-              value={CONTACT_EMAIL}
+              value={links.email}
               external={false}
             >
               <CopyButton
-                value={CONTACT_EMAIL}
+                value={links.email}
                 label={copy.channels.email.copy}
                 copiedLabel={copy.channels.email.copied}
                 failedLabel={copy.channels.email.copyFailed}
               />
             </ChannelItem>
-            {SITE_LINKS.linkedin ? (
+            {links.linkedin ? (
               <ChannelItem
-                href={SITE_LINKS.linkedin}
+                href={links.linkedin.url}
                 label={copy.channels.linkedin.label}
-                value={copy.channels.linkedin.value}
+                value={links.linkedin.name}
                 external
               />
             ) : null}
             <ChannelItem
-              href={SITE_LINKS.github}
+              href={links.github.url}
               label={copy.channels.github.label}
-              value={copy.channels.github.value}
+              value={links.github.handle}
               external
             />
           </Flex>
@@ -153,11 +160,11 @@ export function ContactSection() {
                 forceMount
                 className="mt-0 data-[state=inactive]:hidden"
               >
-                <ContactForm />
+                <ContactForm recipient={links.email} />
               </Tabs.Content>
             </Tabs.Root>
           ) : (
-            <ContactForm />
+            <ContactForm recipient={links.email} />
           )}
         </Flex>
       </Surface>

@@ -3,11 +3,12 @@
 import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid } from 'goniui';
 import { tv } from 'tailwind-variants';
-import { useMessages } from '@/shared/lib/i18n';
+import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
-import { filterProjects, PROJECT_FILTERS, PROJECTS } from '../../model/projects';
+import type { Project } from '../../model/content';
+import { filterProjects, PROJECT_FILTERS } from '../../model/projects';
 import { useListFilter } from '../../model/useListFilter';
 import { projectsMessages } from './messages';
 import { ProjectCard } from './ProjectCard';
@@ -22,15 +23,21 @@ const filterOptionVariants = tv({
   },
 });
 
+export interface ProjectsSectionProps {
+  title: Localized<string>;
+  projects: readonly Project[];
+}
+
 /** Selected work, filterable by stack or kind of project. */
-export function ProjectsSection() {
+export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
+  const { locale } = useLocale();
   const copy = useMessages(projectsMessages);
-  const { filter, setFilter, visibleItems } = useListFilter(PROJECTS, filterProjects, 'all');
+  const { filter, setFilter, visibleItems } = useListFilter(projects, filterProjects, 'all');
 
   return (
     <PageSection id="projects" labelledBy="projects-title">
       <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.columns}>
-        <SectionHeading eyebrow={copy.eyebrow} title={copy.title} titleId="projects-title" />
+        <SectionHeading eyebrow={copy.eyebrow} title={title[locale]} titleId="projects-title" />
         <SegmentedControl.Root
           aria-label={copy.filtersLabel}
           className="w-auto max-w-full rounded-xl border-border bg-chip p-1"
@@ -55,17 +62,21 @@ export function ProjectsSection() {
         {...revealStagger({ from: 'rows', zoom: true })}
       >
         {visibleItems.map((project) => {
-          const projectCopy = copy.projects[project.id];
+          const projectTitle = project.title[locale];
           return (
             <li key={project.id} className="flex">
               <ProjectCard
                 project={project}
                 copy={{
-                  ...projectCopy,
+                  title: projectTitle,
+                  kind: project.kind[locale],
+                  description: project.description[locale],
+                  imageAlt: project.image?.alt[locale] ?? '',
+                  placeholder: project.placeholder?.[locale] ?? '',
                   demo: copy.demo,
-                  demoLabel: copy.demoLabel(projectCopy.title),
+                  demoLabel: copy.demoLabel(projectTitle),
                   source: copy.source,
-                  sourceLabel: copy.sourceLabel(projectCopy.title),
+                  sourceLabel: copy.sourceLabel(projectTitle),
                 }}
               />
             </li>

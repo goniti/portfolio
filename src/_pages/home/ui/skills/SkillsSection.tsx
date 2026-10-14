@@ -1,28 +1,34 @@
 'use client';
 
 import { Badge, Flex, Text } from 'goniui';
-import { useMessages } from '@/shared/lib/i18n';
+import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
 import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
+import type { SkillsContent } from '../../model/content';
 import { formatIndex } from '../../model/format';
-import { AI_PRACTICES, BACKEND_STACK, CORE_STACK, LEADERSHIP_SKILLS } from '../../model/skills';
 import { tintVariants } from '../tint';
 import { skillsMessages } from './messages';
 
 const CARD_CLASS = 'min-w-0 gap-5.5 p-5.5 md:p-8';
 const CARD_TITLE_CLASS = 'text-2xl font-bold tracking-tight';
 
+export interface SkillsSectionProps {
+  title: Localized<string>;
+  skills: SkillsContent;
+}
+
 /** Bento of four skill cards: core stack, backend, AI workflow, leadership. */
-export function SkillsSection() {
+export function SkillsSection({ title, skills }: SkillsSectionProps) {
+  const { locale } = useLocale();
   const copy = useMessages(skillsMessages);
 
   return (
     <PageSection id="skills" labelledBy="skills-title">
       <SectionHeading
         eyebrow={copy.eyebrow}
-        title={copy.title}
+        title={title[locale]}
         titleId="skills-title"
         {...REVEAL.left}
       />
@@ -41,7 +47,7 @@ export function SkillsSection() {
             </Text>
           </Flex>
           <Flex as="ul" wrap="wrap" className="gap-2.5">
-            {CORE_STACK.map((technology) => (
+            {skills.coreStack.map((technology) => (
               <Flex
                 as="li"
                 key={technology.name}
@@ -66,7 +72,7 @@ export function SkillsSection() {
             {copy.backend.title}
           </Text>
           <Flex as="ul" wrap="wrap" gap="sm">
-            {BACKEND_STACK.map((technology) => (
+            {skills.backendStack.map((technology) => (
               <li key={technology}>
                 <Tag
                   size="md"
@@ -96,10 +102,10 @@ export function SkillsSection() {
             </Badge>
           </Flex>
           <Flex as="ol" direction="col">
-            {AI_PRACTICES.map((practiceId, index) => (
+            {skills.aiPractices.map((practice, index) => (
               <Flex
                 as="li"
-                key={practiceId}
+                key={practice._key}
                 align="baseline"
                 className="gap-3.5 border-b border-border py-3"
               >
@@ -112,10 +118,10 @@ export function SkillsSection() {
                 </Text>
                 <Flex direction="col" className="gap-0.5">
                   <Text as="span" variant="bodyLg" className="font-semibold">
-                    {copy.ai.practices[practiceId].title}
+                    {practice.title[locale]}
                   </Text>
                   <Text as="span" variant="body" tone="muted" className="leading-normal">
-                    {copy.ai.practices[practiceId].description}
+                    {practice.description[locale]}
                   </Text>
                 </Flex>
               </Flex>
@@ -128,22 +134,22 @@ export function SkillsSection() {
             {copy.leadership.title}
           </Text>
           <Flex as="ul" direction="col" className="gap-3.5">
-            {LEADERSHIP_SKILLS.map((skillId) => (
-              <Flex as="li" key={skillId} align="center" className="gap-3.5">
+            {skills.leadership.map((skill) => (
+              <Flex as="li" key={skill._key} align="center" className="gap-3.5">
                 <Text
                   as="span"
                   variant="bodySm"
                   aria-hidden="true"
                   className="grid size-9.5 flex-none place-items-center rounded-lg border border-tint-indigo/25 bg-tint-indigo/10 font-mono font-semibold text-accent-indigo"
                 >
-                  {copy.leadership.monograms[skillId]}
+                  {skill.monogram}
                 </Text>
                 <Flex direction="col">
                   <Text as="span" variant="bodyLg" className="font-semibold">
-                    {copy.leadership.skills[skillId].title}
+                    {skill.title[locale]}
                   </Text>
                   <Text as="span" variant="body" tone="muted">
-                    {copy.leadership.skills[skillId].description}
+                    {skill.description[locale]}
                   </Text>
                 </Flex>
               </Flex>

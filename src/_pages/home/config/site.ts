@@ -1,9 +1,9 @@
 import { withBasePath } from '@/shared/lib/base-path';
 
-/** Fixed configuration of the portfolio page (the mockup's tweakable props, frozen). */
-
-/** Shows the "Open to work" state (badge, footer status). */
-export const OPEN_TO_WORK = true;
+/**
+ * Fixed configuration of the portfolio page. The owner's identity, links and availability are
+ * content, edited in Sanity (`siteSettings`, ADR-003).
+ */
 
 /** Delay between two typed characters in the hero terminal. */
 export const TYPE_SPEED_MS = 55;
@@ -17,18 +17,8 @@ export const PAST_HERO_VIEWPORTS = 0.9;
 /** Time zone of the hero clock (Lyon). */
 export const CLOCK_TIME_ZONE = 'Europe/Paris';
 
-export const CONTACT_EMAIL = 'gonzalezlovullocarlos@gmail.com';
-
-/**
- * Outbound links. An empty string hides the link everywhere it appears:
- * set `linkedin` and `resume` once the profile URL and the PDF are available.
- */
-export const SITE_LINKS = {
-  github: 'https://github.com/goniti',
-  linkedin: 'https://www.linkedin.com/in/carlos-gonzalez-lo-vullo',
-  resume: withBasePath('/resume.pdf'),
-  email: `mailto:${CONTACT_EMAIL}`,
-} as const;
+/** Resume PDF, shipped from `public/`. An empty string hides the download links. */
+export const RESUME_URL = withBasePath('/resume.pdf');
 
 /**
  * Calendly scheduling page (`https://calendly.com/<user>/<event>`): public, so plain config

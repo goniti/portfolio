@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import { Box, Flex, Link, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
-import { withBasePath } from '@/shared/lib/base-path';
 import { CtaButton, OWN_CURSOR_TARGET, Surface, Tag } from '@/shared/ui/atoms';
-import type { Project } from '../../model/projects';
+import type { Project } from '../../model/content';
 
 const projectMediaVariants = tv({
   base: 'relative grid aspect-16/10 place-items-center overflow-hidden border-b border-border bg-media',
@@ -22,7 +21,10 @@ interface ProjectCardCopy {
   title: string;
   kind: string;
   description: string;
-  placeholder?: string;
+  /** Alternative text of the screenshot. */
+  imageAlt: string;
+  /** Caption shown while the project has no screenshot. */
+  placeholder: string;
   demo: string;
   demoLabel: string;
   source: string;
@@ -44,9 +46,11 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
       <Box className={projectMediaVariants({ tint: project.tint })}>
         {project.image ? (
           <Image
-            src={withBasePath(project.image.src)}
-            alt={copy.title}
+            src={project.image.src}
+            alt={copy.imageAlt}
             fill
+            placeholder={project.image.lqip ? 'blur' : 'empty'}
+            blurDataURL={project.image.lqip ?? undefined}
             sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
             className="object-cover object-left-top"
           />

@@ -9,7 +9,7 @@ function fill(label: RegExp, value: string) {
 describe('ContactForm', () => {
   it('shows the validation errors and does not send', async () => {
     const openMailto = vi.fn();
-    render(<ContactForm openMailto={openMailto} />);
+    render(<ContactForm recipient="gonzalezlovullocarlos@gmail.com" openMailto={openMailto} />);
     fill(/name/i, 'J');
     fill(/email/i, 'nope');
     fill(/message/i, 'Hi');
@@ -24,7 +24,7 @@ describe('ContactForm', () => {
 
   it('opens the mail app with the message, then confirms', async () => {
     const openMailto = vi.fn();
-    render(<ContactForm openMailto={openMailto} />);
+    render(<ContactForm recipient="gonzalezlovullocarlos@gmail.com" openMailto={openMailto} />);
     fill(/name/i, 'Jane');
     fill(/email/i, 'jane@company.com');
     fill(/message/i, 'Let us talk about a tech lead role.');

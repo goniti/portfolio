@@ -4,20 +4,21 @@ import * as Form from 'goniui/form';
 import { Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';
 import { CtaButton, Surface } from '@/shared/ui/atoms';
-import { CONTACT_EMAIL } from '../../config/site';
 import { useContactForm } from '../../model/useContactForm';
 import { contactMessages } from './messages';
 
 export interface ContactFormProps {
+  /** Address the composed email goes to. */
+  recipient: string;
   /** Opens the composed email; defaults to the visitor's mail app. */
   openMailto?: (href: string) => void;
 }
 
 /** Message form; on submit it opens the visitor's mail app with the message ready to send. */
-export function ContactForm({ openMailto }: ContactFormProps) {
+export function ContactForm({ recipient, openMailto }: ContactFormProps) {
   const copy = useMessages(contactMessages);
   const { methods, submit, sender, startOver } = useContactForm({
-    recipient: CONTACT_EMAIL,
+    recipient,
     validationCopy: copy.form.errors,
     subject: copy.form.subject,
     openMailto,

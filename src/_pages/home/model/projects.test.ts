@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { filterProjects, PROJECT_CATEGORIES, PROJECTS } from './projects';
+import { HOME_CONTENT_FIXTURE } from './content.fixture';
+import { filterProjects, PROJECT_CATEGORIES } from './projects';
+
+const PROJECTS = HOME_CONTENT_FIXTURE.projects;
 
 describe('filterProjects', () => {
   it('keeps every project for "all"', () => {
@@ -8,8 +11,8 @@ describe('filterProjects', () => {
 
   it('keeps the projects of a category, in order', () => {
     expect(filterProjects(PROJECTS, 'vue').map((project) => project.id)).toEqual([
-      'advisum',
-      'decision-trees',
+      'project-advisum',
+      'project-decision-trees',
     ]);
   });
 

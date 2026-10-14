@@ -1,9 +1,8 @@
 import type { Localized } from '@/shared/lib/i18n';
 
+// The title, the lead and the channel values (email, LinkedIn, GitHub) are content (Sanity).
 const en = {
   eyebrow: '05 — Contact',
-  title: 'Let’s build the next one together.',
-  lead: 'Hiring a tech lead or senior front-end engineer? Send a message or reach out directly.',
   channelsLabel: 'Direct contact',
   channels: {
     email: {
@@ -12,8 +11,8 @@ const en = {
       copied: 'Copied!',
       copyFailed: 'Copy failed, select the address instead',
     },
-    linkedin: { label: 'LINKEDIN', value: 'Carlos Gonzalez Lo Vullo' },
-    github: { label: 'GITHUB', value: 'goniti' },
+    linkedin: { label: 'LINKEDIN' },
+    github: { label: 'GITHUB' },
   },
   external: '↗',
   newTab: '(opens in a new tab)',
@@ -51,8 +50,6 @@ export const contactMessages: Localized<typeof en> = {
   en,
   fr: {
     ...en,
-    title: 'Construisons le prochain ensemble.',
-    lead: 'Vous recrutez un tech lead ou un développeur front-end senior ? Écrivez-moi ou contactez-moi directement.',
     channelsLabel: 'Contact direct',
     channels: {
       ...en.channels,
