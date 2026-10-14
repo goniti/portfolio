@@ -43,7 +43,7 @@ pnpm dev
 | `pnpm test`            | Unit tests                                              |
 | `pnpm test:watch`      | Tests in watch mode                                     |
 | `pnpm coverage`        | Tests with coverage                                     |
-| `pnpm test:e2e`        | Builds the static export, then runs Playwright on it    |
+| `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
 | `pnpm knip`            | Finds unused files, exports and dependencies            |
 | `pnpm secrets`         | Scans the repository for committed secrets              |
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
@@ -70,7 +70,7 @@ The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-san
 - `.github/workflows/deploy.yml` checks the content (`pnpm content:check`), builds `out/` and deploys it on every push to `main`, on demand (`workflow_dispatch`), and on the `sanity-content-published` `repository_dispatch` event sent by the Sanity webhook.
 - `SANITY_PROJECT_ID`, `SANITY_DATASET` and `SANITY_API_VERSION` are GitHub Actions repository **variables** (not secrets), used by `ci.yml` and `deploy.yml`.
 - Images come from the Sanity CDN (`https://cdn.sanity.io/…`, sized by URL): absolute URLs, untouched by the base path.
-- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts`. Locally they default to the domain root, so `pnpm dev` and the e2e tests run at `/`.
+- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
 - `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
 - There is no server at runtime: no route handlers, server actions, `cookies()`/`headers()` or ISR. `pnpm start` (`next start`) does not serve an export; preview the build with any static server instead.
 

@@ -33,7 +33,7 @@ Always answer and write every deliverable in English.
 | `pnpm test`            | Unit tests                                              |
 | `pnpm test:watch`      | Tests in watch mode                                     |
 | `pnpm coverage`        | Tests with coverage                                     |
-| `pnpm test:e2e`        | Builds the static export, then runs Playwright on it    |
+| `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
 | `pnpm knip`            | Finds unused files, exports and dependencies            |
 | `pnpm secrets`         | Scans the repository for committed secrets              |
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
