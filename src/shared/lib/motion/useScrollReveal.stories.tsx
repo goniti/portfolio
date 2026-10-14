@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box, Flex, Grid, Text } from 'goniui';
-import { REVEAL, revealStagger } from '../../../lib/motion';
-import { ScrollReveal } from './ScrollReveal';
+import { REVEAL, revealStagger } from './scrollReveal';
+import { useScrollReveal } from './useScrollReveal';
 
 const CARDS = ['One', 'Two', 'Three', 'Four', 'Five', 'Six'];
 const DIRECTIONS = ['up', 'down', 'left', 'right', 'fade', 'zoom'] as const;
 const CARD_CLASS = 'rounded-2xl border border-border bg-surface p-8';
 
+/** A long page whose marked blocks play their entrance as they scroll into view. */
 function RevealDemo() {
+  useScrollReveal();
   return (
     <Box as="main" className="overflow-hidden">
       <Flex direction="col" gap="xl" className="p-8">
@@ -74,25 +76,23 @@ function RevealDemo() {
           ))}
         </Flex>
       </Flex>
-      <ScrollReveal />
     </Box>
   );
 }
 
 const meta = {
-  title: 'Shared/Atoms/ScrollReveal',
-  component: ScrollReveal,
+  title: 'Shared/Lib/useScrollReveal',
+  component: RevealDemo,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'Spread a marker on content below the fold, then mount `<ScrollReveal />` once. `REVEAL.up|down|left|right|fade|zoom` (or `reveal({ from, zoom })`) plays the element; `revealStagger({ from, zoom })` plays its children one after the other, and `from: "columns"` (`REVEAL.columns`) sends each child in from the side of the layout it sits on, a row at a time, falling back to `up` on a single column; `from: "rows"` raises the children a row at a time. Sideways offsets need an `overflow-hidden` ancestor. Content stays visible without JavaScript and with reduced motion.',
+          'Spread a marker on content below the fold, then call `useScrollReveal()` once, in the client component of the page. `REVEAL.up|down|left|right|fade|zoom` (or `reveal({ from, zoom })`) plays the element; `revealStagger({ from, zoom })` plays its children one after the other, and `from: "columns"` (`REVEAL.columns`) sends each child in from the side of the layout it sits on, a row at a time, falling back to `up` on a single column; `from: "rows"` raises the children a row at a time. Sideways offsets need an `overflow-hidden` ancestor. Content stays visible without JavaScript and with reduced motion.',
       },
     },
   },
-  render: () => <RevealDemo />,
-} satisfies Meta<typeof ScrollReveal>;
+} satisfies Meta<typeof RevealDemo>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
