@@ -8,7 +8,7 @@ test('the home page pitches the engineer', async ({ page }) => {
 test('the language switch translates the page', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('./');
-  await page.getByRole('button', { name: 'Français' }).click();
+  await page.getByRole('button', { name: 'FR Français' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Productivité augmentée par l’IA',
   );

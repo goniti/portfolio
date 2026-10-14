@@ -32,11 +32,13 @@ export function LocaleSegments() {
           key={option}
           active={option === locale}
           aria-pressed={option === locale}
-          aria-label={copy.localeNames[option]}
           onClick={() => setLocale(option)}
           className={localeOptionVariants({ active: option === locale })}
         >
-          {copy.localeCodes[option]}
+          {copy.localeCodes[option]}{' '}
+          <span className="sr-only" lang={option}>
+            {copy.localeNames[option]}
+          </span>
         </SegmentedControl.Item>
       ))}
     </SegmentedControl.Root>
@@ -53,11 +55,11 @@ export function LocaleToggle() {
     <Button
       variant="unstyled"
       size="none"
-      aria-label={`${copy.localeLabel}: ${copy.localeNames[next]}`}
       onClick={() => setLocale(next)}
       className={navControlVariants({ size: 'lg', className: 'font-mono text-2xs font-medium' })}
     >
-      {copy.localeCodes[locale]}
+      {copy.localeCodes[locale]}{' '}
+      <span className="sr-only">{copy.switchLocale(copy.localeNames[next])}</span>
     </Button>
   );
 }

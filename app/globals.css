@@ -49,6 +49,13 @@
   --accent-indigo: #4f46e5;
   --accent-cyan: #0e7490;
   --accent-violet: #7c3aed;
+  /* Tint labels (categories, dots): darker shades keep 4.5:1 on the light page. */
+  --tint-label-indigo: #4338ca;
+  --tint-label-cyan: #0e7490;
+  --tint-label-violet: #7e22ce;
+  --tint-label-emerald: #047857;
+  --tint-label-sky: #0369a1;
+  --tint-label-amber: #b45309;
   --success: #047857;
   --error: #be123c;
 
@@ -107,6 +114,12 @@
   --accent-indigo: #a5b4fc;
   --accent-cyan: #67e8f9;
   --accent-violet: #c4b5fd;
+  --tint-label-indigo: #818cf8;
+  --tint-label-cyan: #22d3ee;
+  --tint-label-violet: #c084fc;
+  --tint-label-emerald: #34d399;
+  --tint-label-sky: #38bdf8;
+  --tint-label-amber: #f59e0b;
   --success: #6ee7b7;
   --error: #fda4af;
 
@@ -135,6 +148,12 @@
   --color-accent-indigo: var(--accent-indigo);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-violet: var(--accent-violet);
+  --color-tint-label-indigo: var(--tint-label-indigo);
+  --color-tint-label-cyan: var(--tint-label-cyan);
+  --color-tint-label-violet: var(--tint-label-violet);
+  --color-tint-label-emerald: var(--tint-label-emerald);
+  --color-tint-label-sky: var(--tint-label-sky);
+  --color-tint-label-amber: var(--tint-label-amber);
   --color-success: var(--success);
   --color-error: var(--error);
   --color-glow-indigo: var(--glow-indigo);
@@ -144,7 +163,7 @@
   --color-mark: var(--mark);
   --color-shadow-tint: var(--shadow-tint);
 
-  /* Fonts loaded by next/font/local in app/layout.tsx (Meeple design system files). */
+  /* Fonts loaded by next/font/local in app/fonts/index.ts (Meeple design system files). */
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
