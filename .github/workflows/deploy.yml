@@ -17,6 +17,12 @@ concurrency:
 permissions:
   contents: read
 
+# Sanity content (ADR-003): repository variables, not secrets (the dataset is public).
+env:
+  SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+  SANITY_DATASET: ${{ vars.SANITY_DATASET }}
+  SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION }}
+
 jobs:
   build:
     name: Build static export
@@ -30,6 +36,10 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      # Fails fast with a readable report (document › field › locale); the previous deploy
+      # stays online.
+      - name: Content check
+        run: pnpm content:check
       - uses: actions/configure-pages@v6
       - name: Build
         run: pnpm build
