@@ -89,6 +89,22 @@ test('the resume link downloads the PDF from under the base path', async ({ page
   expect((await response.body()).subarray(0, 5).toString()).toBe('%PDF-');
 });
 
+test('the icons are linked and served under the base path', async ({ page, request }) => {
+  await page.goto('./');
+  const icons = [
+    { selector: 'link[rel="icon"]', contentType: 'image/svg+xml' },
+    { selector: 'link[rel="apple-touch-icon"]', contentType: 'image/png' },
+  ];
+
+  for (const { selector, contentType } of icons) {
+    const href = await page.locator(selector).getAttribute('href');
+    expect(href, selector).toMatch(/^\/portfolio\//);
+    const response = await request.get(href ?? '');
+    expect(response.status(), href ?? selector).toBe(200);
+    expect(response.headers()['content-type']).toContain(contentType);
+  }
+});
+
 test('the section links stay under the base path and scroll to their section', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('./');
