@@ -15,7 +15,7 @@ describe('SiteNav', () => {
 
   it('switches the copy to French', () => {
     render(<SiteNav ownerName={ownerName} avatarUrl={avatarUrl} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Français' }));
+    fireEvent.click(screen.getByRole('button', { name: 'FR Français' }));
     expect(screen.getAllByRole('link', { name: 'Projets' }).length).toBeGreaterThan(0);
   });
 

@@ -11,13 +11,24 @@ vi.mock('../api/getHomeContent', () => ({
 
 describe('HomePage', () => {
   beforeEach(() => stubMatchMedia());
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
 
   it('renders the fetched content', async () => {
     render(await HomePage());
     expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
       'AI-Augmented Workflows',
     );
+  });
+
+  it('passes the Calendly page of the environment to the view', async () => {
+    vi.stubEnv('NEXT_PUBLIC_CALENDLY_URL', 'https://calendly.com/carlos/intro');
+    vi.resetModules();
+    const { HomePage: FreshHomePage } = await import('./HomePage');
+    render(await FreshHomePage());
+    expect(screen.getByRole('tab', { name: 'Book a call' })).toBeDefined();
   });
 
   it('takes the <head> from the SEO fields, in the default locale', async () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { loadClientEnv } from './clientEnv';
 
 describe('loadClientEnv', () => {
@@ -36,5 +36,30 @@ describe('loadClientEnv', () => {
     expect(() => loadClientEnv({ NEXT_PUBLIC_BASE_PATH: '/portfolio/' })).toThrow(
       /NEXT_PUBLIC_BASE_PATH/,
     );
+  });
+});
+
+describe('clientEnv', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it('validates on first read, not on import', async () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_PATH', 'portfolio/');
+    const { clientEnv } = await import('./clientEnv');
+    expect(() => clientEnv.NEXT_PUBLIC_BASE_PATH).toThrow(/NEXT_PUBLIC_BASE_PATH/);
+  });
+
+  it('reads the public variables', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://goniti.github.io/portfolio');
+    vi.stubEnv('NEXT_PUBLIC_BASE_PATH', '/portfolio');
+    vi.stubEnv('NEXT_PUBLIC_CALENDLY_URL', 'https://calendly.com/carlos/intro');
+    const { clientEnv } = await import('./clientEnv');
+    expect(clientEnv).toEqual({
+      NEXT_PUBLIC_SITE_URL: 'https://goniti.github.io/portfolio',
+      NEXT_PUBLIC_BASE_PATH: '/portfolio',
+      NEXT_PUBLIC_CALENDLY_URL: 'https://calendly.com/carlos/intro',
+    });
   });
 });

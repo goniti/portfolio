@@ -1,10 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { stubMatchMedia } from '@/shared/lib/testing';
-import { HOME_CONTENT_FIXTURE } from '../model/content.fixture';
+import { CALENDLY_URL_FIXTURE, HOME_CONTENT_FIXTURE } from '../model/content.fixture';
 import { HomeView } from './HomeView';
-
-const CALENDLY_URL = 'https://calendly.com/portfolio/intro-call';
 
 describe('HomeView', () => {
   beforeEach(() => stubMatchMedia());
@@ -46,7 +44,7 @@ describe('HomeView', () => {
   });
 
   it('opens on the Calendly tab, ahead of the message form', () => {
-    render(<HomeView content={HOME_CONTENT_FIXTURE} calendlyUrl={CALENDLY_URL} />);
+    render(<HomeView content={HOME_CONTENT_FIXTURE} calendlyUrl={CALENDLY_URL_FIXTURE} />);
     const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent);
     expect(tabs).toEqual(['Book a call', 'Send a message']);
     expect(screen.getByRole('tab', { name: 'Book a call' }).getAttribute('aria-selected')).toBe(

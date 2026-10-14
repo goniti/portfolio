@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CALENDLY_URL_FIXTURE, HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { ContactSection } from './ContactSection';
 
 const meta = {
@@ -10,7 +10,7 @@ const meta = {
   args: {
     contact: HOME_CONTENT_FIXTURE.contact,
     links: HOME_CONTENT_FIXTURE.site.links,
-    calendlyUrl: 'https://calendly.com/portfolio/intro-call',
+    calendlyUrl: CALENDLY_URL_FIXTURE,
   },
 } satisfies Meta<typeof ContactSection>;
 

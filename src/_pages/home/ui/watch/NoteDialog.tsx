@@ -44,10 +44,9 @@ export function NoteDialog({ note, onClose, copy }: NoteDialogProps) {
               <Button
                 variant="unstyled"
                 size="none"
-                aria-label={copy.closeLabel}
                 className="h-11 min-w-11 flex-none rounded-xl border border-border-strong font-mono text-sm font-medium text-foreground-soft hover:text-foreground-strong"
               >
-                {copy.close}
+                {copy.close} <span className="sr-only">{copy.closeLabel}</span>
               </Button>
             </Dialog.Close>
           </Flex>

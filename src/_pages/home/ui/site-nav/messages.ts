@@ -16,6 +16,8 @@ const en = {
   localeLabel: 'Language',
   localeCodes: { en: 'EN', fr: 'FR' },
   localeNames: { en: 'English', fr: 'Français' },
+  /** Accessible name of the compact toggle, after the visible code of the current locale. */
+  switchLocale: (localeName: string) => `Switch to ${localeName}`,
   themeToLight: 'Switch to light theme',
   themeToDark: 'Switch to dark theme',
   themeGlyph: { dark: '☀', light: '☾' },
@@ -41,6 +43,7 @@ export const siteNavMessages: Localized<typeof en> = {
       contact: 'Contact',
     },
     localeLabel: 'Langue',
+    switchLocale: (localeName: string) => `Passer en ${localeName}`,
     themeToLight: 'Passer au thème clair',
     themeToDark: 'Passer au thème sombre',
     resume: 'CV PDF',

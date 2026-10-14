@@ -11,6 +11,10 @@ const both = (en: string, fr: string = en): Localized<string> => ({ en, fr });
 
 const CDN = 'https://cdn.sanity.io/images/8i6zw2b7/production';
 
+/** The owner's public Calendly page (`NEXT_PUBLIC_CALENDLY_URL` on the site), for tests and stories. */
+export const CALENDLY_URL_FIXTURE =
+  'https://calendly.com/gonzalezlovullocarlos/30-minutes-google-meet';
+
 export const HOME_CONTENT_FIXTURE: HomeContent = {
   site: {
     ownerName: 'Carlos G. Lo Vullo',

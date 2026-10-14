@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { HOME_CONTENT_FIXTURE } from '../model/content.fixture';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CALENDLY_URL_FIXTURE, HOME_CONTENT_FIXTURE } from '../model/content.fixture';
 import { HomeView } from './HomeView';
 
 const meta = {
@@ -7,7 +7,7 @@ const meta = {
   component: HomeView,
   parameters: { layout: 'fullscreen' },
   // Fixture content: stories never fetch from Sanity.
-  args: { content: HOME_CONTENT_FIXTURE, calendlyUrl: 'https://calendly.com/portfolio/intro-call' },
+  args: { content: HOME_CONTENT_FIXTURE, calendlyUrl: CALENDLY_URL_FIXTURE },
 } satisfies Meta<typeof HomeView>;
 
 export default meta;

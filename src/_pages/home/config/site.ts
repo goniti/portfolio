@@ -1,6 +1,3 @@
-import { clientEnv } from '@/shared/config';
-import { withBasePath } from '@/shared/lib/base-path';
-
 /**
  * Fixed configuration of the portfolio page. The owner's identity, links and availability are
  * content, edited in Sanity (`siteSettings`, ADR-003).
@@ -18,11 +15,8 @@ export const PAST_HERO_VIEWPORTS = 0.9;
 /** Time zone of the hero clock (Lyon). */
 export const CLOCK_TIME_ZONE = 'Europe/Paris';
 
-/** Resume PDF, shipped from `public/`. An empty string hides the download links. */
-export const RESUME_URL = withBasePath('/resume.pdf');
-
 /**
- * Calendly scheduling page (`https://calendly.com/<user>/<event>`), from `NEXT_PUBLIC_CALENDLY_URL`
- * read at build time. `undefined` (variable unset or empty) hides the "Book a call" tab.
+ * Resume PDF, shipped from `public/`, root-relative: prefix it with `withBasePath` where it is
+ * rendered. An empty string hides the download links.
  */
-export const CALENDLY_URL: string | undefined = clientEnv.NEXT_PUBLIC_CALENDLY_URL;
+export const RESUME_PATH: string = '/resume.pdf';

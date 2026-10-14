@@ -45,6 +45,7 @@ pnpm dev
 | `pnpm test`            | Unit tests                                              |
 | `pnpm test:watch`      | Tests in watch mode                                     |
 | `pnpm coverage`        | Tests with coverage                                     |
+| `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail   |
 | `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
 | `pnpm knip`            | Finds unused files, exports and dependencies            |
 | `pnpm secrets`         | Scans the repository for committed secrets              |
@@ -75,6 +76,7 @@ The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-san
 - The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/clientEnv.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
 - `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
 - Icons follow the Next.js metadata file convention: `app/icon.svg` (the favicon, colours mirroring the `--primary-500` token) and `app/apple-icon.png`, both linked from `<head>` under the base path, so browsers never fall back to the domain root's `/favicon.ico`. The PNG is rendered from the SVG by `pnpm icon:render` (`scripts/render-apple-icon.tsx`): run it after editing the SVG and commit both.
+- Storybook is published with the site, at <https://goniti.github.io/portfolio/storybook/> (`noindex`): `deploy.yml` builds it into `out/$STORYBOOK_DIR`, a single workflow variable. Storybook uses relative URLs, so it needs no base path; the URL becomes `/storybook/` with the custom domain.
 - There is no server at runtime: no route handlers, server actions, `cookies()`/`headers()` or ISR. `pnpm start` (`next start`) does not serve an export; preview the build with any static server instead.
 
 Preview the production build under its base path:
@@ -116,6 +118,7 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   ├── main.ts
 │   └── preview.ts
 ├── app/
+│   ├── fonts/              # DM Sans and JetBrains Mono (next/font/local), shared with Storybook
 │   ├── globals.css
 │   ├── layout.tsx
 │   └── page.tsx

@@ -1,10 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { stubMatchMedia } from '@/shared/lib/testing';
-import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
+import { CALENDLY_URL_FIXTURE, HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { ContactSection } from './ContactSection';
-
-const CALENDLY_URL = 'https://calendly.com/portfolio/intro-call';
 const { contact, site } = HOME_CONTENT_FIXTURE;
 
 describe('ContactSection', () => {
@@ -12,7 +10,9 @@ describe('ContactSection', () => {
   afterEach(() => vi.unstubAllGlobals());
 
   it('offers the "Book a call" tab first when a Calendly page is set', () => {
-    render(<ContactSection contact={contact} links={site.links} calendlyUrl={CALENDLY_URL} />);
+    render(
+      <ContactSection contact={contact} links={site.links} calendlyUrl={CALENDLY_URL_FIXTURE} />,
+    );
     const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent);
     expect(tabs).toEqual(['Book a call', 'Send a message']);
   });

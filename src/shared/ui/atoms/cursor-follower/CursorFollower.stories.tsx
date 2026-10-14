@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Button, Grid, Text } from 'goniui';
 import { surfaceVariants } from '../surface';
 import { CursorFollower } from './CursorFollower';

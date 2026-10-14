@@ -144,7 +144,11 @@ export function ContactSection({ contact, links, calendlyUrl }: ContactSectionPr
             <Tabs.Root variant="segment" defaultValue="call" className="flex flex-col gap-3">
               <Tabs.List className="bg-chip">
                 {CONTACT_TABS.map((tab) => (
-                  <Tabs.Trigger key={tab} value={tab} className="min-h-11 text-sm">
+                  <Tabs.Trigger
+                    key={tab}
+                    value={tab}
+                    className="min-h-11 text-sm data-[state=active]:bg-primary-500"
+                  >
                     {copy.tabs[tab]}
                   </Tabs.Trigger>
                 ))}
