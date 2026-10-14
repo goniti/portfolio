@@ -24,6 +24,9 @@ env:
   SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION }}
   # Optional Calendly page, inlined into the static export; unset hides the "Book a call" tab.
   NEXT_PUBLIC_CALENDLY_URL: ${{ vars.NEXT_PUBLIC_CALENDLY_URL }}
+  # Storybook folder inside the export: served at <site>/storybook/ (`/portfolio/storybook/` on
+  # the project page, `/storybook/` once the custom domain is live).
+  STORYBOOK_DIR: storybook
 
 jobs:
   build:
@@ -48,6 +51,9 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /portfolio
           NEXT_PUBLIC_SITE_URL: https://goniti.github.io/portfolio
+      # Storybook builds with relative URLs: it works under any base path.
+      - name: Build Storybook
+        run: pnpm build-storybook --output-dir "out/$STORYBOOK_DIR"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: out
