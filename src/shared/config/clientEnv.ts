@@ -7,7 +7,7 @@ export const unsetIfEmpty = (value: unknown) => (value === '' ? undefined : valu
 export const CALENDLY_PAGE_PATTERN = /^https:\/\/calendly\.com\/.+/;
 
 /**
- * Sub-path the site is served from: empty at the domain root (`pnpm dev`, e2e), `/portfolio` on
+ * Sub-path the site is served from: empty at the domain root (`pnpm dev`), `/portfolio` on
  * the GitHub Pages project page. Starts with `/`, no trailing slash.
  */
 const BasePathSchema = z

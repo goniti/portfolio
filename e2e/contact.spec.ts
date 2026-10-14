@@ -20,7 +20,7 @@ for (const viewport of [
       if (CALENDLY_FRAME.test(request.url())) calendlyRequests.push(request.url());
     });
     await page.setViewportSize(viewport);
-    await page.goto('/');
+    await page.goto('./');
     await page.waitForLoadState('networkidle');
     const backToTop = page.getByRole('button', { name: /back to top/i });
 
