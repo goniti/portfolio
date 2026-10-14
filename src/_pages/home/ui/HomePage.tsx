@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { DEFAULT_LOCALE } from '@/shared/lib/i18n';
 import { getHomeContent } from '../api/getHomeContent';
+import { CALENDLY_URL } from '../config/site';
 import { HomeView } from './HomeView';
 
 /**
@@ -18,5 +19,5 @@ export async function generateHomeMetadata(): Promise<Metadata> {
 /** The portfolio page: content fetched from Sanity at build time, both locales shipped. */
 export async function HomePage() {
   const content = await getHomeContent();
-  return <HomeView content={content} />;
+  return <HomeView content={content} calendlyUrl={CALENDLY_URL} />;
 }

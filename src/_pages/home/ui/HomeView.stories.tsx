@@ -7,7 +7,7 @@ const meta = {
   component: HomeView,
   parameters: { layout: 'fullscreen' },
   // Fixture content: stories never fetch from Sanity.
-  args: { content: HOME_CONTENT_FIXTURE },
+  args: { content: HOME_CONTENT_FIXTURE, calendlyUrl: 'https://calendly.com/portfolio/intro-call' },
 } satisfies Meta<typeof HomeView>;
 
 export default meta;

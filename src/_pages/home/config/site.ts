@@ -23,6 +23,6 @@ export const RESUME_URL = withBasePath('/resume.pdf');
 
 /**
  * Calendly scheduling page (`https://calendly.com/<user>/<event>`), from `NEXT_PUBLIC_CALENDLY_URL`
- * inlined at build time. An empty string (variable unset or empty) hides the "Book a call" tab.
+ * read at build time. `undefined` (variable unset or empty) hides the "Book a call" tab.
  */
-export const CALENDLY_URL: string = clientEnv.NEXT_PUBLIC_CALENDLY_URL ?? '';
+export const CALENDLY_URL: string | undefined = clientEnv.NEXT_PUBLIC_CALENDLY_URL;
