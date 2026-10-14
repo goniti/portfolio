@@ -3,7 +3,7 @@ import { localizedString, optionalLocalizedString, urlFor } from '@/shared/api';
 import { NOTE_CATEGORIES } from './notes';
 import { PROJECT_CATEGORIES } from './projects';
 import { TERMINAL_SCRIPT_STYLE } from './terminal';
-import { TINTS } from './tints';
+import { TINTS, type Tint } from './tints';
 
 /*
  * Content of the home page, edited in Sanity (ADR-003). These schemas check what TypeGen cannot
@@ -15,6 +15,15 @@ import { TINTS } from './tints';
 const AVATAR_SIZE = 160;
 /** Width of a project screenshot: a card is at most ~380 px wide, served at 2× with headroom. */
 const SCREENSHOT_WIDTH = 1200;
+
+const JOB_TINTS = ['indigo', 'cyan', 'violet'] as const satisfies readonly Tint[];
+const PROJECT_TINTS = [
+  'amber',
+  'cyan',
+  'emerald',
+  'violet',
+  'sky',
+] as const satisfies readonly Tint[];
 
 // The issue report reads `_type` from the raw data; the page only needs the `_id`.
 const documentFields = { _id: z.string() };
@@ -155,7 +164,7 @@ const jobSchema = z
     endDate: z.iso.date().nullish(),
     achievements: localizedLines(1),
     technologies: z.array(z.string().min(1)).min(1),
-    tint: z.enum(['indigo', 'cyan', 'violet']),
+    tint: z.enum(JOB_TINTS),
   })
   .transform(({ _id, endDate, ...job }) => ({ id: _id, ...job, endDate: endDate ?? null }));
 
@@ -170,7 +179,7 @@ const projectSchema = z
     // TypeGen types an array with an `options.list` as `string[]`: narrowed here.
     categories: z.array(z.string()).pipe(z.array(z.enum(PROJECT_CATEGORIES)).min(1)),
     technologies: z.array(z.string().min(1)).min(1),
-    tint: z.enum(['amber', 'cyan', 'emerald', 'violet', 'sky']),
+    tint: z.enum(PROJECT_TINTS),
     demoUrl: z.url().nullish(),
     sourceUrl: z.url(),
   })
