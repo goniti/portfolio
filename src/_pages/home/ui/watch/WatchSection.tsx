@@ -4,7 +4,7 @@ import { useState } from 'react';
 import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
-import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
+import { useLocale, useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { PulseDot } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
@@ -35,6 +35,7 @@ export interface WatchSectionProps {
 /** Tech-watch notes, filterable by topic, each readable in a side panel. */
 export function WatchSection({ title, notes }: WatchSectionProps) {
   const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(watchMessages);
   const { filter, setFilter, visibleItems } = useListFilter(notes, filterNotes, 'all');
   const [openNoteId, setOpenNoteId] = useState<string | null>(null);
@@ -46,7 +47,7 @@ export function WatchSection({ title, notes }: WatchSectionProps) {
       <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.stagger}>
         <SectionHeading
           eyebrow={copy.eyebrow}
-          title={title[locale]}
+          title={localize(title)}
           titleId="watch-title"
           badge={
             <Text
@@ -88,8 +89,8 @@ export function WatchSection({ title, notes }: WatchSectionProps) {
               category={copy.categoryTag(copy.filters[note.category])}
               tint={NOTE_CATEGORY_TINT[note.category]}
               meta={copy.cardMeta(formatMonthYear(note.publishedAt, locale), note.readingMinutes)}
-              title={note.title[locale]}
-              excerpt={note.excerpt[locale]}
+              title={localize(note.title)}
+              excerpt={localize(note.excerpt)}
               cta={copy.readNote}
               onOpen={() => setOpenNoteId(note.id)}
             />
@@ -100,10 +101,10 @@ export function WatchSection({ title, notes }: WatchSectionProps) {
         note={
           openNote
             ? {
-                title: openNote.title[locale],
-                excerpt: openNote.excerpt[locale],
-                body: openNote.body.map((paragraph) => paragraph[locale]),
-                takeaways: openNote.takeaways.map((takeaway) => takeaway[locale]),
+                title: localize(openNote.title),
+                excerpt: localize(openNote.excerpt),
+                body: openNote.body.map((paragraph) => localize(paragraph)),
+                takeaways: openNote.takeaways.map((takeaway) => localize(takeaway)),
                 tint: NOTE_CATEGORY_TINT[openNote.category],
                 meta: copy.dialogMeta(
                   copy.filters[openNote.category],

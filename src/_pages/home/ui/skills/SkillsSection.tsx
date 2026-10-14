@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge, Flex, Text } from 'goniui';
-import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
+import { useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
 import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
@@ -21,14 +21,14 @@ export interface SkillsSectionProps {
 
 /** Bento of four skill cards: core stack, backend, AI workflow, leadership. */
 export function SkillsSection({ title, skills }: SkillsSectionProps) {
-  const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(skillsMessages);
 
   return (
     <PageSection id="skills" labelledBy="skills-title">
       <SectionHeading
         eyebrow={copy.eyebrow}
-        title={title[locale]}
+        title={localize(title)}
         titleId="skills-title"
         {...REVEAL.left}
       />
@@ -118,10 +118,10 @@ export function SkillsSection({ title, skills }: SkillsSectionProps) {
                 </Text>
                 <Flex direction="col" className="gap-0.5">
                   <Text as="span" variant="bodyLg" className="font-semibold">
-                    {practice.title[locale]}
+                    {localize(practice.title)}
                   </Text>
                   <Text as="span" variant="body" tone="muted" className="leading-normal">
-                    {practice.description[locale]}
+                    {localize(practice.description)}
                   </Text>
                 </Flex>
               </Flex>
@@ -146,10 +146,10 @@ export function SkillsSection({ title, skills }: SkillsSectionProps) {
                 </Text>
                 <Flex direction="col">
                   <Text as="span" variant="bodyLg" className="font-semibold">
-                    {skill.title[locale]}
+                    {localize(skill.title)}
                   </Text>
                   <Text as="span" variant="body" tone="muted">
-                    {skill.description[locale]}
+                    {localize(skill.description)}
                   </Text>
                 </Flex>
               </Flex>

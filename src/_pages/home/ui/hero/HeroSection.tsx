@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Flex, Link, Text } from 'goniui';
-import { useLocale, useMessages } from '@/shared/lib/i18n';
+import { useLocalized, useMessages } from '@/shared/lib/i18n';
 import { CtaButton, PulseDot } from '@/shared/ui/atoms';
 import { CLOCK_TIME_ZONE, TYPE_SPEED_MS } from '../../config/site';
 import type { HeroContent, OwnerLinks } from '../../model/content';
@@ -21,11 +21,11 @@ export interface HeroSectionProps {
 
 /** Opening section: pitch, calls to action and the live terminal card. */
 export function HeroSection({ hero, links }: HeroSectionProps) {
-  const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(heroMessages);
   const { terminal } = copy;
   const lines = useTypewriter(
-    buildTerminalScript(hero.terminalScript.map((line) => line[locale])),
+    buildTerminalScript(hero.terminalScript.map((line) => localize(line))),
     TYPE_SPEED_MS,
   );
   const clock = useClock(CLOCK_TIME_ZONE);
@@ -45,7 +45,7 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
             className="inline-flex items-center gap-2.5 self-start rounded-full border border-tint-indigo/30 bg-tint-indigo-strong/10 py-1.5 pr-3.5 pl-2.5 font-mono font-medium text-accent-indigo"
           >
             <PulseDot />
-            {hero.badge[locale]}
+            {localize(hero.badge)}
           </Text>
           <Text
             as="h1"
@@ -53,18 +53,18 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
             id="home-title"
             className="text-4xl leading-display font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl"
           >
-            {hero.titleStart[locale]}
+            {localize(hero.titleStart)}
             <span className="text-sheen motion-safe:animate-sheen">
-              {hero.titleHighlight[locale]}
+              {localize(hero.titleHighlight)}
             </span>
-            {hero.titleEnd[locale]}
+            {localize(hero.titleEnd)}
           </Text>
           <Text
             variant="bodyLg"
             tone="muted"
             className="max-w-145 text-lg leading-relaxed text-pretty"
           >
-            {hero.lead[locale]}
+            {localize(hero.lead)}
           </Text>
           <Flex align="center" wrap="wrap" gap="md">
             <CtaButton asChild>
@@ -112,7 +112,7 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
           stats={[
             { label: terminal.stats.clockLabel, value: clock, tone: 'text' },
             { label: terminal.stats.buildLabel, value: terminal.stats.buildValue, tone: 'green' },
-            { label: terminal.stats.focusLabel, value: hero.focus[locale], tone: 'indigo' },
+            { label: terminal.stats.focusLabel, value: localize(hero.focus), tone: 'indigo' },
           ]}
         />
       </Flex>

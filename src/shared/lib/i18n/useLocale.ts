@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 import { DEFAULT_LOCALE, type Locale, type Localized } from './locale';
 import { readLocale, subscribeToLocale, writeLocale } from './localeStore';
 
@@ -27,4 +27,10 @@ export function useLocale(): LocaleState {
 export function useMessages<Messages>(messages: Localized<Messages>): Messages {
   const { locale } = useLocale();
   return messages[locale];
+}
+
+/** Picks the current locale's value of a localized content field. */
+export function useLocalized(): <Value>(value: Localized<Value>) => Value {
+  const { locale } = useLocale();
+  return useCallback((value) => value[locale], [locale]);
 }

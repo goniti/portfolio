@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import * as Tabs from 'goniui/tabs';
 import { Flex, Link, Text } from 'goniui';
-import { useLocale, useMessages } from '@/shared/lib/i18n';
+import { useLocalized, useMessages } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
 import { useTheme } from '@/shared/lib/theme';
 import { CARD_CURSOR_TARGET, Surface } from '@/shared/ui/atoms';
@@ -74,7 +74,7 @@ export interface ContactSectionProps {
 
 /** Closing call to action: direct channels, the message form and, when configured, Calendly. */
 export function ContactSection({ contact, links }: ContactSectionProps) {
-  const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(contactMessages);
   const { theme } = useTheme();
   const calendlySrc = calendlyEmbedUrl(CALENDLY_URL, theme);
@@ -101,10 +101,10 @@ export function ContactSection({ contact, links }: ContactSectionProps) {
             id="contact-title"
             className="text-4xl leading-none font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl"
           >
-            {contact.title[locale]}
+            {localize(contact.title)}
           </Text>
           <Text variant="bodyLg" tone="muted" className="max-w-110 text-lg leading-relaxed">
-            {contact.lead[locale]}
+            {localize(contact.lead)}
           </Text>
           <Flex as="ul" direction="col" gap="sm" aria-label={copy.channelsLabel} className="mt-1.5">
             <ChannelItem
