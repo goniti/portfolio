@@ -159,9 +159,14 @@ describe('homeContentSchema', () => {
 
   it('accepts every result TypeGen can produce once the singletons exist', () => {
     // Drift guard (ADR-003): a schema or query change that the zod schemas do not follow fails
-    // `pnpm typecheck`. Missing singletons are a runtime error, reported by the content check.
-    type PublishedContent = {
-      [Key in keyof HOME_CONTENT_QUERY_RESULT]: NonNullable<HOME_CONTENT_QUERY_RESULT[Key]>;
+    // `pnpm typecheck`. TypeGen types a `*[_id == "…"][0]` singleton as `T | null`: only that
+    // top-level null is stripped (a missing singleton is a runtime error, reported by the content
+    // check), so every field inside keeps its own nullability and the collections are compared as is.
+    type Singleton = 'siteSettings' | 'homePage';
+    expectTypeOf<Extract<HOME_CONTENT_QUERY_RESULT['siteSettings'], null>>().toEqualTypeOf<null>();
+    expectTypeOf<Extract<HOME_CONTENT_QUERY_RESULT['homePage'], null>>().toEqualTypeOf<null>();
+    type PublishedContent = Omit<HOME_CONTENT_QUERY_RESULT, Singleton> & {
+      [Key in Singleton]: NonNullable<HOME_CONTENT_QUERY_RESULT[Key]>;
     };
     expectTypeOf<PublishedContent>().toExtend<z.input<typeof homeContentSchema>>();
   });
