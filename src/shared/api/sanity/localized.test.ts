@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { localizedString, localizedText, optionalLocalizedString } from './localized';
+import { localeIssueParams, localizedString, optionalLocalizedString } from './localized';
 
 const item = (language: string | undefined, value: string | null | undefined, key = language) => ({
   _key: key ?? 'legacy',
@@ -22,7 +22,7 @@ describe('localizedString', () => {
   });
 
   it('ignores the stored order of the locales', () => {
-    expect(localizedText().parse([item('fr', 'Bonjour'), item('en', 'Hello')])).toEqual({
+    expect(localizedString().parse([item('fr', 'Bonjour'), item('en', 'Hello')])).toEqual({
       en: 'Hello',
       fr: 'Bonjour',
     });
@@ -97,5 +97,39 @@ describe('optionalLocalizedString', () => {
     expect(problemsOf(optionalLocalizedString(), [item('en', 'Hi')])).toEqual([
       'missing translation',
     ]);
+  });
+});
+
+describe('localeIssueParams', () => {
+  const customIssue = (params: unknown): z.core.$ZodIssue => ({
+    code: 'custom',
+    message: 'issue',
+    path: [],
+    input: undefined,
+    params: typeof params === 'object' && params !== null ? { ...params } : undefined,
+  });
+
+  it('returns the params of a locale issue', () => {
+    const [issue] = localizedString().safeParse([item('en', 'Hello')]).error?.issues ?? [];
+    expect(issue && localeIssueParams(issue)).toEqual({
+      localeIssue: true,
+      locale: 'fr',
+      fallback: 'Hello',
+    });
+  });
+
+  it('ignores a custom issue that is not a locale issue', () => {
+    expect(localeIssueParams(customIssue(undefined))).toBeUndefined();
+    expect(localeIssueParams(customIssue({ other: true }))).toBeUndefined();
+  });
+
+  it('ignores params with an unknown locale or a non-string fallback', () => {
+    expect(localeIssueParams(customIssue({ localeIssue: true, locale: 'de' }))).toBeUndefined();
+    expect(localeIssueParams(customIssue({ localeIssue: true, fallback: 1 }))).toBeUndefined();
+  });
+
+  it('ignores a non-custom issue', () => {
+    const [issue] = z.string().safeParse(1).error?.issues ?? [];
+    expect(issue && localeIssueParams(issue)).toBeUndefined();
   });
 });

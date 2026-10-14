@@ -68,7 +68,7 @@ Invalid content: 3 problem(s). Fix them in the Studio, then publish:
 ## Changing the content model
 
 1. Edit `studio/schemaTypes/` (a new localized field uses `internationalizedArrayString`/`Text` with `validation: requireLocales()`; a list of localized lines uses `localizedLine`/`localizedParagraph`, since Sanity arrays cannot hold arrays).
-2. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `localizedText()` / `optionalLocalizedString()`). Never `coalesce` across locales.
+2. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `optionalLocalizedString()`). Never `coalesce` across locales.
 3. `pnpm typegen`, then `pnpm typecheck` (the type-level drift test in `content.test.ts` fails if the zod input no longer accepts the query result).
 4. `pnpm studio:deploy`, publish the new fields in the Studio, then `pnpm content:check`.
 5. Commit `sanity.types.ts`.

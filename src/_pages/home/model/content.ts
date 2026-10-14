@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { localizedString, localizedText, optionalLocalizedString, urlFor } from '@/shared/api';
+import { localizedString, optionalLocalizedString, urlFor } from '@/shared/api';
 import { NOTE_CATEGORIES } from './notes';
 import { PROJECT_CATEGORIES } from './projects';
 import { TERMINAL_SCRIPT_STYLE } from './terminal';
@@ -72,7 +72,7 @@ const siteSettingsSchema = z
     openToWork: z.boolean(),
     status: z.object({ open: localizedString(), busy: localizedString() }),
     credits: localizedLines(1, 'add at least one credit line'),
-    seo: z.object({ title: localizedString(), description: localizedText() }),
+    seo: z.object({ title: localizedString(), description: localizedString() }),
   })
   .superRefine((settings, context) => {
     if (settings.linkedinUrl && !settings.linkedinName) {
@@ -119,7 +119,7 @@ const homePageSchema = z.object({
     titleHighlight: localizedString(),
     // The French title ends on its highlighted part: an empty value is valid here.
     titleEnd: localizedString({ allowBlank: true }),
-    lead: localizedText(),
+    lead: localizedString(),
     terminalScript: z
       .array(z.object({ text: localizedString() }))
       .length(
@@ -143,7 +143,7 @@ const homePageSchema = z.object({
     aiPractices: z.array(describedItemSchema).min(1),
     leadership: z.array(describedItemSchema.extend({ monogram: z.string().min(1) })).min(1),
   }),
-  contact: z.object({ title: localizedString(), lead: localizedText() }),
+  contact: z.object({ title: localizedString(), lead: localizedString() }),
 });
 
 const jobSchema = z
@@ -164,7 +164,7 @@ const projectSchema = z
     ...documentFields,
     title: localizedString(),
     kind: localizedString(),
-    description: localizedText(),
+    description: localizedString(),
     placeholder: optionalLocalizedString(),
     image: imageSourceSchema.extend({ alt: localizedString() }).nullish(),
     // TypeGen types an array with an `options.list` as `string[]`: narrowed here.
@@ -202,7 +202,7 @@ const watchNoteSchema = z
     publishedAt: z.iso.date(),
     category: z.enum(NOTE_CATEGORIES),
     readingMinutes: z.number().int().positive(),
-    excerpt: localizedText(),
+    excerpt: localizedString(),
     body: localizedLines(1),
     takeaways: localizedLines(1),
   })
