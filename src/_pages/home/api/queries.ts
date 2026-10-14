@@ -6,7 +6,6 @@ import { defineQuery } from 'groq';
  * document projection: the content report names the document of every problem.
  */
 
-/** Everything the home page shows, in both locales, in one request. */
 export const HOME_CONTENT_QUERY = defineQuery(`{
   "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{
     _id,

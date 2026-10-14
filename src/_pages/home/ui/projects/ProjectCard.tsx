@@ -21,7 +21,6 @@ interface ProjectCardCopy {
   title: string;
   kind: string;
   description: string;
-  /** Alternative text of the screenshot. */
   imageAlt: string;
   /** Caption shown while the project has no screenshot. */
   placeholder: string;

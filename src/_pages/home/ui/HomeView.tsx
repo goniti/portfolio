@@ -18,7 +18,6 @@ export interface HomeViewProps {
   content: HomeContent;
 }
 
-/** The portfolio: hero, experience, skills, projects, tech watch and contact on one page. */
 export function HomeView({ content }: HomeViewProps) {
   const { site, sectionTitles } = content;
 

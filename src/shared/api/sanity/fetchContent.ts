@@ -68,7 +68,6 @@ export function parseContent<Schema extends z.ZodType>(
   );
 }
 
-/** What `fetchContent` needs from a Sanity client. */
 interface ContentClient {
   fetch: (query: string, params: Record<string, unknown>) => Promise<unknown>;
 }

@@ -14,7 +14,6 @@ export function missingLocalesSubtitle(
   return missing.size > 0 ? `Missing: ${[...missing].join(', ')}` : undefined;
 }
 
-/** Joins the non-empty parts of a preview subtitle. */
 export function joinSubtitle(...parts: Array<string | undefined>): string {
   return parts.filter(Boolean).join(' · ');
 }

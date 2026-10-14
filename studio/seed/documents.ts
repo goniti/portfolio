@@ -165,14 +165,12 @@ function watchNotes({ notes }: HomeContent) {
   }));
 }
 
-/** A document ready for `createOrReplace`. */
 export interface SeedDocument {
   _id: string;
   _type: string;
   [field: string]: unknown;
 }
 
-/** Every document of the site. */
 export function buildDocuments(content: HomeContent, assets: AssetRefs): SeedDocument[] {
   return [
     siteSettings(content, assets),

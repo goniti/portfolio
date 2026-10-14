@@ -1,4 +1,3 @@
-/** Navigation in raw content by a zod issue path. */
 export type PathSegment = PropertyKey;
 
 export function isRecord(value: unknown): value is Record<PropertyKey, unknown> {

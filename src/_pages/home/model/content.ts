@@ -228,7 +228,6 @@ export const homeContentSchema = z
     notes,
   }));
 
-/** Everything the home page shows, in both locales. */
 export type HomeContent = z.output<typeof homeContentSchema>;
 export type SiteSettings = HomeContent['site'];
 export type OwnerLinks = SiteSettings['links'];

@@ -8,7 +8,6 @@ import { useContactForm } from '../../model/useContactForm';
 import { contactMessages } from './messages';
 
 export interface ContactFormProps {
-  /** Address the composed email goes to. */
   recipient: string;
   /** Opens the composed email; defaults to the visitor's mail app. */
   openMailto?: (href: string) => void;
