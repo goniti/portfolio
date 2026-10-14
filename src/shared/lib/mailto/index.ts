@@ -1,0 +1,1 @@
+export { mailtoHref } from './mailtoHref';
