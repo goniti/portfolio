@@ -58,12 +58,15 @@ export function findLocaleProblems(items: MaybeItems, rules: LocaleRules = {}): 
   return problems;
 }
 
-/** Locales without a usable value (blank or absent), each once, in problem order. */
+/** Locales without a usable value (blank or absent), each once, in `LOCALES` order. */
 export function missingLocales(items: MaybeItems, rules: LocaleRules = {}): Locale[] {
-  const missing = findLocaleProblems(items, rules).flatMap((problem) =>
-    problem.kind === 'blank-value' || problem.kind === 'missing-locale' ? [problem.locale] : [],
-  );
-  return [...new Set(missing)];
+  const missing = new Set<Locale>();
+  for (const problem of findLocaleProblems(items, rules)) {
+    if (problem.kind === 'blank-value' || problem.kind === 'missing-locale') {
+      missing.add(problem.locale);
+    }
+  }
+  return LOCALES.filter((locale) => missing.has(locale));
 }
 
 function firstValueOf(items: MaybeItems, locale: Locale): unknown {

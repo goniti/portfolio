@@ -114,9 +114,13 @@ describe('missingLocales', () => {
   it('lists the blank and absent locales once each', () => {
     expect(missingLocales([item('en', 'Hi')])).toEqual(['fr']);
     expect(missingLocales([item('en', 'Hi'), item('fr', ' ')])).toEqual(['fr']);
-    expect(missingLocales([item('fr', ''), item('fr', 'Salut', 'k-fr-2')])).toEqual(['fr', 'en']);
+    expect(missingLocales([item('fr', ''), item('fr', 'Salut', 'k-fr-2')])).toEqual(['en', 'fr']);
     expect(missingLocales(null)).toEqual(['en', 'fr']);
     expect(missingLocales(both)).toEqual([]);
+  });
+
+  it('lists the locales in locale order, whatever the problem order', () => {
+    expect(missingLocales([item('fr', ' ')])).toEqual(['en', 'fr']);
   });
 
   it('accepts a blank value when the field allows it', () => {
