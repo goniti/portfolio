@@ -6,6 +6,8 @@ pnpm-lock.yaml
 next-env.d.ts
 storybook-static
 playwright-report
+.lighthouseci
+lighthouse-report
 test-results
 # Documents extracted automatically for the agents
 .agents/context

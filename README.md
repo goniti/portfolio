@@ -20,7 +20,7 @@ Prerequisites: Node.js 24 (`nvm use`) and pnpm.
 
 ```bash
 pnpm install
-cp .env.example .env.local    # validated by src/shared/config/{env,clientEnv}.ts
+cp .env.example .env.local    # validated by src/shared/config/env.ts
 pnpm dev
 ```
 
@@ -34,6 +34,7 @@ pnpm dev
 | ---------------------- | ------------------------------------------------------- |
 | `pnpm dev`             | Starts the development environment                      |
 | `pnpm build`           | Production build                                        |
+| `pnpm bundle:check`    | After a build: fails when zod ships to the browser      |
 | `pnpm start`           | Starts the built version                                |
 | `pnpm typecheck`       | TypeScript check                                        |
 | `pnpm storybook`       | Local Storybook (port 6006)                             |
@@ -47,6 +48,7 @@ pnpm dev
 | `pnpm coverage`        | Tests with coverage                                     |
 | `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail   |
 | `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
+| `pnpm lighthouse`      | Mobile Lighthouse on the `/portfolio` export, warn only |
 | `pnpm knip`            | Finds unused files, exports and dependencies            |
 | `pnpm secrets`         | Scans the repository for committed secrets              |
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
@@ -73,7 +75,7 @@ The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-san
 - `.github/workflows/deploy.yml` checks the content (`pnpm content:check`), builds `out/` and deploys it on every push to `main`, on demand (`workflow_dispatch`), and on the `sanity-content-published` `repository_dispatch` event sent by the Sanity webhook.
 - `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION` and `NEXT_PUBLIC_CALENDLY_URL` are GitHub Actions repository **variables** (not secrets), used by `ci.yml` and `deploy.yml`. Without `NEXT_PUBLIC_CALENDLY_URL`, the deployed site has no "Book a call" tab (setup: [`docs/engineering/repository-settings.md`](docs/engineering/repository-settings.md#repository-variables)).
 - Images come from the Sanity CDN (`https://cdn.sanity.io/…`, sized by URL): absolute URLs, untouched by the base path.
-- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/clientEnv.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
+- The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts` when `next.config.ts` loads. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
 - `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
 - Icons follow the Next.js metadata file convention: `app/icon.svg` (the favicon, colours mirroring the `--primary-500` token) and `app/apple-icon.png`, both linked from `<head>` under the base path, so browsers never fall back to the domain root's `/favicon.ico`. The PNG is rendered from the SVG by `pnpm icon:render` (`scripts/render-apple-icon.tsx`): run it after editing the SVG and commit both.
 - Storybook is published with the site, at <https://goniti.github.io/portfolio/storybook/> (`noindex`): `deploy.yml` builds it into `out/$STORYBOOK_DIR`, a single workflow variable. Storybook uses relative URLs, so it needs no base path; the URL becomes `/storybook/` with the custom domain.

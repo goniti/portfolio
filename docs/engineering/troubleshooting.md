@@ -54,6 +54,14 @@ Format: **Symptom → Cause → Fix**.
 
 **Fix:** `pnpm typegen`, then commit `src/shared/api/sanity/sanity.types.ts`. If `pnpm typecheck` then fails in `content.test.ts`, align the zod schema in `src/_pages/home/model/content.ts` with the query.
 
+### `pnpm bundle:check` fails with "zod is in the client bundle"
+
+**Symptom:** the CI step "Client bundle (no zod)" fails and lists one or more `out/_next/static/…` chunks.
+
+**Cause:** a module the browser loads imports zod: a client component (or something it imports) reached `@/shared/config/server`, a content schema (`model/content.ts`, `shared/api` `localizedString`) or `zod` itself.
+
+**Fix:** run `pnpm next analyze`, filter on the client environment and click the zod module to see its import chain; cut the chain at the first client module. Validation belongs at build time: parse on the server and pass plain data as props. A form validates with a hand-written resolver (`createContactResolver` in `src/_pages/home/model/contact.ts`).
+
 ### `pnpm start` fails after `pnpm build`
 
 **Symptom:** `"next start" does not work with "output: export" configuration`.
@@ -70,7 +78,7 @@ Format: **Symptom → Cause → Fix**.
 
 **Cause:** a module read `process.env` on import (only literal `process.env.NEXT_PUBLIC_X` reads are replaced, and only when the variable exists), or Storybook ran without the Next.js framework.
 
-**Fix:** keep `@storybook/nextjs-vite` as the framework (`.storybook/main.ts`). Read the environment through `clientEnv`/`env`, which validate on first read, never at module level (no `const X = clientEnv.…` at the top of a module); pass env-derived values such as the Calendly URL as props from `HomePage`. Check with `pnpm test:storybook`.
+**Fix:** keep `@storybook/nextjs-vite` as the framework (`.storybook/main.ts`). Read the environment through `clientEnv`/`env`, which read on access (`env` validates on first read), never at module level (no `const X = clientEnv.…` at the top of a module); pass env-derived values such as the Calendly URL as props from `HomePage`. Check with `pnpm test:storybook`.
 
 ### `pnpm test:storybook` fails with an accessibility violation
 

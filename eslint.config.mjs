@@ -14,6 +14,9 @@ export default defineConfig([
     'coverage/**',
     'next-env.d.ts',
     'storybook-static/**',
+    // Lighthouse CI: a copy of the export and the reports (`pnpm lighthouse`).
+    '.lighthouseci/**',
+    'lighthouse-report/**',
     // Design mockups and their runtime: reference material, not application code.
     'EXEMPLE/**',
     // Sanity Studio: its own package and tsconfig (`pnpm --filter portfolio-studio typecheck`).
