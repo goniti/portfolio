@@ -9,6 +9,9 @@ export default defineConfig({
     // `studio/`: the Studio's validation helpers (pure functions, no Studio runtime).
     include: ['{app,src,studio}/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
+    // Public variables Next.js would inline at build time: the contact section shows its
+    // "Book a call" tab only with a Calendly page.
+    env: { NEXT_PUBLIC_CALENDLY_URL: 'https://calendly.com/portfolio/intro-call' },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

@@ -17,6 +17,8 @@ env:
   SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
   SANITY_DATASET: ${{ vars.SANITY_DATASET }}
   SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION }}
+  # Optional Calendly page, inlined into the static export; unset hides the "Book a call" tab.
+  NEXT_PUBLIC_CALENDLY_URL: ${{ vars.NEXT_PUBLIC_CALENDLY_URL }}
 
 jobs:
   quality:
