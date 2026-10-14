@@ -14,6 +14,14 @@ Format: **Symptom → Cause → Fix**.
 
 **Fix:** wrap the root-relative URL with `withBasePath()` (Sanity CDN images are absolute and need nothing) from `@/shared/lib/base-path`. Check locally with `NEXT_PUBLIC_BASE_PATH=/portfolio pnpm build` and the preview steps in the README.
 
+### Apple touch icon blank, unlinked from the base path or with the wrong type
+
+**Symptom:** `pnpm icon:render` writes a plain coloured square; or, with an `app/apple-icon.tsx` route, `next build` fails with `export const dynamic = "force-static" … not configured on route "/apple-icon"`, then, once static, `out/apple-icon` has no extension and its `<link rel="apple-touch-icon">` misses `/portfolio`.
+
+**Cause:** Satori (`next/og`) renders nothing for an SVG holding an XML comment. With `output: 'export'`, Next emits a generated icon route as an extension-less file and links it without the base path; static icon files get both right.
+
+**Fix:** keep the committed `app/apple-icon.png`, rendered from `app/icon.svg` by `pnpm icon:render` (the script strips comments before rendering). Never replace it with an `apple-icon.tsx` route.
+
 ### Build fails with "Invalid content: N problem(s)"
 
 **Symptom:** `pnpm build` (or `pnpm content:check`, or the deploy) stops with `ContentError: Invalid content: …` followed by lines such as `project "project-meeple" › description › fr: missing translation`.

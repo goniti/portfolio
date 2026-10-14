@@ -27,6 +27,7 @@
     "lint:arch": "steiger ./src --fail-on-warnings && depcruise . --config .dependency-cruiser.cjs",
     "lint:language": "node scripts/check-inclusive-language.mjs",
     "content:check": "tsx --env-file-if-exists=.env.local scripts/content-check.ts",
+    "icon:render": "tsx scripts/render-apple-icon.tsx",
     "typegen": "pnpm --filter portfolio-studio typegen",
     "studio:dev": "pnpm --filter portfolio-studio dev",
     "studio:deploy": "pnpm --filter portfolio-studio deploy",

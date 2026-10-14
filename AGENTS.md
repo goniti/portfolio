@@ -39,6 +39,7 @@ Always answer and write every deliverable in English.
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
 | `pnpm lint:language`   | Flags exclusionary terms                                |
 | `pnpm content:check`   | Validates the published Sanity content (both locales)   |
+| `pnpm icon:render`     | Renders `app/apple-icon.png` from `app/icon.svg`        |
 | `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)        |
 | `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)              |
 | `pnpm studio:deploy`   | Deploys the Studio and its schema                       |

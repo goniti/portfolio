@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "entry": ["src/shared/{ui,lib}/**/*.{ts,tsx}", "steiger.config.js", "scripts/*.ts"]
+      "entry": ["src/shared/{ui,lib}/**/*.{ts,tsx}", "steiger.config.js", "scripts/*.{ts,tsx}"]
     },
     "studio": {
       "entry": ["seed/seed.ts"]
