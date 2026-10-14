@@ -6,11 +6,19 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 
 ### Added
 
+- Content is edited in Sanity (ADR-003): Studio at <https://goniti-portfolio.sanity.studio>, field-level English/French content for the hero, jobs, skills, projects, watch notes, contact, footer, owner links, availability and SEO. Publishing is blocked while a language is missing.
+- `pnpm content:check`: validates the published content in both locales and reports each problem as `document › field › locale`; runs in CI and first in the deploy.
+- `pnpm studio:dev`, `pnpm studio:deploy`, `pnpm studio:seed` and `pnpm typegen` (generated types committed and drift-checked in CI).
+- `SANITY_PROJECT_ID`, `SANITY_DATASET` and `SANITY_API_VERSION` environment variables (validated).
 - Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main`, on demand, and on the `sanity-content-published` dispatch event.
 - `NEXT_PUBLIC_BASE_PATH` environment variable (validated) and the `withBasePath()` helper for public asset URLs.
 
 ### Changed
 
+- The build fails when a content field misses a language, Sanity is unreachable, or a required document is missing; the previous deploy stays online. `pnpm dev` shows a `[missing fr]` marker instead.
+- Job periods and note dates are formatted from dates (`Jul 2024 — Present`).
+- Project screenshots and the avatar are served by the Sanity image CDN; `public/` keeps only `resume.pdf`.
+- The repository is a pnpm workspace (site + `studio/`).
 - The site is built as a static export (`out/`): `pnpm start` no longer applies; serve `out/` with a static server.
 
 ## [0.1.0] - 2026-10-13

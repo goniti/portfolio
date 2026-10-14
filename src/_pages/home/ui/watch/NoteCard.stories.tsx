@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
+import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
+import { formatMonthYear } from '../../model/format';
 import { watchMessages } from './messages';
 import { NoteCard } from './NoteCard';
 
 const copy = watchMessages.en;
-const note = copy.notes['ai-workflows'];
+const [note] = HOME_CONTENT_FIXTURE.notes;
 
 const meta = {
   title: 'Pages/Home/NoteCard',
@@ -12,9 +14,9 @@ const meta = {
   args: {
     category: copy.categoryTag(copy.filters.ai),
     tint: 'violet',
-    meta: copy.cardMeta(note.date, 5),
-    title: note.title,
-    excerpt: note.excerpt,
+    meta: copy.cardMeta(note ? formatMonthYear(note.publishedAt, 'en') : '', 5),
+    title: note?.title.en ?? '',
+    excerpt: note?.excerpt.en ?? '',
     cta: copy.readNote,
     onOpen: fn(),
   },

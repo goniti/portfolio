@@ -5,7 +5,7 @@ import * as Collapsible from 'goniui/collapsible';
 import { Box, Flex, Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';
 import { CtaButton } from '@/shared/ui/atoms';
-import { SITE_LINKS } from '../../config/site';
+import { RESUME_URL } from '../../config/site';
 import { formatIndex } from '../../model/format';
 import { SECTION_IDS, type SectionId } from '../../model/sections';
 import { useScrollSpy } from '../../model/useScrollSpy';
@@ -20,11 +20,11 @@ const GLASS_BAR =
 
 function ResumeLink() {
   const copy = useMessages(siteNavMessages);
-  if (!SITE_LINKS.resume) return null;
+  if (!RESUME_URL) return null;
 
   return (
     <CtaButton asChild tone="inverse" size="pill">
-      <a href={SITE_LINKS.resume} download>
+      <a href={RESUME_URL} download>
         {copy.resume}
         <span aria-hidden="true" className="font-mono">
           {copy.downloadGlyph}
@@ -36,10 +36,11 @@ function ResumeLink() {
 
 interface NavBarProps {
   activeSection: SectionId;
+  avatarUrl: string;
 }
 
 /** Floating pill navigation for large screens. */
-function WideNavBar({ activeSection }: NavBarProps) {
+function WideNavBar({ activeSection, avatarUrl }: NavBarProps) {
   const copy = useMessages(siteNavMessages);
 
   return (
@@ -54,7 +55,7 @@ function WideNavBar({ activeSection }: NavBarProps) {
         aria-label={copy.navLabel}
         className={`${GLASS_BAR} pointer-events-auto gap-1.5 rounded-full p-1.5`}
       >
-        <AvatarLink href="#home" label={copy.homeLink} />
+        <AvatarLink href="#home" src={avatarUrl} label={copy.homeLink} />
         <Flex as="ul" gap="none" className="gap-0.5 px-1">
           {SECTION_IDS.map((sectionId) => (
             <li key={sectionId}>
@@ -72,8 +73,12 @@ function WideNavBar({ activeSection }: NavBarProps) {
   );
 }
 
+interface CompactNavBarProps extends NavBarProps {
+  ownerName: string;
+}
+
 /** Compact bar with a collapsible section menu for small screens. */
-function CompactNavBar({ activeSection }: NavBarProps) {
+function CompactNavBar({ activeSection, avatarUrl, ownerName }: CompactNavBarProps) {
   const copy = useMessages(siteNavMessages);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
@@ -88,10 +93,16 @@ function CompactNavBar({ activeSection }: NavBarProps) {
           aria-label={copy.navLabel}
           className={`${GLASS_BAR} rounded-2xl p-1.5`}
         >
-          <AvatarLink href="#home" label={copy.homeLink} size="lg" onClick={closeMenu} />
+          <AvatarLink
+            href="#home"
+            src={avatarUrl}
+            label={copy.homeLink}
+            size="lg"
+            onClick={closeMenu}
+          />
           <Flex direction="col" className="min-w-0 flex-1 leading-tight">
             <Text as="span" variant="label" className="truncate font-bold">
-              {copy.ownerName}
+              {ownerName}
             </Text>
             <Text as="span" variant="caption" className="font-mono text-2xs text-foreground-subtle">
               {copy.sections[activeSection]}
@@ -123,9 +134,9 @@ function CompactNavBar({ activeSection }: NavBarProps) {
               </Text>
             </SectionLink>
           ))}
-          {SITE_LINKS.resume ? (
+          {RESUME_URL ? (
             <CtaButton asChild size="md" className="mt-1.5 min-h-12">
-              <a href={SITE_LINKS.resume} download>
+              <a href={RESUME_URL} download>
                 {copy.resume} {copy.downloadGlyph}
               </a>
             </CtaButton>
@@ -136,17 +147,23 @@ function CompactNavBar({ activeSection }: NavBarProps) {
   );
 }
 
+export interface SiteNavProps {
+  ownerName: string;
+  /** Portrait in the avatar link (decorative). */
+  avatarUrl: string;
+}
+
 /**
  * Site navigation: a floating pill on large screens, a compact bar with a menu below `lg`.
  * Highlights the section being read.
  */
-export function SiteNav() {
+export function SiteNav({ ownerName, avatarUrl }: SiteNavProps) {
   const activeSection = useScrollSpy();
 
   return (
     <>
-      <WideNavBar activeSection={activeSection} />
-      <CompactNavBar activeSection={activeSection} />
+      <WideNavBar activeSection={activeSection} avatarUrl={avatarUrl} />
+      <CompactNavBar activeSection={activeSection} avatarUrl={avatarUrl} ownerName={ownerName} />
     </>
   );
 }

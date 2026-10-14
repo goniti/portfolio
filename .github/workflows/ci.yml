@@ -12,6 +12,12 @@ concurrency:
 permissions:
   contents: read
 
+# Sanity content (ADR-003): repository variables, not secrets (the dataset is public).
+env:
+  SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
+  SANITY_DATASET: ${{ vars.SANITY_DATASET }}
+  SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION }}
+
 jobs:
   quality:
     name: Quality & build
@@ -25,6 +31,15 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Content check (every field, every locale)
+        run: pnpm content:check
+      - name: TypeGen drift
+        run: |
+          pnpm typegen
+          git diff --exit-code -- src/shared/api/sanity/sanity.types.ts || {
+            echo '::error::sanity.types.ts is stale: run `pnpm typegen` and commit the result.'
+            exit 1
+          }
       - name: Format
         run: pnpm format:check
       - name: Lint

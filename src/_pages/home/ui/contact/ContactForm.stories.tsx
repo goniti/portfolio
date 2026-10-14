@@ -5,7 +5,7 @@ import { ContactForm } from './ContactForm';
 const meta = {
   title: 'Pages/Home/ContactForm',
   component: ContactForm,
-  args: { openMailto: fn() },
+  args: { recipient: 'gonzalezlovullocarlos@gmail.com', openMailto: fn() },
   decorators: [
     (Story) => (
       <div className="w-110">

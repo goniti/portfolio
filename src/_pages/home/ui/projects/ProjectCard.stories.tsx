@@ -1,35 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { Project } from '../../model/projects';
+import type { Project } from '../../model/content';
+import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { projectsMessages } from './messages';
 import { ProjectCard } from './ProjectCard';
 
 const copy = projectsMessages.en;
 
-const meeple: Project = {
-  id: 'meeple',
-  categories: ['react', 'full-stack'],
-  technologies: ['React', 'NestJS', 'Keycloak'],
-  image: { src: '/meeple-dashboard.png', width: 1594, height: 904 },
-  tint: 'amber',
-  sourceUrl: 'https://github.com/goniti',
-};
+function fixtureProject(id: string): Project {
+  const project = HOME_CONTENT_FIXTURE.projects.find((candidate) => candidate.id === id);
+  if (!project) throw new Error(`No fixture project "${id}"`);
+  return project;
+}
 
-const bipper: Project = {
-  id: 'bipper',
-  categories: ['mobile'],
-  technologies: ['React Native', 'GraphQL', 'AWS'],
-  tint: 'cyan',
-  sourceUrl: 'https://github.com/goniti',
-};
+const meeple = fixtureProject('project-meeple');
+const bipper = fixtureProject('project-bipper');
 
 function cardCopy(project: Project) {
-  const projectCopy = copy.projects[project.id];
+  const title = project.title.en;
   return {
-    ...projectCopy,
+    title,
+    kind: project.kind.en,
+    description: project.description.en,
+    imageAlt: project.image?.alt.en ?? '',
+    placeholder: project.placeholder?.en ?? '',
     demo: copy.demo,
-    demoLabel: copy.demoLabel(projectCopy.title),
+    demoLabel: copy.demoLabel(title),
     source: copy.source,
-    sourceLabel: copy.sourceLabel(projectCopy.title),
+    sourceLabel: copy.sourceLabel(title),
   };
 }
 

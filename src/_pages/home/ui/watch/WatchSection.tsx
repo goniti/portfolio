@@ -4,18 +4,14 @@ import { useState } from 'react';
 import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
-import { useMessages } from '@/shared/lib/i18n';
+import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { PulseDot } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
-import {
-  filterNotes,
-  NOTE_CATEGORY_TINT,
-  NOTE_FILTERS,
-  WATCH_NOTES,
-  type NoteId,
-} from '../../model/notes';
+import type { WatchNote } from '../../model/content';
+import { formatMonthYear } from '../../model/format';
+import { filterNotes, NOTE_CATEGORY_TINT, NOTE_FILTERS } from '../../model/notes';
 import { useListFilter } from '../../model/useListFilter';
 import { NoteCard } from './NoteCard';
 import { NoteDialog } from './NoteDialog';
@@ -31,20 +27,26 @@ const noteFilterVariants = tv({
   },
 });
 
-/** Tech-watch notes, filterable by topic, each readable in a side panel. */
-export function WatchSection() {
-  const copy = useMessages(watchMessages);
-  const { filter, setFilter, visibleItems } = useListFilter(WATCH_NOTES, filterNotes, 'all');
-  const [openNoteId, setOpenNoteId] = useState<NoteId | null>(null);
+export interface WatchSectionProps {
+  title: Localized<string>;
+  notes: readonly WatchNote[];
+}
 
-  const openNote = WATCH_NOTES.find((note) => note.id === openNoteId) ?? null;
+/** Tech-watch notes, filterable by topic, each readable in a side panel. */
+export function WatchSection({ title, notes }: WatchSectionProps) {
+  const { locale } = useLocale();
+  const copy = useMessages(watchMessages);
+  const { filter, setFilter, visibleItems } = useListFilter(notes, filterNotes, 'all');
+  const [openNoteId, setOpenNoteId] = useState<string | null>(null);
+
+  const openNote = notes.find((note) => note.id === openNoteId) ?? null;
 
   return (
     <PageSection id="watch" labelledBy="watch-title">
       <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.stagger}>
         <SectionHeading
           eyebrow={copy.eyebrow}
-          title={copy.title}
+          title={title[locale]}
           titleId="watch-title"
           badge={
             <Text
@@ -80,32 +82,32 @@ export function WatchSection() {
         className="gap-3.5"
         {...revealStagger({ from: 'down' })}
       >
-        {visibleItems.map((note) => {
-          const noteCopy = copy.notes[note.id];
-          return (
-            <li key={note.id}>
-              <NoteCard
-                category={copy.categoryTag(copy.filters[note.category])}
-                tint={NOTE_CATEGORY_TINT[note.category]}
-                meta={copy.cardMeta(noteCopy.date, note.readingMinutes)}
-                title={noteCopy.title}
-                excerpt={noteCopy.excerpt}
-                cta={copy.readNote}
-                onOpen={() => setOpenNoteId(note.id)}
-              />
-            </li>
-          );
-        })}
+        {visibleItems.map((note) => (
+          <li key={note.id}>
+            <NoteCard
+              category={copy.categoryTag(copy.filters[note.category])}
+              tint={NOTE_CATEGORY_TINT[note.category]}
+              meta={copy.cardMeta(formatMonthYear(note.publishedAt, locale), note.readingMinutes)}
+              title={note.title[locale]}
+              excerpt={note.excerpt[locale]}
+              cta={copy.readNote}
+              onOpen={() => setOpenNoteId(note.id)}
+            />
+          </li>
+        ))}
       </Grid>
       <NoteDialog
         note={
           openNote
             ? {
-                ...copy.notes[openNote.id],
+                title: openNote.title[locale],
+                excerpt: openNote.excerpt[locale],
+                body: openNote.body.map((paragraph) => paragraph[locale]),
+                takeaways: openNote.takeaways.map((takeaway) => takeaway[locale]),
                 tint: NOTE_CATEGORY_TINT[openNote.category],
                 meta: copy.dialogMeta(
                   copy.filters[openNote.category],
-                  copy.notes[openNote.id].date,
+                  formatMonthYear(openNote.publishedAt, locale),
                   openNote.readingMinutes,
                 ),
               }

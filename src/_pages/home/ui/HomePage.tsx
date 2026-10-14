@@ -1,43 +1,22 @@
 import type { Metadata } from 'next';
-import { Box } from 'goniui';
-import { CursorFollower, ScrollReveal } from '@/shared/ui/atoms';
-import { BackToTopButton } from './back-to-top/BackToTopButton';
-import { ContactSection } from './contact/ContactSection';
-import { ExperienceSection } from './experience/ExperienceSection';
-import { HeroSection } from './hero/HeroSection';
-import { homeMessages } from './messages';
-import { PageBackdrop } from './page-backdrop/PageBackdrop';
-import { ProjectsSection } from './projects/ProjectsSection';
-import { ScrollProgress } from './scroll-progress/ScrollProgress';
-import { SiteFooter } from './site-footer/SiteFooter';
-import { SiteNav } from './site-nav/SiteNav';
-import { SkillsSection } from './skills/SkillsSection';
-import { WatchSection } from './watch/WatchSection';
+import { DEFAULT_LOCALE } from '@/shared/lib/i18n';
+import { getHomeContent } from '../api/getHomeContent';
+import { HomeView } from './HomeView';
 
-export const homeMetadata: Metadata = {
-  title: homeMessages.metadataTitle,
-  description: homeMessages.metadataDescription,
-};
+/**
+ * `<head>` of the page, from the Sanity SEO fields. The static HTML has no per-locale URL, so it
+ * uses the default locale (ADR-003).
+ */
+export async function generateHomeMetadata(): Promise<Metadata> {
+  const { site } = await getHomeContent();
+  return {
+    title: site.seo.title[DEFAULT_LOCALE],
+    description: site.seo.description[DEFAULT_LOCALE],
+  };
+}
 
-/** The portfolio: hero, experience, skills, projects, tech watch and contact on one page. */
-export function HomePage() {
-  return (
-    <>
-      <ScrollProgress />
-      <SiteNav />
-      <Box as="main" className="relative overflow-hidden">
-        <PageBackdrop />
-        <HeroSection />
-        <ExperienceSection />
-        <SkillsSection />
-        <ProjectsSection />
-        <WatchSection />
-        <ContactSection />
-      </Box>
-      <SiteFooter />
-      <BackToTopButton />
-      <ScrollReveal />
-      <CursorFollower />
-    </>
-  );
+/** The portfolio page: content fetched from Sanity at build time, both locales shipped. */
+export async function HomePage() {
+  const content = await getHomeContent();
+  return <HomeView content={content} />;
 }

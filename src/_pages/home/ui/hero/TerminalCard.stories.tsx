@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { typeScript } from '../../model/typewriter';
 import { buildTerminalScript } from '../../model/terminal';
 import { heroMessages } from './messages';
 import { TerminalCard } from './TerminalCard';
 
 const { terminal } = heroMessages.en;
-const script = buildTerminalScript(terminal.script);
+const { hero } = HOME_CONTENT_FIXTURE;
+const script = buildTerminalScript(hero.terminalScript.map((line) => line.en));
 
 const meta = {
   title: 'Pages/Home/TerminalCard',
@@ -18,7 +20,7 @@ const meta = {
     stats: [
       { label: terminal.stats.clockLabel, value: '14:02:11', tone: 'text' },
       { label: terminal.stats.buildLabel, value: terminal.stats.buildValue, tone: 'green' },
-      { label: terminal.stats.focusLabel, value: terminal.stats.focusValue, tone: 'indigo' },
+      { label: terminal.stats.focusLabel, value: hero.focus.en, tone: 'indigo' },
     ],
   },
   decorators: [

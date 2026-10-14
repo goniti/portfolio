@@ -1,1 +1,2 @@
-export { HomePage, homeMetadata } from './ui/HomePage';
+export { getHomeContent } from './api/getHomeContent';
+export { generateHomeMetadata, HomePage } from './ui/HomePage';

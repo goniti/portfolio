@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { filterNotes, WATCH_NOTES } from './notes';
+import { HOME_CONTENT_FIXTURE } from './content.fixture';
+import { filterNotes } from './notes';
+
+const WATCH_NOTES = HOME_CONTENT_FIXTURE.notes;
 
 describe('filterNotes', () => {
   it('keeps every note for "all"', () => {
@@ -7,6 +10,6 @@ describe('filterNotes', () => {
   });
 
   it('keeps the notes of one category', () => {
-    expect(filterNotes(WATCH_NOTES, 'ux').map((note) => note.id)).toEqual(['design-systems']);
+    expect(filterNotes(WATCH_NOTES, 'ux').map((note) => note.id)).toEqual(['note-design-systems']);
   });
 });

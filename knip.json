@@ -1,6 +1,13 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["src/shared/{ui,lib}/**/*.{ts,tsx}", "steiger.config.js"],
+  "workspaces": {
+    ".": {
+      "entry": ["src/shared/{ui,lib}/**/*.{ts,tsx}", "steiger.config.js", "scripts/*.ts"]
+    },
+    "studio": {
+      "entry": ["seed/seed.ts"]
+    }
+  },
   "ignoreDependencies": ["@secretlint/secretlint-rule-preset-recommend"],
-  "ignore": ["EXEMPLE/**"]
+  "ignore": ["EXEMPLE/**", "src/shared/api/sanity/sanity.types.ts"]
 }

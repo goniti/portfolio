@@ -12,16 +12,16 @@ Statuses: `planned` | `in-progress` | `done`. This document describes the **actu
 
 ## Phase 1 — Foundation
 
-| Feature                          | Status  | Notes |
-| -------------------------------- | ------- | ----- |
-| Live Project Demos               | planned |       |
-| Continuous Tech Watch            | planned |       |
-| Dynamic Sanity.io CMS            | planned |       |
-| Modern UI/UX & Responsive Design | planned |       |
-| One-Click Resume Access          | planned |       |
-| Direct Contact Integration       | planned |       |
-| Interactive Career Timeline      | planned |       |
-| Filterable Skill Matrix          | planned |       |
-| Detailed Project Showcase        | planned |       |
+| Feature                          | Status  | Notes                                                                                                                     |
+| -------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Live Project Demos               | planned |                                                                                                                           |
+| Continuous Tech Watch            | planned |                                                                                                                           |
+| Dynamic Sanity.io CMS            | done    | ADR-003: Studio `goniti-portfolio.sanity.studio`, EN/FR content, build-time check; publish webhook pending (manual setup) |
+| Modern UI/UX & Responsive Design | planned |                                                                                                                           |
+| One-Click Resume Access          | planned |                                                                                                                           |
+| Direct Contact Integration       | planned |                                                                                                                           |
+| Interactive Career Timeline      | planned |                                                                                                                           |
+| Filterable Skill Matrix          | planned |                                                                                                                           |
+| Detailed Project Showcase        | planned |                                                                                                                           |
 
 <!-- ADAPT: split the business features by phase, each with its initial status (planned). -->

@@ -43,7 +43,7 @@ import { UserAvatar } from '@/entities/user/ui/UserAvatar';
 ```
 
 - **Inside a slice, imports are relative** (`./ui/UserCard`); **between slices, they go through `@/`**. A file never imports its own slice's `index.ts`: that is how index files create cycles.
-- User-facing copy lives in the slice's `ui/messages.ts` (see `src/_pages/home/ui/messages.ts`).
+- User-facing copy lives in the slice's `ui/messages.ts` (see `src/_pages/home/ui/hero/messages.ts`); content the owner edits (projects, jobs, notes…) comes from Sanity instead (`CONTEXT.md`, ADR-003).
 
 ## 3. No cross-imports
 

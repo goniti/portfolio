@@ -13,3 +13,7 @@ docs/specs
 # Adaptation prompt: contains embedded files
 docs/ai/ADAPT_PROMPT.md
 docs/ai/batches/
+# Sanity Studio build output and extracted schema
+studio/.sanity
+studio/dist
+studio/schema.json

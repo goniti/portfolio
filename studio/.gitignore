@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.sanity/
+# Extracted by `pnpm typegen` (input of TypeGen, regenerated every time).
+schema.json

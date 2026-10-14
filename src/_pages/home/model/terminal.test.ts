@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { heroMessages } from '../ui/hero/messages';
+import { LOCALES } from '@/shared/lib/i18n';
+import { HOME_CONTENT_FIXTURE } from './content.fixture';
 import { buildTerminalScript, TERMINAL_SCRIPT_STYLE } from './terminal';
 
 describe('buildTerminalScript', () => {
   it('styles every line of the copy, in both locales', () => {
-    for (const copy of Object.values(heroMessages)) {
-      expect(copy.terminal.script).toHaveLength(TERMINAL_SCRIPT_STYLE.length);
-      const script = buildTerminalScript(copy.terminal.script);
+    const lines = HOME_CONTENT_FIXTURE.hero.terminalScript;
+    expect(lines).toHaveLength(TERMINAL_SCRIPT_STYLE.length);
+    for (const locale of LOCALES) {
+      const script = buildTerminalScript(lines.map((line) => line[locale]));
       expect(script[0]).toEqual({ command: true, tone: 'text', text: 'whoami' });
     }
   });
