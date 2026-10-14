@@ -81,9 +81,8 @@ function findProblems(items: readonly LocalizedItem[], options: LocalizedOptions
 
 function toLocalized(items: readonly LocalizedItem[]): Localized<string> {
   const byLocale = new Map(items.map((item) => [item.language, item.value ?? '']));
-  return Object.fromEntries(
-    LOCALES.map((locale) => [locale, byLocale.get(locale) ?? '']),
-  ) as Localized<string>;
+  const valueOf = (locale: Locale): string => byLocale.get(locale) ?? '';
+  return { en: valueOf('en'), fr: valueOf('fr') };
 }
 
 const ItemsSchema = z.array(LocalizedItemSchema).nullish();
@@ -109,11 +108,6 @@ export function localizedString(options: LocalizedOptions = {}) {
     .transform(toLocalized);
 }
 
-/** Same as `localizedString`, for `internationalizedArrayText` fields. */
-export function localizedText(options: LocalizedOptions = {}) {
-  return localizedString(options);
-}
-
 /** A localized field that may be left out (`null`); once set, every locale is required. */
 export function optionalLocalizedString(options: LocalizedOptions = {}) {
   return ItemsSchema.transform((items) => (items && items.length > 0 ? items : null))
@@ -123,9 +117,16 @@ export function optionalLocalizedString(options: LocalizedOptions = {}) {
     .transform((items) => (items ? toLocalized(items) : null));
 }
 
-/** Narrows a zod issue to a locale issue. */
+function isLocaleIssueParams(params: unknown): params is LocaleIssueParams {
+  if (typeof params !== 'object' || params === null) return false;
+  if (!('localeIssue' in params) || params.localeIssue !== true) return false;
+  if ('locale' in params && params.locale !== undefined && !isLocale(params.locale)) return false;
+  return (
+    !('fallback' in params) || params.fallback === undefined || typeof params.fallback === 'string'
+  );
+}
+
 export function localeIssueParams(issue: z.core.$ZodIssue): LocaleIssueParams | undefined {
   if (issue.code !== 'custom') return undefined;
-  const params = issue.params as Partial<LocaleIssueParams> | undefined;
-  return params?.localeIssue ? (params as LocaleIssueParams) : undefined;
+  return isLocaleIssueParams(issue.params) ? issue.params : undefined;
 }

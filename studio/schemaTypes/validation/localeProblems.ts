@@ -89,7 +89,6 @@ export function missingLanguages(
   }).map(({ id }) => id);
 }
 
-/** Value of one language, for preview titles. */
 export function localizedValue(
   items: readonly LocalizedItem[] | null | undefined,
   language: string = LANGUAGES[0].id,

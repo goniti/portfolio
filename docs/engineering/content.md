@@ -33,6 +33,12 @@ How the portfolio content is edited, checked and published. Decision record: [AD
 
 The CLI uses your login (`pnpm --filter portfolio-studio exec sanity login` once). No token is stored anywhere: the dataset is public, and writes use your own session.
 
+## Seeding
+
+`pnpm studio:seed` writes the fixture's documents to the dataset of `SANITY_STUDIO_DATASET` (default `production`), then runs `pnpm content:check` against that same dataset (it passes `SANITY_PROJECT_ID` and `SANITY_DATASET` to the check, overriding `.env.local`). The seed exits 1 when the check fails.
+
+A Studio draft of a seeded document holds unpublished edits, and would hide the seeded version. So before uploading or writing anything, the seed looks for `drafts.<id>` of every document it writes and, if it finds any, lists them and exits 1. Publish or discard them in the Studio, or run `pnpm studio:seed --discard-drafts` to delete them in the seed's transaction (from `studio/`: `pnpm seed --discard-drafts`; the `seed` script ends with `--`, so `sanity exec` hands the flag to the script).
+
 ## Editing content
 
 1. Open the Studio, edit, then **Publish**. Every localized field shows an English and a French slot.
@@ -68,7 +74,7 @@ Invalid content: 3 problem(s). Fix them in the Studio, then publish:
 ## Changing the content model
 
 1. Edit `studio/schemaTypes/` (a new localized field uses `internationalizedArrayString`/`Text` with `validation: requireLocales()`; a list of localized lines uses `localizedLine`/`localizedParagraph`, since Sanity arrays cannot hold arrays).
-2. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `localizedText()` / `optionalLocalizedString()`). Never `coalesce` across locales.
+2. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `optionalLocalizedString()`). Never `coalesce` across locales.
 3. `pnpm typegen`, then `pnpm typecheck` (the type-level drift test in `content.test.ts` fails if the zod input no longer accepts the query result).
 4. `pnpm studio:deploy`, publish the new fields in the Studio, then `pnpm content:check`.
 5. Commit `sanity.types.ts`.

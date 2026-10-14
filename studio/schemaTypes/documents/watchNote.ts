@@ -2,7 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { SparklesIcon } from '@sanity/icons/Sparkles';
 import { NOTE_CATEGORIES } from '../categories';
 import { localizedValue } from '../validation/localeProblems';
-import { joinSubtitle, missingLocalesSubtitle } from '../validation/preview';
+import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
 /** A tech-watch note (sorted by publication date, newest first). */
@@ -65,13 +65,20 @@ export const watchNote = defineType({
     select: {
       title: 'title',
       excerpt: 'excerpt',
+      body: 'body',
+      takeaways: 'takeaways',
       publishedAt: 'publishedAt',
       category: 'category',
     },
-    prepare: ({ title, excerpt, publishedAt, category }) => ({
+    prepare: ({ title, excerpt, body, takeaways, publishedAt, category }) => ({
       title: localizedValue(title) ?? '(untitled)',
       subtitle: joinSubtitle(
-        missingLocalesSubtitle([title, excerpt]),
+        missingLocalesSubtitle([
+          title,
+          excerpt,
+          ...localizedFieldsOf(body, 'text'),
+          ...localizedFieldsOf(takeaways, 'text'),
+        ]),
         category as string | undefined,
         publishedAt as string | undefined,
       ),

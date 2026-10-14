@@ -1,7 +1,7 @@
 'use client';
 
 import { Flex, Text } from 'goniui';
-import { useLocale, useMessages, type Localized } from '@/shared/lib/i18n';
+import { useLocale, useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
 import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
@@ -19,13 +19,14 @@ export interface ExperienceSectionProps {
 /** Career timeline: one glass card per job along a gradient rail. */
 export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
   const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(experienceMessages);
 
   return (
     <PageSection id="experience" labelledBy="experience-title">
       <SectionHeading
         eyebrow={copy.eyebrow}
-        title={title[locale]}
+        title={localize(title)}
         titleId="experience-title"
         {...REVEAL.zoom}
       />
@@ -68,7 +69,7 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
                 {job.company}
               </Text>
               <Text as="span" variant="bodyLg" className="font-medium text-accent-indigo">
-                {job.role[locale]}
+                {localize(job.role)}
               </Text>
               <Flex
                 as="ul"
@@ -87,7 +88,7 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
               {job.achievements.map((achievement) => (
                 <Flex
                   as="li"
-                  key={achievement[locale]}
+                  key={localize(achievement)}
                   gap="md"
                   className="text-base leading-relaxed text-foreground-soft"
                 >
@@ -98,7 +99,7 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
                       className: 'mt-2.25 size-1.5 flex-none rounded-xs bg-current',
                     })}
                   />
-                  <span>{achievement[locale]}</span>
+                  <span>{localize(achievement)}</span>
                 </Flex>
               ))}
             </Flex>

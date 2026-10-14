@@ -165,14 +165,17 @@ function watchNotes({ notes }: HomeContent) {
   }));
 }
 
-/** A document ready for `createOrReplace`. */
 export interface SeedDocument {
   _id: string;
   _type: string;
   [field: string]: unknown;
 }
 
-/** Every document of the site. */
+/** The `_id` of every document `buildDocuments` writes, known before any asset is uploaded. */
+export function seedDocumentIds({ jobs, projects, notes }: HomeContent): string[] {
+  return ['siteSettings', 'homePage', ...[...jobs, ...projects, ...notes].map(({ id }) => id)];
+}
+
 export function buildDocuments(content: HomeContent, assets: AssetRefs): SeedDocument[] {
   return [
     siteSettings(content, assets),

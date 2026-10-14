@@ -20,6 +20,9 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - Project screenshots and the avatar are served by the Sanity image CDN; `public/` keeps only `resume.pdf`.
 - The repository is a pnpm workspace (site + `studio/`).
 - The site is built as a static export (`out/`): `pnpm start` no longer applies; serve `out/` with a static server.
+- Studio list previews show `Missing: fr` for every localized field, including list items and optional fields once set.
+- `pnpm studio:seed` refuses to overwrite documents that have Studio drafts unless run with `--discard-drafts`, and ends by running `pnpm content:check` on the seeded dataset.
+- `pnpm test:e2e` builds the static export and runs Playwright against `out/` (served on port 3100), as deployed.
 
 ## [0.1.0] - 2026-10-13
 

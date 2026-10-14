@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { localizedString, localizedText, optionalLocalizedString, urlFor } from '@/shared/api';
+import { localizedString, optionalLocalizedString, urlFor } from '@/shared/api';
 import { NOTE_CATEGORIES } from './notes';
 import { PROJECT_CATEGORIES } from './projects';
 import { TERMINAL_SCRIPT_STYLE } from './terminal';
-import { TINTS } from './tints';
+import { TINTS, type Tint } from './tints';
 
 /*
  * Content of the home page, edited in Sanity (ADR-003). These schemas check what TypeGen cannot
@@ -15,6 +15,15 @@ import { TINTS } from './tints';
 const AVATAR_SIZE = 160;
 /** Width of a project screenshot: a card is at most ~380 px wide, served at 2× with headroom. */
 const SCREENSHOT_WIDTH = 1200;
+
+const JOB_TINTS = ['indigo', 'cyan', 'violet'] as const satisfies readonly Tint[];
+const PROJECT_TINTS = [
+  'amber',
+  'cyan',
+  'emerald',
+  'violet',
+  'sky',
+] as const satisfies readonly Tint[];
 
 // The issue report reads `_type` from the raw data; the page only needs the `_id`.
 const documentFields = { _id: z.string() };
@@ -72,7 +81,7 @@ const siteSettingsSchema = z
     openToWork: z.boolean(),
     status: z.object({ open: localizedString(), busy: localizedString() }),
     credits: localizedLines(1, 'add at least one credit line'),
-    seo: z.object({ title: localizedString(), description: localizedText() }),
+    seo: z.object({ title: localizedString(), description: localizedString() }),
   })
   .superRefine((settings, context) => {
     if (settings.linkedinUrl && !settings.linkedinName) {
@@ -119,7 +128,7 @@ const homePageSchema = z.object({
     titleHighlight: localizedString(),
     // The French title ends on its highlighted part: an empty value is valid here.
     titleEnd: localizedString({ allowBlank: true }),
-    lead: localizedText(),
+    lead: localizedString(),
     terminalScript: z
       .array(z.object({ text: localizedString() }))
       .length(
@@ -143,7 +152,7 @@ const homePageSchema = z.object({
     aiPractices: z.array(describedItemSchema).min(1),
     leadership: z.array(describedItemSchema.extend({ monogram: z.string().min(1) })).min(1),
   }),
-  contact: z.object({ title: localizedString(), lead: localizedText() }),
+  contact: z.object({ title: localizedString(), lead: localizedString() }),
 });
 
 const jobSchema = z
@@ -155,7 +164,7 @@ const jobSchema = z
     endDate: z.iso.date().nullish(),
     achievements: localizedLines(1),
     technologies: z.array(z.string().min(1)).min(1),
-    tint: z.enum(['indigo', 'cyan', 'violet']),
+    tint: z.enum(JOB_TINTS),
   })
   .transform(({ _id, endDate, ...job }) => ({ id: _id, ...job, endDate: endDate ?? null }));
 
@@ -164,13 +173,13 @@ const projectSchema = z
     ...documentFields,
     title: localizedString(),
     kind: localizedString(),
-    description: localizedText(),
+    description: localizedString(),
     placeholder: optionalLocalizedString(),
     image: imageSourceSchema.extend({ alt: localizedString() }).nullish(),
     // TypeGen types an array with an `options.list` as `string[]`: narrowed here.
     categories: z.array(z.string()).pipe(z.array(z.enum(PROJECT_CATEGORIES)).min(1)),
     technologies: z.array(z.string().min(1)).min(1),
-    tint: z.enum(['amber', 'cyan', 'emerald', 'violet', 'sky']),
+    tint: z.enum(PROJECT_TINTS),
     demoUrl: z.url().nullish(),
     sourceUrl: z.url(),
   })
@@ -202,7 +211,7 @@ const watchNoteSchema = z
     publishedAt: z.iso.date(),
     category: z.enum(NOTE_CATEGORIES),
     readingMinutes: z.number().int().positive(),
-    excerpt: localizedText(),
+    excerpt: localizedString(),
     body: localizedLines(1),
     takeaways: localizedLines(1),
   })
@@ -228,7 +237,6 @@ export const homeContentSchema = z
     notes,
   }));
 
-/** Everything the home page shows, in both locales. */
 export type HomeContent = z.output<typeof homeContentSchema>;
 export type SiteSettings = HomeContent['site'];
 export type OwnerLinks = SiteSettings['links'];

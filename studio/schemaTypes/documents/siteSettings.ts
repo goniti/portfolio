@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CogIcon } from '@sanity/icons/Cog';
-import { missingLocalesSubtitle } from '../validation/preview';
+import { localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
 /** Owner identity, links, availability, footer and SEO: one document (fixed `_id`). */
@@ -134,13 +134,20 @@ export const siteSettings = defineType({
       ownerName: 'ownerName',
       open: 'status.open',
       busy: 'status.busy',
+      credits: 'credits',
       seoTitle: 'seo.title',
       seoDescription: 'seo.description',
     },
-    prepare: ({ ownerName, open, busy, seoTitle, seoDescription }) => ({
+    prepare: ({ ownerName, open, busy, credits, seoTitle, seoDescription }) => ({
       title: 'Site settings',
       subtitle:
-        missingLocalesSubtitle([open, busy, seoTitle, seoDescription]) ?? (ownerName as string),
+        missingLocalesSubtitle([
+          open,
+          busy,
+          ...localizedFieldsOf(credits, 'text'),
+          seoTitle,
+          seoDescription,
+        ]) ?? (ownerName as string),
     }),
   },
 });

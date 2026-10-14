@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button, Flex, Text } from 'goniui';
-import { useLocale, useMessages } from '@/shared/lib/i18n';
+import { useLocalized, useMessages } from '@/shared/lib/i18n';
 import { PulseDot } from '@/shared/ui/atoms';
 import type { SiteSettings } from '../../model/content';
 import { siteFooterMessages } from './messages';
@@ -11,9 +11,10 @@ export type SiteFooterProps = Pick<SiteSettings, 'openToWork' | 'status' | 'cred
 
 /** Availability status and a rotating credit line. */
 export function SiteFooter({ openToWork, status, credits }: SiteFooterProps) {
-  const { locale } = useLocale();
+  const localize = useLocalized();
   const copy = useMessages(siteFooterMessages);
   const [creditIndex, setCreditIndex] = useState(0);
+  const credit = credits[creditIndex % credits.length];
 
   return (
     <Flex
@@ -30,7 +31,7 @@ export function SiteFooter({ openToWork, status, credits }: SiteFooterProps) {
         className="inline-flex items-center gap-2.5 text-foreground-soft"
       >
         {openToWork ? <PulseDot size="sm" /> : null}
-        {openToWork ? status.open[locale] : status.busy[locale]}
+        {openToWork ? localize(status.open) : localize(status.busy)}
       </Text>
       <Button
         variant="unstyled"
@@ -39,7 +40,7 @@ export function SiteFooter({ openToWork, status, credits }: SiteFooterProps) {
         onClick={() => setCreditIndex((current) => (current + 1) % credits.length)}
         className="min-h-9 font-mono text-xs text-foreground-subtle hover:text-accent-indigo"
       >
-        {credits[creditIndex % credits.length]?.[locale]}
+        {credit ? localize(credit) : null}
       </Button>
     </Flex>
   );

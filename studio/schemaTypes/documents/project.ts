@@ -109,12 +109,20 @@ export const project = defineType({
       kind: 'kind',
       description: 'description',
       media: 'image',
+      alt: 'image.alt',
+      placeholder: 'placeholder',
       sortOrder: 'sortOrder',
     },
-    prepare: ({ title, kind, description, media, sortOrder }) => ({
+    prepare: ({ title, kind, description, media, alt, placeholder, sortOrder }) => ({
       title: localizedValue(title) ?? '(untitled)',
       subtitle: joinSubtitle(
-        missingLocalesSubtitle([title, kind, description]),
+        missingLocalesSubtitle([
+          title,
+          kind,
+          description,
+          { items: alt, optional: !media },
+          { items: placeholder, optional: Boolean(media) },
+        ]),
         `#${sortOrder ?? '?'}`,
         localizedValue(kind),
       ),

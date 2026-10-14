@@ -2,7 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { HomeIcon } from '@sanity/icons/Home';
 import { tintOptions } from '../tints';
 import { localizedValue } from '../validation/localeProblems';
-import { missingLocalesSubtitle } from '../validation/preview';
+import { localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
 /** Lines of the hero terminal: their tones are fixed in code (`TERMINAL_SCRIPT_STYLE`). */
@@ -185,19 +185,37 @@ export const homePage = defineType({
       badge: 'hero.badge',
       titleStart: 'hero.titleStart',
       titleHighlight: 'hero.titleHighlight',
+      titleEnd: 'hero.titleEnd',
       lead: 'hero.lead',
+      terminalScript: 'hero.terminalScript',
+      focus: 'hero.focus',
+      experience: 'sections.experience',
+      skills: 'sections.skills',
+      projects: 'sections.projects',
+      watch: 'sections.watch',
+      aiPractices: 'skills.aiPractices',
+      leadership: 'skills.leadership',
       contactTitle: 'contact.title',
       contactLead: 'contact.lead',
     },
-    prepare: ({ badge, titleStart, titleHighlight, lead, contactTitle, contactLead }) => ({
+    prepare: (selection) => ({
       title: 'Home page',
       subtitle: missingLocalesSubtitle([
-        badge,
-        titleStart,
-        titleHighlight,
-        lead,
-        contactTitle,
-        contactLead,
+        selection.badge,
+        selection.titleStart,
+        selection.titleHighlight,
+        { items: selection.titleEnd, allowBlank: true },
+        selection.lead,
+        ...localizedFieldsOf(selection.terminalScript, 'text'),
+        selection.focus,
+        selection.experience,
+        selection.skills,
+        selection.projects,
+        selection.watch,
+        ...localizedFieldsOf(selection.aiPractices, 'title', 'description'),
+        ...localizedFieldsOf(selection.leadership, 'title', 'description'),
+        selection.contactTitle,
+        selection.contactLead,
       ]),
     }),
   },

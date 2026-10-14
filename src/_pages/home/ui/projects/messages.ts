@@ -19,7 +19,9 @@ const en = {
   sourceLabel: (title: string) => `Source Code of ${title} (opens in a new tab)`,
 };
 
-export const projectsMessages: Localized<typeof en> = {
+export type ProjectsCopy = typeof en;
+
+export const projectsMessages: Localized<ProjectsCopy> = {
   en,
   fr: {
     ...en,

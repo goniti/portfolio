@@ -1,7 +1,7 @@
 import { act, render, renderHook, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { isLocale } from './locale';
-import { useLocale, useMessages } from './useLocale';
+import { useLocale, useLocalized, useMessages } from './useLocale';
 
 const greetings = { en: { hello: 'Hello' }, fr: { hello: 'Bonjour' } };
 
@@ -49,5 +49,29 @@ describe('useLocale', () => {
       window.dispatchEvent(new StorageEvent('storage', { key: 'pf-lang', newValue: 'fr' }));
     });
     expect(result.current.locale).toBe('fr');
+  });
+});
+
+describe('useLocalized', () => {
+  afterEach(() => window.localStorage.clear());
+
+  const title = { en: 'Projects', fr: 'Projets' };
+
+  it('picks the value of the current locale', () => {
+    const { result } = renderHook(() => useLocalized());
+    expect(result.current(title)).toBe('Projects');
+  });
+
+  it('follows a locale switch', () => {
+    const { result } = renderHook(() => ({ localize: useLocalized(), state: useLocale() }));
+    act(() => result.current.state.setLocale('fr'));
+    expect(result.current.localize(title)).toBe('Projets');
+  });
+
+  it('keeps the same function while the locale does not change', () => {
+    const { result, rerender } = renderHook(() => useLocalized());
+    const first = result.current;
+    rerender();
+    expect(result.current).toBe(first);
   });
 });
