@@ -2,7 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CaseIcon } from '@sanity/icons/Case';
 import { tintOptions } from '../tints';
 import { localizedValue } from '../validation/localeProblems';
-import { joinSubtitle, missingLocalesSubtitle } from '../validation/preview';
+import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
 /** A position of the career timeline (sorted by start date, most recent first). */
@@ -65,11 +65,16 @@ export const job = defineType({
     },
   ],
   preview: {
-    select: { company: 'company', role: 'role', startDate: 'startDate' },
-    prepare: ({ company, role, startDate }) => ({
+    select: {
+      company: 'company',
+      role: 'role',
+      achievements: 'achievements',
+      startDate: 'startDate',
+    },
+    prepare: ({ company, role, achievements, startDate }) => ({
       title: company,
       subtitle: joinSubtitle(
-        missingLocalesSubtitle([role]),
+        missingLocalesSubtitle([role, ...localizedFieldsOf(achievements, 'text')]),
         localizedValue(role),
         startDate as string | undefined,
       ),
