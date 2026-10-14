@@ -35,7 +35,6 @@
     "studio:seed": "pnpm --filter portfolio-studio seed"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.9.1",
     "@sanity/client": "^8.9.0",
     "@sanity/image-url": "^2.1.1",
     "goniui": "^0.1.0",

@@ -1,4 +1,4 @@
-import { env, SANITY_PROJECT_ID_REQUIRED } from '../../config';
+import { env, SANITY_PROJECT_ID_REQUIRED } from '../../config/server';
 import { ContentError } from './report';
 
 interface SanityConfig {

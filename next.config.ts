@@ -1,5 +1,5 @@
 import type { NextConfig } from 'next';
-import { loadEnv } from './src/shared/config';
+import { loadEnv } from './src/shared/config/server';
 
 // Fail fast: an invalid environment stops `next dev` / `next build` right away.
 const env = loadEnv();

@@ -5,7 +5,7 @@
  */
 import { getHomeContent } from '@/_pages/home';
 import { ContentError } from '@/shared/api';
-import { env } from '@/shared/config';
+import { env } from '@/shared/config/server';
 
 async function checkContent(): Promise<void> {
   const target = `${env.SANITY_PROJECT_ID}/${env.SANITY_DATASET}`;

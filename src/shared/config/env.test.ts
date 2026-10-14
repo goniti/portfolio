@@ -34,8 +34,25 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ NODE_ENV: nodeEnv })).toThrow(/SANITY_PROJECT_ID/);
   });
 
-  it('validates the public variables too', () => {
-    expect(() => loadEnv({ ...valid, NEXT_PUBLIC_CALENDLY_URL: 'https://example.com' })).toThrow(
+  it('accepts a Calendly scheduling page', () => {
+    const url = 'https://calendly.com/carlos/intro';
+    expect(loadEnv({ ...valid, NEXT_PUBLIC_CALENDLY_URL: url }).NEXT_PUBLIC_CALENDLY_URL).toBe(url);
+  });
+
+  it('treats an empty Calendly URL as unset', () => {
+    expect(
+      loadEnv({ ...valid, NEXT_PUBLIC_CALENDLY_URL: '' }).NEXT_PUBLIC_CALENDLY_URL,
+    ).toBeUndefined();
+  });
+
+  it.each([
+    'https://example.com',
+    'https://example.com/carlos/intro',
+    'http://calendly.com/carlos',
+    'https://calendly.com/',
+    'calendly',
+  ])('rejects the Calendly URL %j', (url) => {
+    expect(() => loadEnv({ ...valid, NEXT_PUBLIC_CALENDLY_URL: url })).toThrow(
       /NEXT_PUBLIC_CALENDLY_URL/,
     );
   });

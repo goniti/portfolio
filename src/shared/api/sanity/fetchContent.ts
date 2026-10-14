@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { env } from '../../config';
+import { env } from '../../config/server';
 import { getSanityClient } from './client';
 import { localeIssueParams } from './localized';
 import { isRecord, readAt, replaceAt } from './path';

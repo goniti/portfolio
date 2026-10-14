@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { cn } from 'goniui';
-import { env } from '@/shared/config';
+import { env } from '@/shared/config/server';
 import { FONT_VARIABLES } from './fonts';
 import './globals.css';
 
