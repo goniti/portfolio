@@ -52,6 +52,8 @@ Rules the Studio enforces (and the build re-checks):
 - a project has a screenshot or a placeholder caption;
 - at least one job and one project are published; `siteSettings` and `homePage` exist.
 
+One transitional exception: `siteSettings.person` (full name, job title, location) is required in the Studio, but the build still accepts its absence until it is first published (#16). Without it the hero keeps its tagline as the h1, and `pnpm content:check` prints a reminder. Once set, every field of it is checked like the rest, in both locales.
+
 ## Fallback policy
 
 | Context                                         | A missing locale…                                                                                   |

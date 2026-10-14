@@ -1,11 +1,12 @@
 'use client';
 
 import { Box, Flex, Link, Text } from 'goniui';
-import { useLocalized, useMessages } from '@/shared/lib/i18n';
+import { useLocale, useLocalized, useMessages } from '@/shared/lib/i18n';
 import { mailtoHref } from '@/shared/lib/mailto';
 import { CtaButton, PulseDot } from '@/shared/ui/atoms';
 import { CLOCK_TIME_ZONE, TYPE_SPEED_MS } from '../../config/site';
-import type { HeroContent, OwnerLinks } from '../../model/content';
+import type { HeroContent, OwnerLinks, Person } from '../../model/content';
+import { formatLocation } from '../../model/format';
 import { buildTerminalScript } from '../../model/terminal';
 import { useClock } from '../../model/useClock';
 import { useTypewriter } from '../../model/useTypewriter';
@@ -15,13 +16,19 @@ import { TerminalCard } from './TerminalCard';
 const SOCIAL_LINK_CLASS =
   'flex h-11 items-center rounded-lg px-3 font-mono text-xs font-medium text-foreground-muted hover:text-foreground-strong';
 
+const HEADING_CLASS =
+  'text-4xl leading-display font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl';
+
 export interface HeroSectionProps {
   hero: HeroContent;
+  /** Absent until the owner fills it in the Studio: the tagline then stays the heading. */
+  person: Person | null;
   links: OwnerLinks;
 }
 
-/** Opening section: pitch, calls to action and the live terminal card. */
-export function HeroSection({ hero, links }: HeroSectionProps) {
+/** Opening section: who and where, pitch, calls to action and the live terminal card. */
+export function HeroSection({ hero, person, links }: HeroSectionProps) {
+  const { locale } = useLocale();
   const localize = useLocalized();
   const copy = useMessages(heroMessages);
   const { terminal } = copy;
@@ -30,6 +37,13 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
     TYPE_SPEED_MS,
   );
   const clock = useClock(CLOCK_TIME_ZONE);
+  const tagline = (
+    <>
+      {localize(hero.titleStart)}
+      <span className="text-sheen motion-safe:animate-sheen">{localize(hero.titleHighlight)}</span>
+      {localize(hero.titleEnd)}
+    </>
+  );
 
   return (
     <Box
@@ -46,20 +60,28 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
             className="inline-flex items-center gap-2.5 self-start rounded-full border border-tint-indigo/30 bg-tint-indigo-strong/10 py-1.5 pr-3.5 pl-2.5 font-mono font-medium text-accent-indigo"
           >
             <PulseDot />
-            {localize(hero.badge)}
+            {person ? formatLocation(person.location, locale, copy.remote) : localize(hero.badge)}
           </Text>
-          <Text
-            as="h1"
-            variant="display"
-            id="home-title"
-            className="text-4xl leading-display font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl"
-          >
-            {localize(hero.titleStart)}
-            <span className="text-sheen motion-safe:animate-sheen">
-              {localize(hero.titleHighlight)}
-            </span>
-            {localize(hero.titleEnd)}
-          </Text>
+          {person ? (
+            <>
+              <Text as="h1" variant="display" id="home-title" className={HEADING_CLASS}>
+                {person.fullName}
+                {copy.titleSeparator}
+                {localize(person.jobTitle)}
+              </Text>
+              <Text
+                as="p"
+                variant="title"
+                className="text-2xl leading-heading tracking-tighter text-balance md:text-3xl"
+              >
+                {tagline}
+              </Text>
+            </>
+          ) : (
+            <Text as="h1" variant="display" id="home-title" className={HEADING_CLASS}>
+              {tagline}
+            </Text>
+          )}
           <Text
             variant="bodyLg"
             tone="muted"

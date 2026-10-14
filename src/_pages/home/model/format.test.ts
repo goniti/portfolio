@@ -1,5 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { formatIndex, formatMonthYear, formatPeriod } from './format';
+import { formatIndex, formatLocation, formatMonthYear, formatPeriod } from './format';
+
+describe('formatLocation', () => {
+  const lyon = { locality: 'Lyon', country: 'FR', remote: true };
+
+  it('names the place, its country in the locale, then the remote mention', () => {
+    expect(formatLocation(lyon, 'en', 'Remote')).toBe('Lyon, France · Remote');
+    expect(formatLocation(lyon, 'fr', 'Télétravail')).toBe('Lyon, France · Télétravail');
+  });
+
+  it('translates the country name', () => {
+    expect(formatLocation({ ...lyon, country: 'DE' }, 'fr', 'Télétravail')).toBe(
+      'Lyon, Allemagne · Télétravail',
+    );
+  });
+
+  it('leaves out the remote mention for on-site work', () => {
+    expect(formatLocation({ ...lyon, remote: false }, 'en', 'Remote')).toBe('Lyon, France');
+  });
+});
 
 describe('formatIndex', () => {
   it('pads to two digits, with an optional offset', () => {

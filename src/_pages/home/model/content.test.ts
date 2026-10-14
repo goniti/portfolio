@@ -135,6 +135,56 @@ describe('homeContentSchema', () => {
     expect(content.notes[0]?.body).toEqual([{ en: 'Paragraph', fr: 'Paragraph' }]);
   });
 
+  describe('person', () => {
+    const person = (jobTitle = both('Lead Front-End Developer', 'Lead Développeur Front-End')) => ({
+      fullName: 'Carlos Gonzalez Lo Vullo',
+      jobTitle,
+      location: { locality: 'Lyon', country: 'FR', remote: true },
+    });
+
+    it('derives the alternate name and the other profiles from the owner fields', () => {
+      const raw = rawContent();
+      Object.assign(raw.siteSettings, {
+        person: person(),
+        linkedinUrl: 'https://www.linkedin.com/in/carlos-gonzalez-lo-vullo',
+        linkedinName: 'Carlos Gonzalez Lo Vullo',
+      });
+      expect(homeContentSchema.parse(raw).site.person).toEqual({
+        fullName: 'Carlos Gonzalez Lo Vullo',
+        alternateName: 'Carlos G. Lo Vullo',
+        jobTitle: { en: 'Lead Front-End Developer', fr: 'Lead Développeur Front-End' },
+        location: { locality: 'Lyon', country: 'FR', remote: true },
+        sameAs: [
+          'https://github.com/goniti',
+          'https://www.linkedin.com/in/carlos-gonzalez-lo-vullo',
+        ],
+      });
+    });
+
+    it('is null until the owner fills it', () => {
+      expect(homeContentSchema.parse(rawContent()).site.person).toBeNull();
+    });
+
+    it('requires the job title in every locale once set', () => {
+      const raw = rawContent();
+      Object.assign(raw.siteSettings, { person: person(both('Lead').slice(0, 1)) });
+      expect(homeContentSchema.safeParse(raw).error?.issues.map((issue) => issue.path)).toEqual([
+        ['siteSettings', 'person', 'jobTitle'],
+      ]);
+    });
+
+    it('rejects a country that is not a two-letter code', () => {
+      const raw = rawContent();
+      const lyon = person();
+      Object.assign(raw.siteSettings, {
+        person: { ...lyon, location: { ...lyon.location, country: 'France' } },
+      });
+      expect(homeContentSchema.safeParse(raw).error?.issues.map((issue) => issue.path)).toEqual([
+        ['siteSettings', 'person', 'location', 'country'],
+      ]);
+    });
+  });
+
   it('requires a screenshot or a placeholder caption', () => {
     const raw = rawContent();
     const [project] = raw.projects;
