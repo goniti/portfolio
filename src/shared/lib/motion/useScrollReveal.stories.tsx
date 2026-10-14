@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Box, Flex, Grid, Text } from 'goniui';
 import { REVEAL, revealStagger } from './scrollReveal';
 import { useScrollReveal } from './useScrollReveal';

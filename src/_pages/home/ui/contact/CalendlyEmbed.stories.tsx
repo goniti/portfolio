@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { calendlyEmbedUrl } from '../../model/contact';
+import { CALENDLY_URL_FIXTURE } from '../../model/content.fixture';
 import { CalendlyEmbed } from './CalendlyEmbed';
 import { contactMessages } from './messages';
 
@@ -7,7 +8,7 @@ const meta = {
   title: 'Pages/Home/CalendlyEmbed',
   component: CalendlyEmbed,
   args: {
-    src: calendlyEmbedUrl('https://calendly.com/portfolio/intro-call', 'dark') ?? '',
+    src: calendlyEmbedUrl(CALENDLY_URL_FIXTURE, 'dark') ?? '',
     title: contactMessages.en.calendlyTitle,
     loadingLabel: contactMessages.en.calendlyLoading,
     loadAfterViewports: 0.9,

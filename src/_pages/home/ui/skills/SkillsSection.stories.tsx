@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { HOME_CONTENT_FIXTURE } from '../../model/content.fixture';
 import { SkillsSection } from './SkillsSection';
 

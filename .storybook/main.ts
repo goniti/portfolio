@@ -1,11 +1,18 @@
-import type { StorybookConfig } from '@storybook/react-vite';
+import type { StorybookConfig } from '@storybook/nextjs-vite';
 import tailwindcss from '@tailwindcss/vite';
 
+// Published under the site (`/portfolio/storybook/`): kept out of search results.
+const NOINDEX = '<meta name="robots" content="noindex" />';
+
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(ts|tsx)'],
-  framework: { name: '@storybook/react-vite', options: {} },
-  addons: ['@storybook/addon-a11y', '@storybook/addon-docs'],
-  // The app builds with Next.js: Storybook runs on Vite, with Tailwind and the `@/…` alias.
+  stories: ['../src/**/*.stories.@(ts|tsx)'],
+  // The Next.js framework: `next/image`, `next/font` and the `NEXT_PUBLIC_*` variables work in
+  // stories as in the app.
+  framework: { name: '@storybook/nextjs-vite', options: {} },
+  addons: ['@storybook/addon-a11y', '@storybook/addon-docs', '@storybook/addon-vitest'],
+  managerHead: (head = '') => `${head}${NOINDEX}`,
+  previewHead: (head = '') => `${head}${NOINDEX}`,
+  // Tailwind and the `@/…` alias.
   viteFinal: async (viteConfig) => ({
     ...viteConfig,
     plugins: [...(viteConfig.plugins ?? []), tailwindcss()],
