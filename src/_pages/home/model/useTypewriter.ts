@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { usePrefersReducedMotion } from '@/shared/lib/media';
 import { typeScript, typewriterCycleLength, type TerminalLine, type TypedLine } from './typewriter';
