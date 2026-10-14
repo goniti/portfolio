@@ -37,6 +37,9 @@ describe('ContactForm', () => {
     expect(await screen.findByRole('heading', { name: /your email is ready/i })).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: /send another/i }));
-    expect((screen.getByLabelText(/name/i) as HTMLInputElement).value).toBe('');
+    const nameField = screen.getByLabelText(/name/i);
+    expect(nameField).toBeInstanceOf(HTMLInputElement);
+    if (!(nameField instanceof HTMLInputElement)) return;
+    expect(nameField.value).toBe('');
   });
 });

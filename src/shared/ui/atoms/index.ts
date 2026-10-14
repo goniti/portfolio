@@ -8,7 +8,6 @@ export {
 } from './cursor-follower';
 export { PulseDot, pulseDotVariants } from './pulse-dot';
 export type { PulseDotProps } from './pulse-dot';
-export { ScrollReveal } from './scroll-reveal';
 export { Surface, surfaceVariants } from './surface';
 export type { SurfaceProps } from './surface';
 export { Tag, tagVariants } from './tag';

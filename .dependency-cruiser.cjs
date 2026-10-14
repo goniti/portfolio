@@ -42,10 +42,18 @@ module.exports = {
       from: { path: '^src/' },
       to: { path: '^app/' },
     },
+    {
+      name: 'content-model-is-a-leaf',
+      severity: 'error',
+      comment:
+        'The content model shared by the site and the Studio (ADR-004) depends on neither of them.',
+      from: { path: '^packages/content-model/' },
+      to: { path: '^(app|src|studio)/' },
+    },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },
-    includeOnly: '^(app|src)/',
+    includeOnly: '^(app|src|packages)/',
     // Type-only imports are part of the graph (see `no-circular`).
     tsPreCompilationDeps: true,
     // Resolves the `@/…` alias.

@@ -34,6 +34,12 @@ describe('loadEnv', () => {
     expect(() => loadEnv({ NODE_ENV: nodeEnv })).toThrow(/SANITY_PROJECT_ID/);
   });
 
+  it('validates the public variables too', () => {
+    expect(() => loadEnv({ ...valid, NEXT_PUBLIC_CALENDLY_URL: 'https://example.com' })).toThrow(
+      /NEXT_PUBLIC_CALENDLY_URL/,
+    );
+  });
+
   it('lets unit tests run without Sanity', () => {
     expect(loadEnv({ NODE_ENV: 'test' }).SANITY_PROJECT_ID).toBeUndefined();
   });

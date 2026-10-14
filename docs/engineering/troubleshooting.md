@@ -56,7 +56,21 @@ Format: **Symptom → Cause → Fix**.
 
 ## Tests
 
-_No entries yet._
+### `pnpm test:e2e` fails with "http://localhost:3100 is already used"
+
+**Symptom:** Playwright stops right away: `Error: http://localhost:3100 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.`
+
+**Cause:** another process listens on port 3100 (often a previous e2e server or a manual `serve`). The e2e run never reuses a server: it always tests a fresh build of the export.
+
+**Fix:** stop it (`ss -ltnp | grep 3100` or `lsof -i :3100`, then kill the process) and run again. Do not set `reuseExistingServer`.
+
+### An e2e spec opens a 404 page
+
+**Symptom:** a new spec fails on its first assertion; the trace shows `localhost:3100/` returning 404.
+
+**Cause:** the export is served under `/portfolio/`; `page.goto('/')` resolves to the domain root, outside the site.
+
+**Fix:** navigate relative to `baseURL`: `page.goto('./')`, `request.get('resume.pdf')`.
 
 ## Runtime
 

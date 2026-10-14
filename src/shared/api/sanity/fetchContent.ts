@@ -1,8 +1,9 @@
 import type { z } from 'zod';
+import { env } from '../../config';
 import { getSanityClient } from './client';
 import { localeIssueParams } from './localized';
 import { isRecord, readAt, replaceAt } from './path';
-import { ContentError, formatContentIssues } from './report';
+import { ContentError, formatContentIssues, formatProblemList } from './report';
 
 /**
  * What a missing locale does (ADR-003):
@@ -12,7 +13,7 @@ import { ContentError, formatContentIssues } from './report';
 export type FallbackPolicy = 'fail' | 'other-locale';
 
 /** `other-locale` in `next dev` only: never a fallback in a build. */
-export function defaultFallbackPolicy(nodeEnv = process.env.NODE_ENV): FallbackPolicy {
+export function defaultFallbackPolicy(nodeEnv: string = env.NODE_ENV): FallbackPolicy {
   return nodeEnv === 'development' ? 'other-locale' : 'fail';
 }
 
@@ -57,7 +58,7 @@ export function parseContent<Schema extends z.ZodType>(
     const retry = schema.safeParse(fillGaps(data, result.error.issues));
     if (retry.success) {
       warn(
-        `[content] ${problems.length} missing translation(s), shown in another locale with a "[missing …]" marker (a build would fail):\n${problems.map((problem) => `  - ${problem}`).join('\n')}`,
+        `[content] ${problems.length} missing translation(s), shown in another locale with a "[missing …]" marker (a build would fail):\n${formatProblemList(problems)}`,
       );
       return retry.data;
     }

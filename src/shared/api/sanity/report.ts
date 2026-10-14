@@ -56,16 +56,17 @@ export function formatContentIssues(issues: readonly z.core.$ZodIssue[], data: u
   });
 }
 
+/** One indented `  - <problem>` line per problem. */
+export function formatProblemList(problems: readonly string[]): string {
+  return problems.map((problem) => `  - ${problem}`).join('\n');
+}
+
 /** Thrown when the content cannot be fetched or does not match the schema: fails the build. */
 export class ContentError extends Error {
   readonly problems: readonly string[];
 
   constructor(summary: string, problems: readonly string[] = []) {
-    super(
-      problems.length > 0
-        ? `${summary}\n${problems.map((problem) => `  - ${problem}`).join('\n')}`
-        : summary,
-    );
+    super(problems.length > 0 ? `${summary}\n${formatProblemList(problems)}` : summary);
     this.name = 'ContentError';
     this.problems = problems;
   }

@@ -7,12 +7,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     // `studio/`: the Studio's validation helpers (pure functions, no Studio runtime).
-    include: ['{app,src,studio}/**/*.test.{ts,tsx}'],
+    // `packages/`: the shared content model (ADR-004).
+    include: ['{app,src,studio,packages}/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      include: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
+      include: ['app/**/*.{ts,tsx}', 'src/**/*.{ts,tsx}', 'packages/*/src/**/*.ts'],
       exclude: [
         // Tests, stories, type declarations and entry points.
         '**/*.{test,spec,stories}.{ts,tsx}',

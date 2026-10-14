@@ -1,3 +1,4 @@
+import { clientEnv } from '@/shared/config';
 import { withBasePath } from '@/shared/lib/base-path';
 
 /**
@@ -21,8 +22,7 @@ export const CLOCK_TIME_ZONE = 'Europe/Paris';
 export const RESUME_URL = withBasePath('/resume.pdf');
 
 /**
- * Calendly scheduling page (`https://calendly.com/<user>/<event>`): public, so plain config
- * rather than an environment variable (the site is a static export). An empty string hides the
- * "Book a call" tab.
+ * Calendly scheduling page (`https://calendly.com/<user>/<event>`), from `NEXT_PUBLIC_CALENDLY_URL`
+ * read at build time. `undefined` (variable unset or empty) hides the "Book a call" tab.
  */
-export const CALENDLY_URL = 'https://calendly.com/gonzalezlovullocarlos/30-minutes-google-meet';
+export const CALENDLY_URL: string | undefined = clientEnv.NEXT_PUBLIC_CALENDLY_URL;

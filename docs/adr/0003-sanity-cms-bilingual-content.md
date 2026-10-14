@@ -1,7 +1,7 @@
 # ADR-003 — Sanity as the CMS for bilingual (EN/FR) content, built statically for GitHub Pages
 
 - **Date:** 2026-10-13
-- **Status:** `accepted` (implemented 2026-10-14, see [Implementation notes](#implementation-notes-2026-10-14))
+- **Status:** `accepted` (implemented 2026-10-14, see [Implementation notes](#implementation-notes-2026-10-14)). The copies of the locales, tints and categories and the duplicated locale checks are superseded by [ADR-004](0004-shared-content-model-package.md).
 - **Deciders:** Carlos Gonzalez Lo Vullo (owner), architect agent
 
 ## Context
@@ -120,14 +120,16 @@ Rule: **content** is what the owner writes about themselves and their work. **UI
 
 `*` marks a localized field (an internationalized array). Proper nouns (company, technologies, owner name) and URLs are **not** localized: a field is localized only when its text depends on the language.
 
+Since then, `model/tints.ts` has moved to the `portfolio-content-model` workspace package ([ADR-004](0004-shared-content-model-package.md)).
+
 ### Content model (Studio, `studio/schemaTypes/`)
 
 - Singletons, with fixed `_id` and pinned in the Structure: `siteSettings`, `homePage`.
 - Collections: `job` (ordered by `startDate desc`), `project` (by `sortOrder asc`), `watchNote` (by `publishedAt desc`).
 - Plugin config: `internationalizedArray({ languages: [{id:'en',title:'English'},{id:'fr',title:'Français'}], defaultLanguages: ['en','fr'], fieldTypes: ['string','text'], buttonAddAll: false, restoreOrder: false, languageDisplay: 'titleAndCode' })`. `defaultLanguages` creates both slots on new documents, so the editor sees the empty FR slot. `restoreOrder: false` (plugin v5.2+) avoids drafts created just by opening a document. **Do not** enable `buttonLocations: 'unstable__fieldAction'`: the plugin README marks it as broken since 4.0.4.
 - Lists (achievements, takeaways, paragraphs, terminal lines) are `array` of `internationalizedArrayString` / `internationalizedArrayText`. Each item carries both locales, so the EN and FR lists cannot differ in length. Portable Text is not used: the notes are short paragraphs, and plain text avoids a renderer dependency. Revisit if notes need links or emphasis.
-- Locales are a **hard-coded constant** in `studio/` (`en`, `fr`), not a `locale` document type as the generic Sanity rule suggests. Two fixed locales mirror `LOCALES` in `src/shared/lib/i18n`, and a document type would add a fetch and an editable surface for no gain. Drift between the two lists is caught by the build check.
-- Tint and category enums are duplicated as `options.list` in the Studio (the Studio is a separate package). Drift is caught by the zod enums at build time.
+- Locales are a **hard-coded constant** in `studio/` (`en`, `fr`), not a `locale` document type as the generic Sanity rule suggests. Two fixed locales mirror `LOCALES` in `src/shared/lib/i18n`, and a document type would add a fetch and an editable surface for no gain. Drift between the two lists is caught by the build check. **Superseded by [ADR-004](0004-shared-content-model-package.md):** the locales are defined once, in the `portfolio-content-model` workspace package, and imported by both sides.
+- Tint and category enums are duplicated as `options.list` in the Studio (the Studio is a separate package). Drift is caught by the zod enums at build time. **Superseded by [ADR-004](0004-shared-content-model-package.md):** the enums come from `portfolio-content-model`; only the Studio labels stay in `studio/`.
 
 ### Robustness: missing translations
 
@@ -209,7 +211,7 @@ scripts/content-check.ts
 - **Negative / accepted trade-offs:**
   - A publish appears after a 2 to 4 minute rebuild. There is no live preview or Visual Editing; see the Vercel alternative.
   - Both locales ship in the page payload (small for this site). `<head>` metadata and the initial HTML are EN only: there are no per-locale URLs, so FR is not indexed separately. This is an existing limitation of the client-side toggle, not introduced here. Per-locale routes (`/en`, `/fr` with `generateStaticParams`) would be a separate ADR.
-  - Locales and enums are duplicated in `studio/` and `src/`. Drift is detected by the build check, not prevented.
+  - ~~Locales and enums are duplicated in `studio/` and `src/`. Drift is detected by the build check, not prevented.~~ Superseded by [ADR-004](0004-shared-content-model-package.md): they are shared through a workspace package, together with the locale-completeness rules.
   - `next/image` is unoptimized. Sizing comes from Sanity CDN URLs instead.
   - A Sanity outage blocks deploys, including code-only deploys. The live site is unaffected.
 - **Constraints introduced:**
@@ -224,7 +226,7 @@ scripts/content-check.ts
 1. **Sanity project.** Create the project and the `production` dataset (public), and confirm visibility. Record `projectId` in `.env.example` and `env.ts` (zod: required in `production`).
 2. **Studio scaffold.** Run `pnpm create sanity@latest --project <id> --dataset production --template clean --typescript --output-path studio`. Add `pnpm-workspace.yaml` (`packages: ['studio']`), exclude `studio` from the root `tsconfig`, eslint, knip and vitest, and add the root scripts `studio:dev`, `studio:deploy` and `typegen`.
 3. **Schema.** Install `sanity-plugin-internationalized-array` (v5+, latest at install time). Add the singletons `siteSettings` and `homePage`, the documents `job`, `project` and `watchNote`, `requireLocales()` with its "Missing: fr" previews, and the Structure with pinned singletons. Deploy with `sanity deploy` and `sanity schema deploy`.
-4. **Seed.** Add `studio/scripts/seed.ts`, run with `sanity exec --with-user-token`. It imports the current EN and FR content from the `src/_pages/home/**` model and messages files (their `@/` imports are type-only, so they are erased). It maps them to documents with **deterministic `_id`s** (`job-saper-vedere`, `project-meeple`…) and deterministic `_key`s, and uses `createOrReplace` in one transaction, so it is idempotent and can be re-run. It converts `dates` strings to `startDate`/`endDate` and uploads `public/*.png` (and optionally `resume.pdf`) as assets. It finishes by running the content check. Review the documents in the Studio, then publish.
+4. **Seed.** Add `studio/seed/seed.ts`, run with `sanity exec --with-user-token`. It imports the current EN and FR content from the `src/_pages/home/**` model and messages files (their `@/` imports are type-only, so they are erased). It maps them to documents with **deterministic `_id`s** (`job-saper-vedere`, `project-meeple`…) and deterministic `_key`s, and uses `createOrReplace` in one transaction, so it is idempotent and can be re-run. It converts `dates` strings to `startDate`/`endDate` and uploads `public/*.png` (and optionally `resume.pdf`) as assets. It finishes by running the content check. Review the documents in the Studio, then publish.
 5. **Shared Sanity layer.** Add `src/shared/api/sanity` (client, `localizedString`, `fetchContent` with its report and dev fallback, `urlFor`), with unit tests written first (QA agent). Add `@sanity/client`, `@sanity/image-url` and `groq` (or `next-sanity` for `defineQuery` only; prefer the lighter `groq` package).
 6. **Queries, schemas and TypeGen.** Add `_pages/home/api/queries.ts` (`HOME_CONTENT_QUERY`) and `model/content.ts` (zod schemas), configure TypeGen, commit `sanity.types.ts`, and add the type-level drift test.
 7. **Wire the page.** Make `HomePage` async and pass content props to the sections. Remove the moved content from `model/*.ts` and `ui/*/messages.ts`, keeping only UI copy. Update stories and tests to use fixtures. Run `pnpm typecheck`, `lint`, `lint:arch` and `test`.
@@ -252,5 +254,5 @@ Implemented as decided, with Sanity Studio v6, `sanity-plugin-internationalized-
 - **Tooling.** `pnpm typecheck` also type-checks `studio/`, Vitest also runs `studio/**/*.test.ts` (the pure validation helpers), ESLint ignores `studio/` and the generated types, knip runs per workspace. `pnpm studio:deploy` runs `sanity deploy --schema-required`, which also deploys the schema.
 - **Audit.** The Sanity CLI pulls vulnerable `js-yaml`/`smol-toml` (overridden to patched versions in `pnpm-workspace.yaml`) and `braces` ≤ 3.0.3, which has no patched release: `GHSA-vfj7-8cjw-p6xm` is ignored in `auditConfig` (dev-time file watcher of the CLI, nothing ships with the site).
 - **Studio previews.** Every localized field of each document feeds the `Missing: fr` subtitle, including fields inside arrays of objects. Optional fields are checked only once set, and `hero.titleEnd` follows its `allowBlank` rule.
-- **E2e against the static export** (step 8, as decided). Precision: Playwright's `webServer` runs `pnpm build && pnpm exec serve out` with `serve` as a devDependency (not `npx serve`), on port 3100 (not 3000, so `reuseExistingServer` never reuses a running `pnpm dev`), with GitHub Pages-like trailing slashes (`e2e/serve.json`). The export is served at the domain root: the config forces `NEXT_PUBLIC_BASE_PATH` to `''`.
+- **E2e against the static export** (step 8, as decided). Precision: Playwright's `webServer` runs `pnpm build && pnpm exec serve out` with `serve` as a devDependency (not `npx serve`), on port 3100 (not 3000, so `reuseExistingServer` never reuses a running `pnpm dev`), with GitHub Pages-like trailing slashes (`e2e/serve.json`). The export is served at the domain root: the config forces `NEXT_PUBLIC_BASE_PATH` to `''`. **Superseded (2026-10-14):** the export is now built with `NEXT_PUBLIC_BASE_PATH=/portfolio` and served under `/portfolio/` like GitHub Pages, every run rebuilds it (`reuseExistingServer: false`), and a server already on port 3100 fails the run before the build (see `docs/engineering/testing.md`).
 - **Failure path verified** on a throwaway `development` dataset (since deleted): a document missing `fr` made `pnpm content:check` exit 1 and `pnpm build` fail with `project "project-meeple" › description › fr: missing translation`, and `pnpm dev` showed `[missing fr] …` with a grouped warning.

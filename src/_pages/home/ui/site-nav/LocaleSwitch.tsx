@@ -7,7 +7,7 @@ import { LOCALES, useLocale, useMessages } from '@/shared/lib/i18n';
 import { navControlVariants } from './ThemeToggle';
 import { siteNavMessages } from './messages';
 
-const languageOptionVariants = tv({
+const localeOptionVariants = tv({
   base: 'h-7 flex-none rounded-full px-2.5 py-0 font-mono text-2xs font-medium',
   variants: {
     active: {
@@ -18,13 +18,13 @@ const languageOptionVariants = tv({
 });
 
 /** EN / FR segments for the wide navigation bar. */
-export function LanguageSegments() {
+export function LocaleSegments() {
   const copy = useMessages(siteNavMessages);
   const { locale, setLocale } = useLocale();
 
   return (
     <SegmentedControl.Root
-      aria-label={copy.languageLabel}
+      aria-label={copy.localeLabel}
       className="w-auto flex-none gap-0 rounded-full border-border bg-chip p-0.75"
     >
       {LOCALES.map((option) => (
@@ -32,19 +32,19 @@ export function LanguageSegments() {
           key={option}
           active={option === locale}
           aria-pressed={option === locale}
-          aria-label={copy.languageNames[option]}
+          aria-label={copy.localeNames[option]}
           onClick={() => setLocale(option)}
-          className={languageOptionVariants({ active: option === locale })}
+          className={localeOptionVariants({ active: option === locale })}
         >
-          {copy.languages[option]}
+          {copy.localeCodes[option]}
         </SegmentedControl.Item>
       ))}
     </SegmentedControl.Root>
   );
 }
 
-/** One button cycling between languages, for the compact navigation bar. */
-export function LanguageToggle() {
+/** One button cycling between locales, for the compact navigation bar. */
+export function LocaleToggle() {
   const copy = useMessages(siteNavMessages);
   const { locale, setLocale } = useLocale();
   const next = LOCALES.find((option) => option !== locale) ?? locale;
@@ -53,11 +53,11 @@ export function LanguageToggle() {
     <Button
       variant="unstyled"
       size="none"
-      aria-label={`${copy.languageLabel}: ${copy.languageNames[next]}`}
+      aria-label={`${copy.localeLabel}: ${copy.localeNames[next]}`}
       onClick={() => setLocale(next)}
       className={navControlVariants({ size: 'lg', className: 'font-mono text-2xs font-medium' })}
     >
-      {copy.languages[locale]}
+      {copy.localeCodes[locale]}
     </Button>
   );
 }

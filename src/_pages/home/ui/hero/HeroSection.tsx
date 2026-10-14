@@ -2,6 +2,7 @@
 
 import { Box, Flex, Link, Text } from 'goniui';
 import { useLocalized, useMessages } from '@/shared/lib/i18n';
+import { mailtoHref } from '@/shared/lib/mailto';
 import { CtaButton, PulseDot } from '@/shared/ui/atoms';
 import { CLOCK_TIME_ZONE, TYPE_SPEED_MS } from '../../config/site';
 import type { HeroContent, OwnerLinks } from '../../model/content';
@@ -93,7 +94,7 @@ export function HeroSection({ hero, links }: HeroSectionProps) {
               ) : null}
               <li>
                 <Link
-                  href={`mailto:${links.email}`}
+                  href={mailtoHref(links.email)}
                   kind="internal"
                   variant="unstyled"
                   className={SOCIAL_LINK_CLASS}

@@ -76,6 +76,16 @@ describe('localizedString', () => {
     });
   });
 
+  it('gives no fallback to a duplicate, even after a blank value', () => {
+    const issues =
+      localizedString().safeParse([item('en', ''), item('en', 'Hello', 'k2'), item('fr', 'Salut')])
+        .error?.issues ?? [];
+    expect(issues.map((issue) => [issue.message, localeIssueParams(issue)])).toEqual([
+      ['empty translation', { localeIssue: true, locale: 'en', fallback: 'Salut' }],
+      ['language set twice', { localeIssue: true, locale: 'en' }],
+    ]);
+  });
+
   it('accepts blank values when allowed, but still needs every locale', () => {
     expect(localizedString({ allowBlank: true }).parse([item('en', '.'), item('fr', '')])).toEqual({
       en: '.',

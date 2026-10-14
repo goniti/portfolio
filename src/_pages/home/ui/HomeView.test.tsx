@@ -4,6 +4,8 @@ import { stubMatchMedia } from '@/shared/lib/testing';
 import { HOME_CONTENT_FIXTURE } from '../model/content.fixture';
 import { HomeView } from './HomeView';
 
+const CALENDLY_URL = 'https://calendly.com/portfolio/intro-call';
+
 describe('HomeView', () => {
   beforeEach(() => stubMatchMedia());
   afterEach(() => {
@@ -44,12 +46,18 @@ describe('HomeView', () => {
   });
 
   it('opens on the Calendly tab, ahead of the message form', () => {
-    render(<HomeView content={HOME_CONTENT_FIXTURE} />);
+    render(<HomeView content={HOME_CONTENT_FIXTURE} calendlyUrl={CALENDLY_URL} />);
     const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent);
     expect(tabs).toEqual(['Book a call', 'Send a message']);
     expect(screen.getByRole('tab', { name: 'Book a call' }).getAttribute('aria-selected')).toBe(
       'true',
     );
+  });
+
+  it('shows only the message form without a Calendly page', () => {
+    render(<HomeView content={HOME_CONTENT_FIXTURE} />);
+    expect(screen.queryByRole('tab')).toBeNull();
+    expect(screen.getByRole('button', { name: /send message/i })).toBeTruthy();
   });
 
   it('hides LinkedIn everywhere when the profile is not set', () => {

@@ -4,13 +4,20 @@ import { NEAR_VIEWPORT_MARGIN, useNearViewport } from './useNearViewport';
 
 type IntersectionCallback = (entries: Array<{ isIntersecting: boolean }>) => void;
 
+interface ObserverRecord {
+  options: IntersectionObserverInit | undefined;
+  observed: Element[];
+  disconnections: number;
+  notify: IntersectionCallback;
+}
+
 /** Records what the hook observes and lets the test report an intersection. */
 function stubIntersectionObserver() {
-  const record = {
-    options: undefined as IntersectionObserverInit | undefined,
-    observed: [] as Element[],
+  const record: ObserverRecord = {
+    options: undefined,
+    observed: [],
     disconnections: 0,
-    notify: (() => {}) as IntersectionCallback,
+    notify: () => {},
   };
   class FakeIntersectionObserver {
     constructor(callback: IntersectionCallback, options?: IntersectionObserverInit) {

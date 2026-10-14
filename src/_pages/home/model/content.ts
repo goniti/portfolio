@@ -1,9 +1,13 @@
+import {
+  JOB_TINTS,
+  NOTE_CATEGORIES,
+  PROJECT_CATEGORIES,
+  PROJECT_TINTS,
+  TINTS,
+} from 'portfolio-content-model';
 import { z } from 'zod';
 import { localizedString, optionalLocalizedString, urlFor } from '@/shared/api';
-import { NOTE_CATEGORIES } from './notes';
-import { PROJECT_CATEGORIES } from './projects';
 import { TERMINAL_SCRIPT_STYLE } from './terminal';
-import { TINTS, type Tint } from './tints';
 
 /*
  * Content of the home page, edited in Sanity (ADR-003). These schemas check what TypeGen cannot
@@ -15,15 +19,6 @@ import { TINTS, type Tint } from './tints';
 const AVATAR_SIZE = 160;
 /** Width of a project screenshot: a card is at most ~380 px wide, served at 2× with headroom. */
 const SCREENSHOT_WIDTH = 1200;
-
-const JOB_TINTS = ['indigo', 'cyan', 'violet'] as const satisfies readonly Tint[];
-const PROJECT_TINTS = [
-  'amber',
-  'cyan',
-  'emerald',
-  'violet',
-  'sky',
-] as const satisfies readonly Tint[];
 
 // The issue report reads `_type` from the raw data; the page only needs the `_id`.
 const documentFields = { _id: z.string() };
@@ -60,12 +55,22 @@ function imageFor({ asset, hotspot, crop }: ImageSource) {
   });
 }
 
+/** Maps a document's `_id` to the `id` the page uses. */
+function withId<Document extends { _id: string }>({
+  _id,
+  ...fields
+}: Document): Omit<Document, '_id'> & { id: string } {
+  return { id: _id, ...fields };
+}
+
+type LineCount = { min: number } | { exactly: number };
+
 /** A list of localized lines (`[{ text }]`): one entry per line, each in both locales. */
-function localizedLines(minimum = 0, message?: string) {
-  return z
-    .array(z.object({ text: localizedString() }))
-    .min(minimum, message)
-    .transform((items) => items.map((item) => item.text));
+function localizedLines(count: LineCount, message?: string) {
+  const lines = z.array(z.object({ text: localizedString() }));
+  const counted =
+    'exactly' in count ? lines.length(count.exactly, message) : lines.min(count.min, message);
+  return counted.transform((items) => items.map((item) => item.text));
 }
 
 const siteSettingsSchema = z
@@ -80,7 +85,7 @@ const siteSettingsSchema = z
     linkedinName: z.string().nullish(),
     openToWork: z.boolean(),
     status: z.object({ open: localizedString(), busy: localizedString() }),
-    credits: localizedLines(1, 'add at least one credit line'),
+    credits: localizedLines({ min: 1 }, 'add at least one credit line'),
     seo: z.object({ title: localizedString(), description: localizedString() }),
   })
   .superRefine((settings, context) => {
@@ -129,13 +134,10 @@ const homePageSchema = z.object({
     // The French title ends on its highlighted part: an empty value is valid here.
     titleEnd: localizedString({ allowBlank: true }),
     lead: localizedString(),
-    terminalScript: z
-      .array(z.object({ text: localizedString() }))
-      .length(
-        TERMINAL_SCRIPT_STYLE.length,
-        `the terminal script needs exactly ${TERMINAL_SCRIPT_STYLE.length} lines`,
-      )
-      .transform((lines) => lines.map((line) => line.text)),
+    terminalScript: localizedLines(
+      { exactly: TERMINAL_SCRIPT_STYLE.length },
+      `the terminal script needs exactly ${TERMINAL_SCRIPT_STYLE.length} lines`,
+    ),
     focus: localizedString(),
   }),
   sections: z.object({
@@ -162,11 +164,11 @@ const jobSchema = z
     role: localizedString(),
     startDate: z.iso.date(),
     endDate: z.iso.date().nullish(),
-    achievements: localizedLines(1),
+    achievements: localizedLines({ min: 1 }),
     technologies: z.array(z.string().min(1)).min(1),
     tint: z.enum(JOB_TINTS),
   })
-  .transform(({ _id, endDate, ...job }) => ({ id: _id, ...job, endDate: endDate ?? null }));
+  .transform((job) => ({ ...withId(job), endDate: job.endDate ?? null }));
 
 const projectSchema = z
   .object({
@@ -191,9 +193,8 @@ const projectSchema = z
       message: 'required when the project has no screenshot',
     });
   })
-  .transform(({ _id, image, demoUrl, ...project }) => ({
-    id: _id,
-    ...project,
+  .transform(({ image, demoUrl, ...project }) => ({
+    ...withId(project),
     image: image
       ? {
           src: imageFor(image).width(SCREENSHOT_WIDTH).auto('format').url(),
@@ -212,10 +213,10 @@ const watchNoteSchema = z
     category: z.enum(NOTE_CATEGORIES),
     readingMinutes: z.number().int().positive(),
     excerpt: localizedString(),
-    body: localizedLines(1),
-    takeaways: localizedLines(1),
+    body: localizedLines({ min: 1 }),
+    takeaways: localizedLines({ min: 1 }),
   })
-  .transform(({ _id, ...note }) => ({ id: _id, ...note }));
+  .transform(withId);
 
 /** Parses the result of `HOME_CONTENT_QUERY` (see `api/queries.ts`). */
 export const homeContentSchema = z

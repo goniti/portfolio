@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity';
 import { BlockquoteIcon } from '@sanity/icons/Blockquote';
 import { TextIcon } from '@sanity/icons/Text';
-import { localizedValue } from '../validation/localeProblems';
+import { localizedValue } from 'portfolio-content-model';
 import { missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 

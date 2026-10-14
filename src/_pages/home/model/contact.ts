@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { CALENDLY_PAGE_PATTERN } from '@/shared/config';
+import { mailtoHref } from '@/shared/lib/mailto';
 
 const NAME_MIN_LENGTH = 2;
 const MESSAGE_MIN_LENGTH = 10;
@@ -39,16 +41,13 @@ export function buildContactMailto(
   values: ContactValues,
 ): string {
   const body = `${values.message}\n\n— ${values.name} <${values.email}>`;
-  const query = new URLSearchParams({ subject, body }).toString().replaceAll('+', '%20');
-  return `mailto:${recipient}?${query}`;
+  return mailtoHref(recipient, { subject, body });
 }
-
-const CALENDLY_PAGE = /^https:\/\/calendly\.com\/.+/;
 
 /** Calendly inline-embed URL themed for the page, or `null` when the page URL is missing or invalid. */
 export function calendlyEmbedUrl(pageUrl: string, theme: 'light' | 'dark'): string | null {
   const trimmed = pageUrl.trim();
-  if (!CALENDLY_PAGE.test(trimmed)) return null;
+  if (!CALENDLY_PAGE_PATTERN.test(trimmed)) return null;
   const url = new URL(trimmed);
   url.searchParams.set('embed_type', 'Inline');
   url.searchParams.set('hide_gdpr_banner', '1');

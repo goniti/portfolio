@@ -1,12 +1,5 @@
+import { PROJECT_CATEGORIES } from 'portfolio-content-model';
 import type { Project } from './content';
-
-export const PROJECT_CATEGORIES = [
-  'react',
-  'vue',
-  'mobile',
-  'full-stack',
-  'side-projects',
-] as const;
 
 export const PROJECT_FILTERS = ['all', ...PROJECT_CATEGORIES] as const;
 export type ProjectFilter = (typeof PROJECT_FILTERS)[number];

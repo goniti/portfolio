@@ -1,4 +1,4 @@
-import { env } from '../../config';
+import { env, SANITY_PROJECT_ID_REQUIRED } from '../../config';
 import { ContentError } from './report';
 
 interface SanityConfig {
@@ -9,7 +9,7 @@ interface SanityConfig {
 
 export function sanityConfig(): SanityConfig {
   if (!env.SANITY_PROJECT_ID) {
-    throw new ContentError('SANITY_PROJECT_ID is not set: copy .env.example to .env.local');
+    throw new ContentError(SANITY_PROJECT_ID_REQUIRED);
   }
   return {
     projectId: env.SANITY_PROJECT_ID,

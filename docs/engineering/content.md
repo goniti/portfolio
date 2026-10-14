@@ -73,11 +73,12 @@ Invalid content: 3 problem(s). Fix them in the Studio, then publish:
 
 ## Changing the content model
 
-1. Edit `studio/schemaTypes/` (a new localized field uses `internationalizedArrayString`/`Text` with `validation: requireLocales()`; a list of localized lines uses `localizedLine`/`localizedParagraph`, since Sanity arrays cannot hold arrays).
-2. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `optionalLocalizedString()`). Never `coalesce` across locales.
-3. `pnpm typegen`, then `pnpm typecheck` (the type-level drift test in `content.test.ts` fails if the zod input no longer accepts the query result).
-4. `pnpm studio:deploy`, publish the new fields in the Studio, then `pnpm content:check`.
-5. Commit `sanity.types.ts`.
+1. A value or rule both sides must agree on (a locale, a tint, a category, what makes a localized field complete) lives in `packages/content-model/` (`portfolio-content-model`, ADR-004), never in `studio/` or `src/`. A new value needs its Studio label (`studio/schemaTypes/locales.ts`, `categories.ts`: `pnpm typecheck` fails without it); a new kind of `LocaleProblem` needs a message on each side (`toStudioError` in `studio/schemaTypes/validation/localeMessages.ts`, `siteMessage` in `src/shared/api/sanity/localized.ts`).
+2. Edit `studio/schemaTypes/` (a new localized field uses `internationalizedArrayString`/`Text` with `validation: requireLocales()`; a list of localized lines uses `localizedLine`/`localizedParagraph`, since Sanity arrays cannot hold arrays).
+3. Edit the query (`src/_pages/home/api/queries.ts`) and the zod schema (`src/_pages/home/model/content.ts`, `localizedString()` / `optionalLocalizedString()`). Never `coalesce` across locales.
+4. `pnpm typegen`, then `pnpm typecheck` (the type-level drift test in `content.test.ts` fails if the zod input no longer accepts the query result).
+5. `pnpm studio:deploy`, publish the new fields in the Studio, then `pnpm content:check`.
+6. Commit `sanity.types.ts`.
 
 ## Testing the failure path
 

@@ -1,6 +1,7 @@
+import { PROJECT_CATEGORIES } from 'portfolio-content-model';
 import { describe, expect, it } from 'vitest';
 import { HOME_CONTENT_FIXTURE } from './content.fixture';
-import { filterProjects, PROJECT_CATEGORIES } from './projects';
+import { filterProjects } from './projects';
 
 const PROJECTS = HOME_CONTENT_FIXTURE.projects;
 

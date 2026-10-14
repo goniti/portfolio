@@ -1,7 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { HomeIcon } from '@sanity/icons/Home';
+import { localizedValue } from 'portfolio-content-model';
 import { tintOptions } from '../tints';
-import { localizedValue } from '../validation/localeProblems';
 import { localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 

@@ -10,7 +10,7 @@ import { formatIndex } from '../../model/format';
 import { SECTION_IDS, type SectionId } from '../../model/sections';
 import { useScrollSpy } from '../../model/useScrollSpy';
 import { AvatarLink } from './AvatarLink';
-import { LanguageSegments, LanguageToggle } from './LanguageSwitch';
+import { LocaleSegments, LocaleToggle } from './LocaleSwitch';
 import { SectionLink } from './SectionLink';
 import { ThemeToggle } from './ThemeToggle';
 import { siteNavMessages } from './messages';
@@ -65,7 +65,7 @@ function WideNavBar({ activeSection, avatarUrl }: NavBarProps) {
             </li>
           ))}
         </Flex>
-        <LanguageSegments />
+        <LocaleSegments />
         <ThemeToggle />
         <ResumeLink />
       </Flex>
@@ -108,7 +108,7 @@ function CompactNavBar({ activeSection, avatarUrl, ownerName }: CompactNavBarPro
               {copy.sections[activeSection]}
             </Text>
           </Flex>
-          <LanguageToggle />
+          <LocaleToggle />
           <ThemeToggle size="lg" />
           <Collapsible.Trigger
             aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}

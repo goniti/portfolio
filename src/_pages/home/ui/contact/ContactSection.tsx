@@ -4,12 +4,13 @@ import type { ReactNode } from 'react';
 import * as Tabs from 'goniui/tabs';
 import { Flex, Link, Text } from 'goniui';
 import { useLocalized, useMessages } from '@/shared/lib/i18n';
+import { mailtoHref } from '@/shared/lib/mailto';
 import { REVEAL } from '@/shared/lib/motion';
 import { useTheme } from '@/shared/lib/theme';
 import { CARD_CURSOR_TARGET, Surface } from '@/shared/ui/atoms';
 import { CopyButton } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
-import { CALENDLY_URL, PAST_HERO_VIEWPORTS } from '../../config/site';
+import { PAST_HERO_VIEWPORTS } from '../../config/site';
 import { calendlyEmbedUrl } from '../../model/contact';
 import type { ContactContent, OwnerLinks } from '../../model/content';
 import { CalendlyEmbed } from './CalendlyEmbed';
@@ -70,14 +71,16 @@ function ChannelItem({ href, label, value, external, children }: ChannelItemProp
 export interface ContactSectionProps {
   contact: ContactContent;
   links: OwnerLinks;
+  /** Calendly scheduling page (`https://calendly.com/<user>/<event>`); absent hides the "Book a call" tab. */
+  calendlyUrl?: string;
 }
 
 /** Closing call to action: direct channels, the message form and, when configured, Calendly. */
-export function ContactSection({ contact, links }: ContactSectionProps) {
+export function ContactSection({ contact, links, calendlyUrl }: ContactSectionProps) {
   const localize = useLocalized();
   const copy = useMessages(contactMessages);
   const { theme } = useTheme();
-  const calendlySrc = calendlyEmbedUrl(CALENDLY_URL, theme);
+  const calendlySrc = calendlyUrl ? calendlyEmbedUrl(calendlyUrl, theme) : null;
 
   return (
     <PageSection id="contact" labelledBy="contact-title" spacing="closing">
@@ -87,7 +90,7 @@ export function ContactSection({ contact, links }: ContactSectionProps) {
         {...REVEAL.columns}
         className="flex flex-wrap gap-10 p-5.5 md:p-10 lg:p-16"
       >
-        <Flex direction="col" gap="lg" className="min-w-0 grow basis-90 gap-5">
+        <Flex direction="col" className="min-w-0 grow basis-90 gap-5">
           <Text
             as="span"
             variant="bodySm"
@@ -108,7 +111,7 @@ export function ContactSection({ contact, links }: ContactSectionProps) {
           </Text>
           <Flex as="ul" direction="col" gap="sm" aria-label={copy.channelsLabel} className="mt-1.5">
             <ChannelItem
-              href={`mailto:${links.email}`}
+              href={mailtoHref(links.email)}
               label={copy.channels.email.label}
               value={links.email}
               external={false}
