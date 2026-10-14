@@ -171,6 +171,11 @@ export interface SeedDocument {
   [field: string]: unknown;
 }
 
+/** The `_id` of every document `buildDocuments` writes, known before any asset is uploaded. */
+export function seedDocumentIds({ jobs, projects, notes }: HomeContent): string[] {
+  return ['siteSettings', 'homePage', ...[...jobs, ...projects, ...notes].map(({ id }) => id)];
+}
+
 export function buildDocuments(content: HomeContent, assets: AssetRefs): SeedDocument[] {
   return [
     siteSettings(content, assets),

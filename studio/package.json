@@ -11,7 +11,7 @@
     "deploy": "sanity deploy --schema-required",
     "typegen": "sanity schema extract --enforce-required-fields --force && sanity typegen generate",
     "typecheck": "tsc --noEmit",
-    "seed": "sanity exec seed/seed.ts --with-user-token"
+    "seed": "sanity exec seed/seed.ts --with-user-token --"
   },
   "dependencies": {
     "@sanity/icons": "^5.2.3",

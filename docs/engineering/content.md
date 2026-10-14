@@ -37,6 +37,8 @@ The CLI uses your login (`pnpm --filter portfolio-studio exec sanity login` once
 
 `pnpm studio:seed` writes the fixture's documents to the dataset of `SANITY_STUDIO_DATASET` (default `production`), then runs `pnpm content:check` against that same dataset (it passes `SANITY_PROJECT_ID` and `SANITY_DATASET` to the check, overriding `.env.local`). The seed exits 1 when the check fails.
 
+A Studio draft of a seeded document holds unpublished edits, and would hide the seeded version. So before uploading or writing anything, the seed looks for `drafts.<id>` of every document it writes and, if it finds any, lists them and exits 1. Publish or discard them in the Studio, or run `pnpm studio:seed --discard-drafts` to delete them in the seed's transaction (from `studio/`: `pnpm seed --discard-drafts`; the `seed` script ends with `--`, so `sanity exec` hands the flag to the script).
+
 ## Editing content
 
 1. Open the Studio, edit, then **Publish**. Every localized field shows an English and a French slot.
