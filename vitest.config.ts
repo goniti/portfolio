@@ -6,7 +6,8 @@ export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
     environment: 'jsdom',
-    include: ['{app,src}/**/*.test.{ts,tsx}'],
+    // `studio/`: the Studio's validation helpers (pure functions, no Studio runtime).
+    include: ['{app,src,studio}/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',

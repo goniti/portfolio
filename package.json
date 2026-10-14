@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && pnpm --filter portfolio-studio typecheck",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint .",
@@ -25,11 +25,19 @@
     "secrets": "secretlint \"**/*\"",
     "prepare": "husky",
     "lint:arch": "steiger ./src --fail-on-warnings && depcruise . --config .dependency-cruiser.cjs",
-    "lint:language": "node scripts/check-inclusive-language.mjs"
+    "lint:language": "node scripts/check-inclusive-language.mjs",
+    "content:check": "tsx --env-file-if-exists=.env.local scripts/content-check.ts",
+    "typegen": "pnpm --filter portfolio-studio typegen",
+    "studio:dev": "pnpm --filter portfolio-studio dev",
+    "studio:deploy": "pnpm --filter portfolio-studio deploy",
+    "studio:seed": "pnpm --filter portfolio-studio seed"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@sanity/client": "^8.9.0",
+    "@sanity/image-url": "^2.1.1",
     "goniui": "^0.1.0",
+    "groq": "^6.19.0",
     "lucide-react": "^1.56.0",
     "next": "^16.3.8",
     "react": "^19.3.0",
@@ -70,6 +78,7 @@
     "steiger": "^0.7.0",
     "storybook": "^10.6.1",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3"

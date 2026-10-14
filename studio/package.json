@@ -1,0 +1,30 @@
+{
+  "name": "portfolio-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sanity Studio of the portfolio content (ADR-003).",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy --schema-required",
+    "typegen": "sanity schema extract --enforce-required-fields --force && sanity typegen generate",
+    "typecheck": "tsc --noEmit",
+    "seed": "sanity exec seed/seed.ts --with-user-token"
+  },
+  "dependencies": {
+    "@sanity/icons": "^5.2.3",
+    "@sanity/vision": "^6.19.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sanity": "^6.19.0",
+    "sanity-plugin-internationalized-array": "^5.3.5",
+    "styled-components": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "typescript": "^6.0.3"
+  }
+}
