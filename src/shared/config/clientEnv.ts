@@ -54,12 +54,33 @@ export function loadClientEnv(source: EnvSource): ClientEnv {
   return parseEnv(ClientEnvSchema, source);
 }
 
+let validated: ClientEnv | undefined;
+
 /**
- * Safe in client components. Each variable is read by its literal name: Next.js only inlines
- * `process.env.NEXT_PUBLIC_X` member accesses into the browser bundle.
+ * Each variable is read by its literal name: Next.js only inlines `process.env.NEXT_PUBLIC_X`
+ * member accesses into the browser bundle.
  */
-export const clientEnv: ClientEnv = loadClientEnv({
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-  NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH,
-  NEXT_PUBLIC_CALENDLY_URL: process.env.NEXT_PUBLIC_CALENDLY_URL,
-});
+function publicEnv(): ClientEnv {
+  validated ??= loadClientEnv({
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH,
+    NEXT_PUBLIC_CALENDLY_URL: process.env.NEXT_PUBLIC_CALENDLY_URL,
+  });
+  return validated;
+}
+
+/**
+ * Safe in client components. Validated on first read rather than on import, like `env`: a module
+ * importing it (a story, a test) never touches `process.env` until a value is needed.
+ */
+export const clientEnv: ClientEnv = {
+  get NEXT_PUBLIC_SITE_URL() {
+    return publicEnv().NEXT_PUBLIC_SITE_URL;
+  },
+  get NEXT_PUBLIC_BASE_PATH() {
+    return publicEnv().NEXT_PUBLIC_BASE_PATH;
+  },
+  get NEXT_PUBLIC_CALENDLY_URL() {
+    return publicEnv().NEXT_PUBLIC_CALENDLY_URL;
+  },
+};

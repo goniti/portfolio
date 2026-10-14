@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import * as Collapsible from 'goniui/collapsible';
 import { Box, Flex, Text } from 'goniui';
+import { withBasePath } from '@/shared/lib/base-path';
 import { useMessages } from '@/shared/lib/i18n';
 import { CtaButton } from '@/shared/ui/atoms';
-import { RESUME_URL } from '../../config/site';
+import { RESUME_PATH } from '../../config/site';
 import { formatIndex } from '../../model/format';
 import { SECTION_IDS, type SectionId } from '../../model/sections';
 import { useScrollSpy } from '../../model/useScrollSpy';
@@ -20,11 +21,11 @@ const GLASS_BAR =
 
 function ResumeLink() {
   const copy = useMessages(siteNavMessages);
-  if (!RESUME_URL) return null;
+  if (!RESUME_PATH) return null;
 
   return (
     <CtaButton asChild tone="inverse" size="pill">
-      <a href={RESUME_URL} download>
+      <a href={withBasePath(RESUME_PATH)} download>
         {copy.resume}
         <span aria-hidden="true" className="font-mono">
           {copy.downloadGlyph}
@@ -134,9 +135,9 @@ function CompactNavBar({ activeSection, avatarUrl, ownerName }: CompactNavBarPro
               </Text>
             </SectionLink>
           ))}
-          {RESUME_URL ? (
+          {RESUME_PATH ? (
             <CtaButton asChild size="md" className="mt-1.5 min-h-12">
-              <a href={RESUME_URL} download>
+              <a href={withBasePath(RESUME_PATH)} download>
                 {copy.resume} {copy.downloadGlyph}
               </a>
             </CtaButton>
