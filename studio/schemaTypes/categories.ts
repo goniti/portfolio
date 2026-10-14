@@ -1,16 +1,31 @@
-/** Mirrors `PROJECT_CATEGORIES` in `src/_pages/home/model/projects.ts`. */
-export const PROJECT_CATEGORIES = [
-  { title: 'React', value: 'react' },
-  { title: 'Vue', value: 'vue' },
-  { title: 'Mobile', value: 'mobile' },
-  { title: 'Full-Stack', value: 'full-stack' },
-  { title: 'Side Projects', value: 'side-projects' },
-];
+import {
+  NOTE_CATEGORIES,
+  PROJECT_CATEGORIES,
+  type NoteCategory,
+  type ProjectCategory,
+} from 'portfolio-content-model';
 
-/** Mirrors `NOTE_CATEGORIES` in `src/_pages/home/model/notes.ts`. */
-export const NOTE_CATEGORIES = [
-  { title: 'AI', value: 'ai' },
-  { title: 'Front-End', value: 'front-end' },
-  { title: 'Architecture', value: 'architecture' },
-  { title: 'UX', value: 'ux' },
-];
+const PROJECT_CATEGORY_TITLES = {
+  react: 'React',
+  vue: 'Vue',
+  mobile: 'Mobile',
+  'full-stack': 'Full-Stack',
+  'side-projects': 'Side Projects',
+} satisfies Record<ProjectCategory, string>;
+
+const NOTE_CATEGORY_TITLES = {
+  ai: 'AI',
+  'front-end': 'Front-End',
+  architecture: 'Architecture',
+  ux: 'UX',
+} satisfies Record<NoteCategory, string>;
+
+export const PROJECT_CATEGORY_OPTIONS = PROJECT_CATEGORIES.map((value) => ({
+  title: PROJECT_CATEGORY_TITLES[value],
+  value,
+}));
+
+export const NOTE_CATEGORY_OPTIONS = NOTE_CATEGORIES.map((value) => ({
+  title: NOTE_CATEGORY_TITLES[value],
+  value,
+}));

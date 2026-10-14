@@ -1,7 +1,8 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { SparklesIcon } from '@sanity/icons/Sparkles';
-import { NOTE_CATEGORIES } from '../categories';
-import { localizedValue } from '../validation/localeProblems';
+import { localizedValue } from 'portfolio-content-model';
+import { NOTE_CATEGORY_OPTIONS } from '../categories';
+import { optionalString } from '../guards';
 import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
@@ -27,7 +28,7 @@ export const watchNote = defineType({
     defineField({
       name: 'category',
       type: 'string',
-      options: { list: NOTE_CATEGORIES, layout: 'radio' },
+      options: { list: NOTE_CATEGORY_OPTIONS, layout: 'radio' },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -79,8 +80,8 @@ export const watchNote = defineType({
           ...localizedFieldsOf(body, 'text'),
           ...localizedFieldsOf(takeaways, 'text'),
         ]),
-        category as string | undefined,
-        publishedAt as string | undefined,
+        optionalString(category),
+        optionalString(publishedAt),
       ),
     }),
   },

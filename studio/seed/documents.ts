@@ -1,4 +1,4 @@
-import type { Localized } from '@/shared/lib/i18n';
+import type { Localized } from 'portfolio-content-model';
 import type { HomeContent } from '../../src/_pages/home/model/content';
 
 /*
@@ -16,10 +16,10 @@ interface AssetRefs {
 
 /** An internationalized array (plugin v5 shape: `language` field, own `_key`). */
 function localized(values: Localized<string>, kind: FieldKind = 'String') {
-  return Object.entries(values).map(([language, value]) => ({
-    _key: `i18n-${language}`,
+  return Object.entries(values).map(([locale, value]) => ({
+    _key: `i18n-${locale}`,
     _type: `internationalizedArray${kind}Value`,
-    language,
+    language: locale,
     value,
   }));
 }

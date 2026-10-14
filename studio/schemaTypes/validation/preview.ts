@@ -1,4 +1,9 @@
-import { missingLanguages, type LocaleRules, type LocalizedItem } from './localeProblems';
+import {
+  missingLocales,
+  type LocaleRules,
+  type Locale,
+  type LocalizedItem,
+} from 'portfolio-content-model';
 
 type MaybeLocalized = readonly LocalizedItem[] | null | undefined;
 
@@ -18,14 +23,14 @@ function isFieldWithRules(field: PreviewField): field is LocalizedPreviewField {
   return field !== null && field !== undefined && !Array.isArray(field);
 }
 
-function missingIn(field: PreviewField): string[] {
-  if (!isFieldWithRules(field)) return missingLanguages(field);
+function missingIn(field: PreviewField): Locale[] {
+  if (!isFieldWithRules(field)) return missingLocales(field);
   if (field.optional && !field.items?.length) return [];
-  return missingLanguages(field.items, field);
+  return missingLocales(field.items, field);
 }
 
 /**
- * "Missing: fr" when one of the given localized fields lacks a language, so gaps show in
+ * "Missing: fr" when one of the given localized fields lacks a locale, so gaps show in
  * document lists without opening each document.
  */
 export function missingLocalesSubtitle(fields: readonly PreviewField[]): string | undefined {

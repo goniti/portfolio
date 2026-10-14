@@ -16,6 +16,7 @@
   "dependencies": {
     "@sanity/icons": "^5.2.3",
     "@sanity/vision": "^6.19.0",
+    "portfolio-content-model": "workspace:*",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "sanity": "^6.19.0",

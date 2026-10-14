@@ -1,5 +1,6 @@
 import type { CustomValidatorResult, Rule } from 'sanity';
-import { findLocaleProblems, type LocaleRules, type LocalizedItem } from './localeProblems';
+import { findLocaleProblems, type LocaleRules, type LocalizedItem } from 'portfolio-content-model';
+import { toStudioError } from './localeMessages';
 
 interface RequireLocalesOptions extends LocaleRules {
   /** The field may be left out entirely; once it has a value, every locale is required. */
@@ -12,9 +13,9 @@ export function validateLocales(
   options: RequireLocalesOptions = {},
 ): CustomValidatorResult {
   if (options.optional && (!value || value.length === 0)) return true;
-  const problems = findLocaleProblems(value, options);
-  if (problems.length === 0) return true;
-  return problems.map(({ message, path }) => (path.length > 0 ? { message, path } : { message }));
+  const errors = findLocaleProblems(value, options).map(toStudioError);
+  if (errors.length === 0) return true;
+  return errors.map(({ message, path }) => (path.length > 0 ? { message, path } : { message }));
 }
 
 /**

@@ -1,5 +1,13 @@
+import {
+  fallbackValue,
+  findLocaleProblems,
+  isLocale,
+  type Locale,
+  type LocaleProblem,
+  type LocaleRules,
+  type Localized,
+} from 'portfolio-content-model';
 import { z } from 'zod';
-import { isLocale, LOCALES, type Locale, type Localized } from '../../lib/i18n';
 
 /** One item of an internationalized array, as stored by the plugin (v5: `language` field). */
 const LocalizedItemSchema = z.object({
@@ -18,65 +26,36 @@ export interface LocaleIssueParams {
   fallback?: string;
 }
 
-interface LocalizedOptions {
-  /** The value may be empty (each locale must still be present). */
-  allowBlank?: boolean;
-}
-
-function isBlank(value: string | null | undefined): boolean {
-  return !value || value.trim() === '';
-}
-
-interface LocaleProblem {
-  message: string;
-  params: LocaleIssueParams;
-}
-
-/** Every locale problem of a field; `fallback` is filled once all items are known. */
-function findProblems(items: readonly LocalizedItem[], options: LocalizedOptions): LocaleProblem[] {
-  const problems: LocaleProblem[] = [];
-  const values = new Map<Locale, string>();
-  const gaps: Locale[] = [];
-
-  for (const item of items) {
-    if (!item.language) {
-      problems.push({
-        message: 'item without a language (legacy v4 format)',
-        params: { localeIssue: true },
-      });
-    } else if (!isLocale(item.language)) {
-      problems.push({
-        message: `unknown language "${item.language}"`,
-        params: { localeIssue: true },
-      });
-    } else if (values.has(item.language) || gaps.includes(item.language)) {
-      problems.push({
-        message: 'language set twice',
-        params: { localeIssue: true, locale: item.language },
-      });
-    } else if (!options.allowBlank && isBlank(item.value)) {
-      gaps.push(item.language);
-      problems.push({
-        message: 'empty translation',
-        params: { localeIssue: true, locale: item.language },
-      });
-    } else {
-      values.set(item.language, item.value ?? '');
-    }
+/** How the build report names a locale problem (developer-facing). */
+function siteMessage(problem: LocaleProblem): string {
+  switch (problem.kind) {
+    case 'no-language':
+      return 'item without a language (legacy v4 format)';
+    case 'unknown-language':
+      return `unknown language "${problem.language}"`;
+    case 'duplicate-locale':
+      return 'language set twice';
+    case 'blank-value':
+      return 'empty translation';
+    case 'missing-locale':
+      return 'missing translation';
   }
+}
 
-  for (const locale of LOCALES) {
-    if (values.has(locale) || gaps.includes(locale)) continue;
-    gaps.push(locale);
-    problems.push({ message: 'missing translation', params: { localeIssue: true, locale } });
+/** The locale of a problem, and the value that can fill its gap in development. */
+function issueParams(problem: LocaleProblem, fallback: string | undefined): LocaleIssueParams {
+  switch (problem.kind) {
+    case 'no-language':
+    case 'unknown-language':
+      return { localeIssue: true };
+    case 'duplicate-locale':
+      return { localeIssue: true, locale: problem.locale };
+    case 'blank-value':
+    case 'missing-locale':
+      return fallback === undefined
+        ? { localeIssue: true, locale: problem.locale }
+        : { localeIssue: true, locale: problem.locale, fallback };
   }
-
-  const fallback = LOCALES.map((locale) => values.get(locale)).find((value) => !isBlank(value));
-  return problems.map((problem) =>
-    problem.params.locale && gaps.includes(problem.params.locale) && fallback !== undefined
-      ? { ...problem, params: { ...problem.params, fallback } }
-      : problem,
-  );
 }
 
 function toLocalized(items: readonly LocalizedItem[]): Localized<string> {
@@ -90,10 +69,15 @@ const ItemsSchema = z.array(LocalizedItemSchema).nullish();
 function reportProblems(
   items: readonly LocalizedItem[],
   context: z.RefinementCtx,
-  options: LocalizedOptions,
+  options: LocaleRules,
 ): void {
-  for (const { message, params } of findProblems(items, options)) {
-    context.addIssue({ code: 'custom', message, params });
+  const fallback = fallbackValue(items);
+  for (const problem of findLocaleProblems(items, options)) {
+    context.addIssue({
+      code: 'custom',
+      message: siteMessage(problem),
+      params: issueParams(problem, fallback),
+    });
   }
 }
 
@@ -102,14 +86,14 @@ function reportProblems(
  * per missing, blank, duplicate or unknown locale, so a gap never reaches the page silently
  * (ADR-003). Queries return the raw array: never `coalesce` across locales.
  */
-export function localizedString(options: LocalizedOptions = {}) {
+export function localizedString(options: LocaleRules = {}) {
   return ItemsSchema.transform((items) => items ?? [])
     .superRefine((items, context) => reportProblems(items, context, options))
     .transform(toLocalized);
 }
 
 /** A localized field that may be left out (`null`); once set, every locale is required. */
-export function optionalLocalizedString(options: LocalizedOptions = {}) {
+export function optionalLocalizedString(options: LocaleRules = {}) {
   return ItemsSchema.transform((items) => (items && items.length > 0 ? items : null))
     .superRefine((items, context) => {
       if (items) reportProblems(items, context, options);

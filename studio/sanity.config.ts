@@ -4,7 +4,7 @@ import { visionTool } from '@sanity/vision';
 import { internationalizedArray } from 'sanity-plugin-internationalized-array';
 import { dataset, projectId } from './env';
 import { schemaTypes, SINGLETON_TYPES } from './schemaTypes';
-import { LANGUAGES } from './schemaTypes/locales';
+import { LOCALE_OPTIONS } from './schemaTypes/locales';
 import { structure } from './structure';
 
 /** Actions a singleton keeps: no duplicate, no delete (it must always exist). */
@@ -20,8 +20,8 @@ export default defineConfig({
     // ADR-003: field-level localization, plugin v5+ (`language` field). Never enable
     // `buttonLocations: 'unstable__fieldAction'` (broken since plugin 4.0.4).
     internationalizedArray({
-      languages: LANGUAGES.map(({ id, title }) => ({ id, title })),
-      defaultLanguages: LANGUAGES.map(({ id }) => id),
+      languages: LOCALE_OPTIONS,
+      defaultLanguages: LOCALE_OPTIONS.map(({ id }) => id),
       fieldTypes: ['string', 'text'],
       buttonAddAll: false,
       restoreOrder: false,

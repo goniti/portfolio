@@ -1,7 +1,7 @@
 # ADR-004 — A workspace package for the content model shared by the site and the Studio
 
 - **Date:** 2026-10-14
-- **Status:** `accepted` (implementation pending). Supersedes the "copies accepted" part of [ADR-003](0003-sanity-cms-bilingual-content.md).
+- **Status:** `accepted` (implemented 2026-10-14). Supersedes the "copies accepted" part of [ADR-003](0003-sanity-cms-bilingual-content.md).
 - **Deciders:** Carlos Gonzalez Lo Vullo (owner), architect agent
 
 ## Context

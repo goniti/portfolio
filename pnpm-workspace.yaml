@@ -1,6 +1,8 @@
-# Root package: the Next.js site. `studio/`: the Sanity Studio (ADR-003).
+# Root package: the Next.js site. `studio/`: the Sanity Studio (ADR-003). `packages/content-model`:
+# the content model both of them import (ADR-004).
 packages:
   - studio
+  - 'packages/*'
 
 # Patched versions of vulnerable transitive dependencies of the Sanity CLI (`@sanity/cli` >
 # `@vercel/frameworks`): dev-time tooling of the Studio, never shipped with the site.

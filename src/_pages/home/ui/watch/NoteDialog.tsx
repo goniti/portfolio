@@ -2,7 +2,7 @@
 
 import * as Dialog from 'goniui/dialog';
 import { Button, Flex, Text } from 'goniui';
-import type { Tint } from '../../model/tints';
+import type { Tint } from 'portfolio-content-model';
 import { tintVariants } from '../tint';
 
 interface NoteDialogContent {

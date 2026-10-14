@@ -1,7 +1,8 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CaseIcon } from '@sanity/icons/Case';
+import { JOB_TINTS, localizedValue } from 'portfolio-content-model';
+import { optionalString } from '../guards';
 import { tintOptions } from '../tints';
-import { localizedValue } from '../validation/localeProblems';
 import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
@@ -30,7 +31,7 @@ export const job = defineType({
       type: 'date',
       validation: (rule) =>
         rule.custom((endDate, context) => {
-          const startDate = (context.document as { startDate?: string } | undefined)?.startDate;
+          const startDate = optionalString(context.document?.startDate);
           return endDate && startDate && endDate < startDate
             ? 'The end date is before the start date'
             : true;
@@ -53,7 +54,7 @@ export const job = defineType({
       name: 'tint',
       description: 'Colour of the timeline dot and bullets.',
       type: 'string',
-      options: tintOptions(['indigo', 'cyan', 'violet']),
+      options: tintOptions(JOB_TINTS),
       validation: (rule) => rule.required(),
     }),
   ],
@@ -76,7 +77,7 @@ export const job = defineType({
       subtitle: joinSubtitle(
         missingLocalesSubtitle([role, ...localizedFieldsOf(achievements, 'text')]),
         localizedValue(role),
-        startDate as string | undefined,
+        optionalString(startDate),
       ),
     }),
   },

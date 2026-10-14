@@ -9,7 +9,7 @@ I created this portfolio to showcase my projects, share my ongoing tech watch, a
 | Kind            | SSR / Fullstack                                                                        |
 | Framework       | Next.js                                                                                |
 | Build           | Turbopack                                                                              |
-| Package manager | pnpm (workspace: the site + `studio/`)                                                 |
+| Package manager | pnpm (workspace: the site + `studio/` + `packages/content-model`)                      |
 | Content         | Sanity (standalone Studio, field-level EN/FR), fetched at build time                   |
 | Quality         | eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, knip, secretlint |
 | CI/CD           | github-ci, dependabot, security, governance                                            |
@@ -129,6 +129,8 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 ├── memory/
 │   ├── MEMORY.md
 │   └── session-notes.md
+├── packages/
+│   └── content-model/         # Locales, tints, categories, locale rules shared by site and Studio
 ├── public/
 │   └── .gitkeep
 ├── scripts/

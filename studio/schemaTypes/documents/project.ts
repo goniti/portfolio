@@ -1,8 +1,8 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { RocketIcon } from '@sanity/icons/Rocket';
-import { PROJECT_CATEGORIES } from '../categories';
+import { localizedValue, PROJECT_TINTS, type LocalizedItem } from 'portfolio-content-model';
+import { PROJECT_CATEGORY_OPTIONS } from '../categories';
 import { tintOptions } from '../tints';
-import { localizedValue, type LocalizedItem } from '../validation/localeProblems';
 import { joinSubtitle, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales, validateLocales } from '../validation/requireLocales';
 
@@ -52,7 +52,7 @@ export const project = defineType({
       validation: (rule) =>
         rule
           .custom<LocalizedItem[]>((value, context) => {
-            const hasImage = Boolean((context.document as { image?: unknown } | undefined)?.image);
+            const hasImage = Boolean(context.document?.image);
             return validateLocales(value, { optional: hasImage });
           })
           .error(),
@@ -62,7 +62,7 @@ export const project = defineType({
       description: 'The project filters it appears under.',
       type: 'array',
       of: [defineArrayMember({ type: 'string' })],
-      options: { list: PROJECT_CATEGORIES },
+      options: { list: PROJECT_CATEGORY_OPTIONS },
       validation: (rule) => rule.required().min(1).unique(),
     }),
     defineField({
@@ -76,7 +76,7 @@ export const project = defineType({
       name: 'tint',
       description: 'Background tone behind the screenshot or placeholder.',
       type: 'string',
-      options: tintOptions(['amber', 'cyan', 'emerald', 'violet', 'sky']),
+      options: tintOptions(PROJECT_TINTS),
       validation: (rule) => rule.required(),
     }),
     defineField({

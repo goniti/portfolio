@@ -1,6 +1,6 @@
 import { Button, Flex, Text } from 'goniui';
+import type { Tint } from 'portfolio-content-model';
 import { CARD_CURSOR_TARGET, surfaceVariants } from '@/shared/ui/atoms';
-import type { Tint } from '../../model/tints';
 import { tintVariants } from '../tint';
 
 export interface NoteCardProps {

@@ -1,9 +1,13 @@
+import {
+  JOB_TINTS,
+  NOTE_CATEGORIES,
+  PROJECT_CATEGORIES,
+  PROJECT_TINTS,
+  TINTS,
+} from 'portfolio-content-model';
 import { z } from 'zod';
 import { localizedString, optionalLocalizedString, urlFor } from '@/shared/api';
-import { NOTE_CATEGORIES } from './notes';
-import { PROJECT_CATEGORIES } from './projects';
 import { TERMINAL_SCRIPT_STYLE } from './terminal';
-import { TINTS, type Tint } from './tints';
 
 /*
  * Content of the home page, edited in Sanity (ADR-003). These schemas check what TypeGen cannot
@@ -15,15 +19,6 @@ import { TINTS, type Tint } from './tints';
 const AVATAR_SIZE = 160;
 /** Width of a project screenshot: a card is at most ~380 px wide, served at 2× with headroom. */
 const SCREENSHOT_WIDTH = 1200;
-
-const JOB_TINTS = ['indigo', 'cyan', 'violet'] as const satisfies readonly Tint[];
-const PROJECT_TINTS = [
-  'amber',
-  'cyan',
-  'emerald',
-  'violet',
-  'sky',
-] as const satisfies readonly Tint[];
 
 // The issue report reads `_type` from the raw data; the page only needs the `_id`.
 const documentFields = { _id: z.string() };

@@ -1,8 +1,5 @@
+import { NOTE_CATEGORIES, type NoteCategory, type Tint } from 'portfolio-content-model';
 import type { WatchNote } from './content';
-import type { Tint } from './tints';
-
-export const NOTE_CATEGORIES = ['ai', 'front-end', 'architecture', 'ux'] as const;
-export type NoteCategory = (typeof NOTE_CATEGORIES)[number];
 
 export const NOTE_FILTERS = ['all', ...NOTE_CATEGORIES] as const;
 export type NoteFilter = (typeof NOTE_FILTERS)[number];

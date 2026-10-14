@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CogIcon } from '@sanity/icons/Cog';
+import { optionalString, stringField } from '../guards';
 import { localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
@@ -66,8 +67,8 @@ export const siteSettings = defineType({
       group: 'identity',
       validation: (rule) =>
         rule.custom((value, context) => {
-          const parent = context.parent as { linkedinUrl?: string } | undefined;
-          return parent?.linkedinUrl && !value ? 'Required when the LinkedIn URL is set' : true;
+          const linkedinUrl = stringField(context.parent, 'linkedinUrl');
+          return linkedinUrl && !value ? 'Required when the LinkedIn URL is set' : true;
         }),
     }),
     defineField({
@@ -147,7 +148,7 @@ export const siteSettings = defineType({
           ...localizedFieldsOf(credits, 'text'),
           seoTitle,
           seoDescription,
-        ]) ?? (ownerName as string),
+        ]) ?? optionalString(ownerName),
     }),
   },
 });
