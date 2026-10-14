@@ -22,7 +22,7 @@ The minimum of E2E tests to cover a path, the maximum of unit tests to cover the
 
 - Unit: `pnpm test`
 - Coverage: `pnpm coverage`
-- End-to-end: `pnpm test:e2e`
+- End-to-end: `pnpm test:e2e` builds the static export first (`pnpm build`, Sanity settings required), then serves `out/` at the domain root on port 3100 (`serve`, GitHub Pages-like trailing slashes, see `e2e/serve.json`).
 
 ## Critical paths
 
