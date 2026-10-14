@@ -5,6 +5,10 @@
  * A committed PNG rather than an `app/apple-icon.tsx` route: with `output: 'export'`, Next emits a
  * generated icon as an extension-less `apple-icon` file (served with the wrong content type) and
  * links it without the base path. A static `app/apple-icon.png` gets both right.
+ *
+ * `app/icon.svg` carries no comment (Satori renders nothing when the markup holds one), so its
+ * colours are documented here: fill = `--primary-500`, stroke = `--primary-foreground` in
+ * `app/globals.css`. SVG favicons cannot read CSS variables: update both if the tokens change.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { ImageResponse } from 'next/og';
@@ -16,8 +20,10 @@ const SIZE = { width: 180, height: 180 };
 const TILE_COLOR = '#4f46e5';
 
 async function renderAppleIcon(): Promise<void> {
-  // Satori's SVG rasterizer renders nothing when the markup holds a comment: strip them.
-  const svg = (await readFile(SOURCE, 'utf8')).replaceAll(/<!--[\s\S]*?-->/g, '');
+  const svg = await readFile(SOURCE, 'utf8');
+  if (svg.includes('<!--')) {
+    throw new Error('app/icon.svg must not contain comments: Satori renders nothing when it does.');
+  }
   const monogram = Buffer.from(svg).toString('base64');
   // iOS rounds the corners itself: the tile is full-bleed, the SVG's rounded corners fall on it.
   // Satori (`next/og`) only understands inline styles.
