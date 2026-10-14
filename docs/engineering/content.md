@@ -33,6 +33,10 @@ How the portfolio content is edited, checked and published. Decision record: [AD
 
 The CLI uses your login (`pnpm --filter portfolio-studio exec sanity login` once). No token is stored anywhere: the dataset is public, and writes use your own session.
 
+## Seeding
+
+`pnpm studio:seed` writes the fixture's documents to the dataset of `SANITY_STUDIO_DATASET` (default `production`), then runs `pnpm content:check` against that same dataset (it passes `SANITY_PROJECT_ID` and `SANITY_DATASET` to the check, overriding `.env.local`). The seed exits 1 when the check fails.
+
 ## Editing content
 
 1. Open the Studio, edit, then **Publish**. Every localized field shows an English and a French slot.

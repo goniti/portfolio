@@ -2,10 +2,12 @@
  * Seeds the dataset with the portfolio content (ADR-003): `pnpm studio:seed` (or, from `studio/`,
  * `pnpm seed`) runs it through `sanity exec --with-user-token`, so it writes with your own login and
  * no token is stored. Idempotent: fixed `_id`s and `_key`s, `createOrReplace` in one transaction,
- * images uploaded by content hash (an upload of the same file returns the same asset).
+ * images uploaded by content hash (an upload of the same file returns the same asset). It ends by
+ * running `pnpm content:check` against the seeded dataset, and exits 1 when the check fails.
  *
  * Target another dataset with `SANITY_STUDIO_DATASET=development pnpm studio:seed`.
  */
+import { spawnSync } from 'node:child_process';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { getCliClient } from 'sanity/cli';
@@ -20,6 +22,8 @@ const SCREENSHOT_FILES: Record<string, string> = {
   'project-maillons': 'maillons-site.png',
 };
 const AVATAR_FILE = 'carlos.png';
+
+const REPOSITORY_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 
 const client = getCliClient({ apiVersion: API_VERSION });
 
@@ -41,8 +45,24 @@ async function uploadAssets() {
   return { avatar, screenshots };
 }
 
+/**
+ * Runs the site's `pnpm content:check` against the dataset just seeded; true when it passes. A
+ * child process, because the site validates its env at import time: the variables set here take
+ * precedence over `.env.local`, and CI runs the very same command.
+ */
+function runContentCheck(projectId: string, dataset: string): boolean {
+  const result = spawnSync('pnpm', ['content:check'], {
+    cwd: REPOSITORY_ROOT,
+    stdio: 'inherit',
+    env: { ...process.env, SANITY_PROJECT_ID: projectId, SANITY_DATASET: dataset },
+  });
+  if (result.error) throw result.error;
+  return result.status === 0;
+}
+
 async function seed() {
   const { projectId, dataset } = client.config();
+  if (!projectId || !dataset) throw new Error('The Sanity CLI client has no projectId or dataset');
   console.log(`Seeding ${projectId}/${dataset}…`);
 
   const documents = buildDocuments(HOME_CONTENT_FIXTURE, await uploadAssets());
@@ -56,7 +76,8 @@ async function seed() {
 
   console.log(`  ${documents.length} documents published:`);
   for (const document of documents) console.log(`    ${document._type} "${document._id}"`);
-  console.log('Done. Run `pnpm content:check` from the repository root to validate them.');
+
+  if (!runContentCheck(projectId, dataset)) process.exitCode = 1;
 }
 
 seed().catch((error: unknown) => {
