@@ -3,7 +3,7 @@ import { missingLanguages, type LocaleRules, type LocalizedItem } from './locale
 type MaybeLocalized = readonly LocalizedItem[] | null | undefined;
 
 /** A localized field whose validation is not the default `requireLocales()`. */
-export interface LocalizedPreviewField extends LocaleRules {
+interface LocalizedPreviewField extends LocaleRules {
   items: MaybeLocalized;
   /** Mirrors `requireLocales({ optional: true })`: absent is fine, once set every locale counts. */
   optional?: boolean;
