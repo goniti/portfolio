@@ -38,6 +38,11 @@ Always answer and write every deliverable in English.
 | `pnpm secrets`         | Scans the repository for committed secrets              |
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
 | `pnpm lint:language`   | Flags exclusionary terms                                |
+| `pnpm content:check`   | Validates the published Sanity content (both locales)   |
+| `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)        |
+| `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)              |
+| `pnpm studio:deploy`   | Deploys the Studio and its schema                       |
+| `pnpm studio:seed`     | Recreates the content documents (idempotent)            |
 
 ## Conventions
 
@@ -53,7 +58,7 @@ Always answer and write every deliverable in English.
 - Styling: **Tailwind CSS** · UI library: **goniui** (npm, [demo & Storybook](https://goniti.github.io/goniui/)). Full rules: [`.agents/rules/frontend.md`](.agents/rules/frontend.md).
 - Reuse `goniui` before writing a component (`import { Button } from 'goniui'`, compounds through their subpath: `import * as Dialog from 'goniui/dialog'`); only compose app-specific components on top of it, each with a story. A new look of one of its components is a wrapper in `src/shared/ui/`, never a copy.
 - Tailwind utilities backed by the tokens of `app/globals.css` only: no CSS file per component, no inline `style`, no arbitrary values (`p-[13px]`) or raw colors. Variants through `tv()`.
-- No hard-coded user-facing copy: it lives in the slice's `ui/messages.ts`.
+- No hard-coded user-facing copy: UI copy lives in the slice's `ui/messages.ts`; content (what the owner writes: projects, jobs, notes…) lives in Sanity (`docs/engineering/content.md`, ADR-003).
 - Architecture: **Feature-Sliced Design + Atomic Design**, checked by `pnpm lint:arch` ([`.agents/rules/architecture.md`](.agents/rules/architecture.md)).
 - A wrapper element must carry layout, styling or semantics; spacing comes from the parent's `gap`.
 - Named exports, a props interface per component, no single-letter names.

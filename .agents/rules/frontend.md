@@ -105,7 +105,7 @@ export function ProfileCard({ user }: ProfileCardProps) {
 
 ## 6. No hard-coded copy
 
-Every label, title, placeholder and message lives in the slice's `ui/messages.ts` (see `src/_pages/home/ui/messages.ts`), until an i18n library replaces it with locale files. `src/shared/ui/` components take their copy through props or children. Tests may use literals.
+Every label, title, placeholder and message lives in the slice's `ui/messages.ts` (see `src/_pages/home/ui/hero/messages.ts`); content the owner edits (projects, jobs, notes…) comes from Sanity instead (`CONTEXT.md`, ADR-003), until an i18n library replaces it with locale files. `src/shared/ui/` components take their copy through props or children. Tests may use literals.
 
 ## 7. TypeScript and data
 

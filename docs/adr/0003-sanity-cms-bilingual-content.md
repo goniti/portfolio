@@ -1,7 +1,7 @@
 # ADR-003 — Sanity as the CMS for bilingual (EN/FR) content, built statically for GitHub Pages
 
 - **Date:** 2026-10-13
-- **Status:** `proposed`
+- **Status:** `accepted` (implemented 2026-10-14, see [Implementation notes](#implementation-notes-2026-10-14))
 - **Deciders:** Carlos Gonzalez Lo Vullo (owner), architect agent
 
 ## Context
@@ -200,7 +200,7 @@ scripts/content-check.ts
 - Confirm visibility with `sanity dataset visibility get production`, expecting `public`, which is the default for new datasets. If it is ever made private, add a `SANITY_API_READ_TOKEN` (Viewer) as a GitHub Actions secret, used only by the build. It is never `NEXT_PUBLIC_`.
 - Variables are not prefixed `NEXT_PUBLIC_`, because they are read only at build time on the server. The image URL builder runs during prerender, so the browser receives final URLs.
 - CORS: add the Studio origin (automatic with `sanity deploy`) and `http://localhost:3333`. The site itself makes no browser-side Sanity calls.
-- Webhook: URL `https://api.github.com/repos/goniti/my-portfolio/dispatches`, `POST`, headers `Authorization: Bearer <PAT>` and `Accept: application/vnd.github+json`. Filter: `_type in ["siteSettings","homePage","job","project","watchNote"]`. Triggers: create, update and delete; drafts and versions off. Projection: `{"event_type": "sanity-content-published", "client_payload": {"id": _id, "op": delta::operation()}}`. The PAT is visible in the webhook config and in share links, so never share the webhook. Rotate the PAT when it expires.
+- Webhook: URL `https://api.github.com/repos/goniti/portfolio/dispatches`, `POST`, headers `Authorization: Bearer <PAT>` and `Accept: application/vnd.github+json`. Filter: `_type in ["siteSettings","homePage","job","project","watchNote"]`. Triggers: create, update and delete; drafts and versions off. Projection: `{"event_type": "sanity-content-published", "client_payload": {"id": _id, "op": delta::operation()}}`. The PAT is visible in the webhook config and in share links, so never share the webhook. Rotate the PAT when it expires.
 - `deploy.yml` uses `concurrency: { group: pages, cancel-in-progress: true }`, so a burst of publishes collapses into one deploy.
 
 ## Consequences
@@ -232,3 +232,23 @@ scripts/content-check.ts
 9. **CI.** Add `pnpm content:check` and the TypeGen drift check to `ci.yml`. Add `deploy.yml` (`on: push main, repository_dispatch [sanity-content-published], workflow_dispatch`): content check, build, `actions/upload-pages-artifact`, `actions/deploy-pages`, with concurrency `pages`. Enable Pages (source: GitHub Actions).
 10. **Webhook.** Create the fine-grained PAT and the Sanity webhook as specified. Test it by publishing a typo fix, then test the failure path: in a `development` dataset, write a document missing `fr` through the API (which bypasses Studio validation), point a local `pnpm build` at it, and confirm the build fails with the expected report.
 11. **Docs.** Update `docs/product/features.md`, the README (editing content, Studio URL, how to unblock a failed build) and `docs/engineering/troubleshooting.md` (entries for a missing translation report, Sanity unreachable, stale TypeGen). Add to `CONTEXT.md` the terms **content** (in the CMS) and **UI copy** (in code). Set this ADR to `accepted`.
+
+## Implementation notes (2026-10-14)
+
+Implemented as decided, with Sanity Studio v6, `sanity-plugin-internationalized-array` 5.3, `@sanity/client` 8 and `@sanity/image-url` 2. Project `8i6zw2b7`, dataset `production` (public), Studio deployed to `goniti-portfolio.sanity.studio` (the hostname now redirects into the Sanity dashboard). Step-by-step operations: [`docs/engineering/content.md`](../engineering/content.md). Deviations and precisions:
+
+- **Repository name.** The repository is `goniti/portfolio` (not `my-portfolio`): the webhook URL above is corrected. Step 10 (fine-grained PAT + Sanity webhook) is left to the owner, since only they can create the token; the instructions are in `content.md`.
+- **Localized lists.** Sanity arrays cannot contain arrays, so a list of localized items is an array of objects wrapping one internationalized array: `localizedLine { text: internationalizedArrayString }` and `localizedParagraph { text: internationalizedArrayText }`. Each item still carries both locales.
+- **Blank and optional localized fields.** `hero.titleEnd` is empty in French (the title ends on its highlighted part): `requireLocales({ allowBlank: true })` / `localizedString({ allowBlank: true })` still require both locales to be present. `project.placeholder` is optional (`optionalLocalizedString()`) but required when the project has no screenshot.
+- **Public API.** Steiger requires the public API at the segment level: the files live in `src/shared/api/sanity/` and are imported from `@/shared/api`. Inside `shared`, imports are relative.
+- **Page split.** `HomePage` is the async server component (fetch, then render) and `HomeView` the synchronous view taking `content`, so tests and stories render fixtures. `generateHomeMetadata()` reads `siteSettings.seo` in the default locale. `getHomeContent` is wrapped in React `cache()`.
+- **Fixture and seed.** `src/_pages/home/model/content.fixture.ts` holds the content as it was in code, in the domain shape. Tests and stories render it, and `studio/seed/seed.ts` maps it to documents (fixed `_id`s and `_key`s, `createOrReplace`, deleting stale drafts). It is not kept in sync with Sanity afterwards. The images moved from `public/` to `studio/seed/assets/`.
+- **Avatar.** `avatarAlt` is dropped: the avatar is decorative (`alt=""`, the link carries the accessible name), so `siteSettings.avatar` has no alt field. Project screenshots have a required localized `alt`, seeded with the project title (what the page used before).
+- **Resume.** `resume.pdf` stays in `public/` (the optional last step of the inventory is not done).
+- **Images.** Screenshots are served at `width(1200)` without cropping (the card shows them `object-left-top`), the avatar at 160×160 `fit('crop')`, both `auto('format')`, with `lqip` as the blur placeholder. No `images.loaderFile` yet.
+- **Dates.** Month labels use `en-US` for English (`Sep`, as the hand-written labels did; `en-GB` says `Sept`) and `fr-FR` with an initial capital (`Juil. 2024`), so the page reads exactly as before.
+- **TypeGen.** Singletons are queried with `_type == … && _id == …` (an `_id` filter alone types the result as a union of every document type). TypeGen types an array with `options.list` as `string[]`, so `categories` is narrowed in zod with `pipe`. The drift test checks the query result with its singletons made non-null (a missing singleton is a runtime error, reported by the content check).
+- **Configuration.** `SANITY_PROJECT_ID` is required unless `NODE_ENV=test`; an empty variable counts as unset (an unset GitHub `vars.X` expands to `""`). The Studio reads `SANITY_STUDIO_DATASET` (default `production`) so the CLI and the seed can target a throwaway dataset.
+- **Tooling.** `pnpm typecheck` also type-checks `studio/`, Vitest also runs `studio/**/*.test.ts` (the pure validation helpers), ESLint ignores `studio/` and the generated types, knip runs per workspace. `pnpm studio:deploy` runs `sanity deploy --schema-required`, which also deploys the schema.
+- **Audit.** The Sanity CLI pulls vulnerable `js-yaml`/`smol-toml` (overridden to patched versions in `pnpm-workspace.yaml`) and `braces` ≤ 3.0.3, which has no patched release: `GHSA-vfj7-8cjw-p6xm` is ignored in `auditConfig` (dev-time file watcher of the CLI, nothing ships with the site).
+- **Failure path verified** on a throwaway `development` dataset (since deleted): a document missing `fr` made `pnpm content:check` exit 1 and `pnpm build` fail with `project "project-meeple" › description › fr: missing translation`, and `pnpm dev` showed `[missing fr] …` with a grouped warning.
