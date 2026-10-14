@@ -61,27 +61,11 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
         gap="lg"
         {...revealStagger({ from: 'rows', zoom: true })}
       >
-        {visibleItems.map((project) => {
-          const projectTitle = localize(project.title);
-          return (
-            <li key={project.id} className="flex">
-              <ProjectCard
-                project={project}
-                copy={{
-                  title: projectTitle,
-                  kind: localize(project.kind),
-                  description: localize(project.description),
-                  imageAlt: project.image ? localize(project.image.alt) : '',
-                  placeholder: project.placeholder ? localize(project.placeholder) : '',
-                  demo: copy.demo,
-                  demoLabel: copy.demoLabel(projectTitle),
-                  source: copy.source,
-                  sourceLabel: copy.sourceLabel(projectTitle),
-                }}
-              />
-            </li>
-          );
-        })}
+        {visibleItems.map((project) => (
+          <li key={project.id} className="flex">
+            <ProjectCard project={project} copy={copy} />
+          </li>
+        ))}
       </Grid>
     </PageSection>
   );
