@@ -74,6 +74,7 @@ The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-san
 - Images come from the Sanity CDN (`https://cdn.sanity.io/…`, sized by URL): absolute URLs, untouched by the base path.
 - The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/clientEnv.ts`. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.
 - `next/link` adds the base path by itself; a public asset URL used in `next/image`, a plain `<a href>` or a download goes through `withBasePath()` from `@/shared/lib/base-path`.
+- Icons follow the Next.js metadata file convention: `app/icon.svg` (the favicon, colours mirroring the `--primary-500` token) and `app/apple-icon.png`, both linked from `<head>` under the base path, so browsers never fall back to the domain root's `/favicon.ico`. The PNG is rendered from the SVG by `pnpm icon:render` (`scripts/render-apple-icon.tsx`): run it after editing the SVG and commit both.
 - There is no server at runtime: no route handlers, server actions, `cookies()`/`headers()` or ISR. `pnpm start` (`next start`) does not serve an export; preview the build with any static server instead.
 
 Preview the production build under its base path:

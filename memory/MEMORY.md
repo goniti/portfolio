@@ -5,19 +5,22 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 ## Current status
 
 - Project initialized on 2026-10-13 (Next.js · pnpm). Static export on GitHub Pages: <https://goniti.github.io/portfolio/>.
-- 2026-10-14: Sanity content implemented (ADR-003, `accepted`), branch `feat/sanity-content`, PR to `main` awaiting review.
+- Sanity content live (ADR-003 `accepted`, ADR-004 shared `packages/content-model`): PRs #6, #7, #8 merged into `main`.
   - Project `8i6zw2b7`, dataset `production` (public, seeded: 15 documents, EN+FR complete).
   - Studio: <https://goniti-portfolio.sanity.studio> (appId `ywbqr0hno67nr27uiv4l1slt`), code in `studio/` (pnpm workspace).
-  - GitHub Actions variables set: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`.
+  - GitHub Actions variables set: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`, `NEXT_PUBLIC_CALENDLY_URL`.
   - Guide: `docs/engineering/content.md`.
-- 2026-10-14: review follow-ups of PR #6 on branch `fix/sanity-review-followups`, PR #7. Second review's fixes committed on top (not pushed).
-- Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`, ADR-004: locales, tints, categories, locale checks shared by site and Studio).
+- PR #9 open (`chore/agent-skills-setup`): `docs/agents/*` + CLAUDE.md "Agent skills" section (mattpocock engineering skills: GitHub tracker, default triage labels, single-context domain docs).
+- PR `feat/favicon-features-doc` open: monogram `app/icon.*` served under `/portfolio/` (e2e-checked), `docs/product/features.md` matches what shipped.
+- The owner published a GitHub profile README himself (drafted in the untracked `EXEMPLE/` folder; not part of the repo).
+- Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`: locales, tints, categories, locale checks shared by site and Studio).
 
 ## Pending manual steps (owner)
 
-1. Create the GitHub repository variable `NEXT_PUBLIC_CALENDLY_URL` (`docs/engineering/repository-settings.md`), then push and merge PR #7 (squash).
+1. Review and merge PR #9 and the favicon/features PR (squash).
 2. Create the fine-grained PAT + Sanity webhook (`docs/engineering/content.md`, "Sanity → GitHub webhook").
-3. Optional: `docs/ai/ADAPT_PROMPT.md` to adapt the kit to the business domain.
+3. Try the seed's draft check, its final `content:check` and the Studio "Missing: fr" previews on a throwaway `development` dataset.
+4. Optional: `docs/ai/ADAPT_PROMPT.md` to adapt the kit to the business domain.
 
 ## Recent decisions
 
@@ -30,4 +33,3 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - Env: `process.env` only in `src/shared/config/` (`clientEnv.ts` public, literal reads; `env.ts` server, lazy). Exceptions: `studio/env.ts`, `playwright.config.ts`.
 - No `as` casts (Studio uses `schemaTypes/guards.ts`); code says "locale", the stored Sanity field stays `language`.
 - Scroll reveal: `HomeView` (client) calls `useScrollReveal()`; no null-rendering atom.
-- Open idea: add `app/icon.*` (no favicon; browsers request `/favicon.ico` at the domain root).
