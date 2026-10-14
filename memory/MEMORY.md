@@ -12,6 +12,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
   - Guide: `docs/engineering/content.md`.
 - PR #9 open (`chore/agent-skills-setup`): `docs/agents/*` + CLAUDE.md "Agent skills" section (mattpocock engineering skills: GitHub tracker, default triage labels, single-context domain docs).
 - PR `feat/favicon-features-doc` open: monogram `app/icon.*` served under `/portfolio/` (e2e-checked), `docs/product/features.md` matches what shipped.
+- Branch `fix/storybook` (PR open): Storybook on `@storybook/nextjs-vite` (next/image, next/font via `app/fonts/index.ts`), `pnpm test:storybook` (addon-vitest, Chromium, a11y `error`) as CI job `storybook`; Storybook published at `/portfolio/storybook/` (`STORYBOOK_DIR` in `deploy.yml`, `noindex`).
 - The owner published a GitHub profile README himself (drafted in the untracked `EXEMPLE/` folder; not part of the repo).
 - Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`: locales, tints, categories, locale checks shared by site and Studio).
 
@@ -30,6 +31,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - Localized content in components: `useLocalized()` from `@/shared/lib/i18n`; `copy` props carry UI copy only.
 - `pnpm studio:seed` refuses when drafts exist (opt-in `--discard-drafts`) and ends with `pnpm content:check`.
 - `pnpm test:e2e` builds the export with `NEXT_PUBLIC_BASE_PATH=/portfolio` and serves it under `/portfolio/` on port 3100; `reuseExistingServer: false` (busy port fails).
-- Env: `process.env` only in `src/shared/config/` (`clientEnv.ts` public, literal reads; `env.ts` server, lazy). Exceptions: `studio/env.ts`, `playwright.config.ts`.
+- Env: `process.env` only in `src/shared/config/` (`clientEnv.ts` public, literal reads; both `clientEnv` and `env` validate on first read). No module-level env reads: the Calendly URL is a prop from `HomePage`; `RESUME_PATH` goes through `withBasePath` at render. Exceptions: `studio/env.ts`, `playwright.config.ts`.
 - No `as` casts (Studio uses `schemaTypes/guards.ts`); code says "locale", the stored Sanity field stays `language`.
+- Vitest projects: `unit` (`pnpm test`, jsdom) and `storybook` (`pnpm test:storybook`). Accessible names start with the visible text (`sr-only` rest, no `aria-label` mismatch); tint labels use `text-tint-label-*`.
 - Scroll reveal: `HomeView` (client) calls `useScrollReveal()`; no null-rendering atom.

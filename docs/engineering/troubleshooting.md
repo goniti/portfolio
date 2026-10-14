@@ -64,6 +64,22 @@ Format: **Symptom → Cause → Fix**.
 
 ## Tests
 
+### A story crashes with "process is not defined" or in `next/image`
+
+**Symptom:** `pnpm storybook` shows `ReferenceError: process is not defined` for a story, or the static Storybook shows React error #130 for a component using `next/image` or `next/font`.
+
+**Cause:** a module read `process.env` on import (only literal `process.env.NEXT_PUBLIC_X` reads are replaced, and only when the variable exists), or Storybook ran without the Next.js framework.
+
+**Fix:** keep `@storybook/nextjs-vite` as the framework (`.storybook/main.ts`). Read the environment through `clientEnv`/`env`, which validate on first read, never at module level (no `const X = clientEnv.…` at the top of a module); pass env-derived values such as the Calendly URL as props from `HomePage`. Check with `pnpm test:storybook`.
+
+### `pnpm test:storybook` fails with an accessibility violation
+
+**Symptom:** `expect(received).toHaveNoViolations(expected)` followed by an axe rule, such as `color-contrast` or `label-content-name-mismatch`.
+
+**Cause:** `a11y: { test: 'error' }` in `.storybook/preview.ts`: every story is checked by axe-core in the light theme, and a violation fails it.
+
+**Fix:** fix the component, never the rule. For `label-content-name-mismatch`, put the visible text first in the accessible name and add the rest as `sr-only` text instead of an `aria-label`; for `color-contrast`, use a token that reaches 4.5:1 (`text-tint-label-*` for tint labels). Open the story in `pnpm storybook`, Accessibility panel, to see each node.
+
 ### `pnpm test:e2e` fails with "http://localhost:3100 is already used"
 
 **Symptom:** Playwright stops right away: `Error: http://localhost:3100 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.`
