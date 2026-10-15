@@ -8,3 +8,14 @@ export type {
   StaggerPattern,
 } from './scrollReveal';
 export { useScrollReveal } from './useScrollReveal';
+export {
+  itemPhase,
+  itemStep,
+  scrollStepAt,
+  scrollStepCount,
+  stepScrollTop,
+} from './scrollSteps';
+export type { ScrollStepPhase, ScrollStepPosition, ScrollTrackGeometry } from './scrollSteps';
+export { useMotionCssVariable } from './useMotionCssVariable';
+export { useScrollSteps } from './useScrollSteps';
+export type { ScrollSteps, UseScrollStepsOptions } from './useScrollSteps';
