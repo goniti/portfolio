@@ -14,10 +14,10 @@
     "typecheck": "tsc --noEmit && pnpm -r typecheck",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome check . && eslint .",
+    "lint:fix": "biome check --write . && eslint . --fix",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "test": "vitest run --project unit",
     "test:watch": "vitest --project unit",
     "coverage": "vitest run --project unit --coverage",
@@ -84,7 +84,6 @@
     "eslint": "^10.12.0",
     "eslint-config-biome": "^2.1.3",
     "eslint-config-next": "^16.3.8",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-security": "^4.2.0",
     "eslint-plugin-sonarjs": "^4.2.2",
     "husky": "^9.1.7",
@@ -93,8 +92,6 @@
     "knip": "^6.39.0",
     "lint-staged": "^17.6.0",
     "postcss": "^8.5.29",
-    "prettier": "^3.9.9",
-    "prettier-plugin-tailwindcss": "^0.8.1",
     "secretlint": "^13.0.7",
     "serve": "^14.2.6",
     "size-limit": "^14.2.0",
@@ -113,12 +110,12 @@
     "*": [
       "secretlint"
     ],
-    "*.{ts,tsx,js,mjs,cjs}": [
-      "eslint --fix",
-      "prettier --write"
+    "*.{js,mjs,cjs,ts,mts,tsx,jsx}": [
+      "biome check --write --no-errors-on-unmatched",
+      "eslint --fix"
     ],
-    "*.{json,md,css,scss,yml,yaml,html}": [
-      "prettier --write"
+    "*.{json,jsonc,css}": [
+      "biome check --write --no-errors-on-unmatched"
     ]
   }
 }
