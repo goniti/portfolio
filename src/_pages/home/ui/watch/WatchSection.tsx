@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid, Text } from 'goniui';
-import { tv } from 'tailwind-variants';
 import { useLocale, useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { PulseDot } from '@/shared/ui/atoms';
@@ -13,19 +11,10 @@ import type { WatchNote } from '../../model/content';
 import { formatMonthYear } from '../../model/format';
 import { filterNotes, NOTE_CATEGORY_TINT, NOTE_FILTERS } from '../../model/notes';
 import { useListFilter } from '../../model/useListFilter';
+import { FilterBar } from '../filter-bar/FilterBar';
 import { NoteCard } from './NoteCard';
 import { NoteDialog } from './NoteDialog';
 import { watchMessages } from './messages';
-
-const noteFilterVariants = tv({
-  base: 'min-h-9 flex-none rounded-full border px-3.5 py-0 font-medium font-mono text-xs transition duration-200',
-  variants: {
-    active: {
-      true: 'border-surface-inverse bg-surface-inverse text-foreground-inverse',
-      false: 'border-border-strong bg-chip text-foreground-muted hover:text-foreground-strong',
-    },
-  },
-});
 
 export interface WatchSectionProps {
   title: Localized<string>;
@@ -60,22 +49,14 @@ export function WatchSection({ title, notes }: WatchSectionProps) {
             </Text>
           }
         />
-        <SegmentedControl.Root
-          aria-label={copy.filtersLabel}
-          className="w-auto flex-wrap gap-1.5 overflow-visible border-0 bg-transparent p-0"
-        >
-          {NOTE_FILTERS.map((option) => (
-            <SegmentedControl.Item
-              key={option}
-              active={option === filter}
-              aria-pressed={option === filter}
-              onClick={() => setFilter(option)}
-              className={noteFilterVariants({ active: option === filter })}
-            >
-              {copy.filters[option]}
-            </SegmentedControl.Item>
-          ))}
-        </SegmentedControl.Root>
+        <FilterBar
+          label={copy.filtersLabel}
+          options={NOTE_FILTERS}
+          labels={copy.filters}
+          value={filter}
+          onChange={setFilter}
+          look="pill"
+        />
       </Flex>
       <Grid
         as="ul"
