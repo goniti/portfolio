@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { railFillEnd, railFillRatio, railSpan } from './timelineRail';
+import { railFillEnd, railFillRatio, railPosition, railSpan } from './timelineRail';
 
 /** Centres of four card headings, as measured from the top of the list (px). */
 const CENTRES = [40, 140, 200, 260];
@@ -44,5 +44,22 @@ describe('railFillRatio', () => {
   it('draws the whole rail when it has no length', () => {
     expect(railFillRatio([], { activeStart: 0, fraction: 0 }, 1)).toBe(1);
     expect(railFillRatio([12], { activeStart: 0, fraction: 0 }, 1)).toBe(1);
+  });
+});
+
+describe('railPosition', () => {
+  it('places each heading along the rail, which colours its dot', () => {
+    const span = railSpan(CENTRES);
+    expect(CENTRES.map((centre) => railPosition(centre, span))).toEqual([
+      0,
+      100 / 220,
+      160 / 220,
+      1,
+    ]);
+  });
+
+  it('is 0 on a rail without length, and stays within the rail', () => {
+    expect(railPosition(30, { start: 30, length: 0 })).toBe(0);
+    expect(railPosition(500, railSpan(CENTRES))).toBe(1);
   });
 });

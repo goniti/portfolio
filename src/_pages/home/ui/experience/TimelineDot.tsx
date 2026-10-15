@@ -1,12 +1,13 @@
 import { Button } from 'goniui';
-import type { Tint } from 'portfolio-content-model';
 import { tv } from 'tailwind-variants';
 import type { TimelineCardState } from '../../model/useJobTimeline';
-import { tintVariants } from '../tint';
 
-/** The dot itself, in the job's sector tint (`text-*`, read through `currentColor`). */
+/**
+ * The dot itself, in the rail gradient's colour where it sits (`text-rail-gradient`, read through
+ * `currentColor`): lit when open, translucent once passed, a grey outline until reached.
+ */
 const dotVariants = tv({
-  base: 'block rounded-full border-2 transition-all duration-400 ease-spring group-hover:scale-125',
+  base: 'block rounded-full border-2 text-rail-gradient transition-all duration-400 ease-spring group-hover:scale-125',
   variants: {
     state: {
       open: 'glow-current-ring size-4.5 border-current bg-current',
@@ -22,7 +23,6 @@ const ON_RAIL = 'timeline-dot absolute -translate-y-1/2';
 
 export interface TimelineDotProps {
   state: TimelineCardState;
-  tint: Tint;
   /** Accessible name of the dot button: the job it scrolls to. */
   label: string;
   onOpen: () => void;
@@ -32,13 +32,12 @@ export interface TimelineDotProps {
  * The job's mark on the rail: a 44px button scrolling to its card while the timeline is pinned,
  * a decorative dot in the plain list.
  */
-export function TimelineDot({ state, tint, label, onOpen }: TimelineDotProps) {
-  const tintClass = tintVariants({ tint });
+export function TimelineDot({ state, label, onOpen }: TimelineDotProps) {
   if (state === 'listed') {
     return (
       <span
         aria-hidden="true"
-        className={dotVariants({ state, className: `${tintClass} ${ON_RAIL} -left-8.5` })}
+        className={dotVariants({ state, className: `${ON_RAIL} -left-8.5` })}
       />
     );
   }
@@ -51,7 +50,7 @@ export function TimelineDot({ state, tint, label, onOpen }: TimelineDotProps) {
       onFocus={state === 'open' ? undefined : onOpen}
       className={`group ${ON_RAIL} -left-12 z-10 grid size-11 place-items-center rounded-full`}
     >
-      <span aria-hidden="true" className={dotVariants({ state, className: tintClass })} />
+      <span aria-hidden="true" className={dotVariants({ state })} />
       <span className="sr-only">{label}</span>
     </Button>
   );

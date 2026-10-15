@@ -3,7 +3,7 @@
 import { type RefObject, useLayoutEffect, useRef } from 'react';
 import { type MotionValue, useMotionValue, useTransform } from 'motion/react';
 import { scrollStepAt, useMotionCssVariable } from '@/shared/lib/motion';
-import { railFillRatio, railSpan } from './timelineRail';
+import { railFillRatio, railPosition, railSpan } from './timelineRail';
 
 /** Spread on each card of the timeline: its dot reads the `--dot-y` written on it. */
 export const RAIL_ITEM = { 'data-rail-item': true } as const;
@@ -31,17 +31,23 @@ function offsetTopWithin(element: HTMLElement, ancestor: HTMLElement): number {
 }
 
 /**
- * Centre of each card heading inside the panel (px), and `--dot-y` on each card: the same centre
- * inside the card, where its dot sits.
+ * Lays each card on the rail and returns the centre of each card heading inside the panel (px).
+ * Each card gets `--dot-y`, its heading's centre inside the card, where its dot sits, and
+ * `--rail-at`, where that centre falls along the rail (0 → 1), which colours its dot.
  */
-function measureHeadingCentres(panel: HTMLElement): number[] {
-  const centres: number[] = [];
+function layOutRail(panel: HTMLElement): number[] {
+  const anchored: { item: HTMLElement; centre: number }[] = [];
   for (const item of panel.querySelectorAll<HTMLElement>(RAIL_ITEM_SELECTOR)) {
     const anchor = item.querySelector<HTMLElement>(RAIL_ANCHOR_SELECTOR);
     if (!anchor) continue;
     const centreInItem = offsetTopWithin(anchor, item) + anchor.offsetHeight / 2;
     item.style.setProperty('--dot-y', `${centreInItem}px`);
-    centres.push(offsetTopWithin(item, panel) + centreInItem);
+    anchored.push({ item, centre: offsetTopWithin(item, panel) + centreInItem });
+  }
+  const centres = anchored.map(({ centre }) => centre);
+  const span = railSpan(centres);
+  for (const { item, centre } of anchored) {
+    item.style.setProperty('--rail-at', String(railPosition(centre, span)));
   }
   return centres;
 }
@@ -73,7 +79,7 @@ export function useTimelineRail<Panel extends HTMLElement>({
     const panel = panelRef.current;
     if (!panel) return;
     const measure = () => {
-      const centres = measureHeadingCentres(panel);
+      const centres = layOutRail(panel);
       const { start, length } = railSpan(centres);
       panel.style.setProperty('--rail-start', `${start}px`);
       panel.style.setProperty('--rail-length', `${length}px`);

@@ -12,6 +12,12 @@ export function railSpan(headingCentres: readonly number[]): RailSpan {
   return { start, length: Math.max(0, end - start) };
 }
 
+/** Where a point falls along the base line, 0 (first heading) → 1 (last heading). */
+export function railPosition(offset: number, { start, length }: RailSpan): number {
+  if (length === 0) return 0;
+  return Math.min(1, Math.max(0, (offset - start) / length));
+}
+
 /**
  * Where the rail fill ends (px): on the heading of the last open card, moving towards the next
  * card's heading as the scroll goes through the step; on the last heading once every card has
@@ -35,8 +41,7 @@ export function railFillRatio(
   position: ScrollStepPosition,
   openCount: number,
 ): number {
-  const { start, length } = railSpan(headingCentres);
-  if (length === 0) return 1;
-  const ratio = (railFillEnd(headingCentres, position, openCount) - start) / length;
-  return Math.min(1, Math.max(0, ratio));
+  const span = railSpan(headingCentres);
+  if (span.length === 0) return 1;
+  return railPosition(railFillEnd(headingCentres, position, openCount), span);
 }

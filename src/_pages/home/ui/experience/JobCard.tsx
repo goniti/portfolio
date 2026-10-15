@@ -140,12 +140,7 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
             className={hairlineVariants({ state, className: tintVariants({ tint }) })}
           />
         ) : null}
-        <TimelineDot
-          state={state}
-          tint={tint}
-          label={copy.dotLabel(job.company, period)}
-          onOpen={onOpen}
-        />
+        <TimelineDot state={state} label={copy.dotLabel(job.company, period)} onOpen={onOpen} />
         <Flex wrap="wrap" align="end" justify="between" className="gap-x-6 gap-y-2">
           <Flex direction="col" gap="sm" className="min-w-0">
             {job.sector ? (
