@@ -18,10 +18,20 @@ if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
 	case "$bin" in
 	semgrep) set -- "$bin" "$@" ;;
 	esac
+	# In a git worktree, `.git` is a file pointing to `<repo>/.git/worktrees/<name>`
+	# by absolute path: mount the shared git directory read-only at that same path
+	# so the pointer resolves inside the container.
+	git_dir=$(git rev-parse --path-format=absolute --git-dir 2>/dev/null || true)
+	common_dir=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)
+	if [ -n "$common_dir" ] && [ "$git_dir" != "$common_dir" ]; then
+		set -- -v "$common_dir:$common_dir:ro" "$image" "$@"
+	else
+		set -- "$image" "$@"
+	fi
 	# Same user as the repository owner: git refuses a repository owned by
 	# someone else. HOME in /tmp for the tools that write a cache.
 	exec docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
-		-v "$PWD:/src" -w /src "$image" "$@"
+		-v "$PWD:/src" -w /src "$@"
 fi
 
 if [ -n "${CI:-}" ]; then

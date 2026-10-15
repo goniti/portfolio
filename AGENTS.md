@@ -46,6 +46,7 @@ Always answer and write every deliverable in English.
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports             |
 | `pnpm lint:language`   | Flags exclusionary terms                                            |
 | `pnpm check:agent`     | Every check, summarized in `.agents/work/checks.json` for AI agents |
+| `pnpm worktrees:prune` | Removes agent worktrees and branches whose PR is merged             |
 | `pnpm content:check`   | Validates the published Sanity content (both locales)               |
 | `pnpm icon:render`     | Renders `app/apple-icon.png` from `app/icon.svg`                    |
 | `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)                    |

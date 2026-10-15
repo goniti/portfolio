@@ -18,6 +18,7 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - `pnpm run deploy`: runs the "Deploy to GitHub Pages" workflow on `main` with the `gh` CLI, to publish content changes (`pnpm deploy` is a pnpm built-in, so type `run`).
 - `portfolio-content-model` workspace package (`packages/content-model`, ADR-004): the locales, tints, categories and locale-completeness rules, shared by the site and the Studio.
 - rust-wizard 0.2.0 tooling: `pnpm check:agent` (every check, summarized in `.agents/work/checks.json`), `pnpm lint:dup` (jscpd), `pnpm size` (size-limit, 250 kB brotli budget on the export's scripts), `pnpm audit:deps` (OSV-Scanner) and `pnpm sast` (Semgrep), all in CI; the quality and security agents, scoped Claude Code rules and a Claude Code `Stop` hook.
+- `pnpm worktrees:prune` (`--dry-run` to preview), run quietly by new Husky `post-merge` and `post-checkout` hooks: removes the agent worktrees under `.claude/worktrees/` and the local branches whose pull request is merged; never touches open or missing PRs, uncommitted changes or the main worktree.
 
 ### Changed
 
@@ -39,6 +40,7 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - Formatting and Tailwind class sorting moved from Prettier to Biome; `pnpm lint` runs `biome check` then ESLint, now with the sonarjs and security plugins. Markdown and YAML are no longer formatted.
 - Secret scanning moved from secretlint to Betterleaks (`pnpm secrets` scans the git history; the pre-commit hook scans the staged changes), run from its binary or its Docker image.
 - The Sanity path helpers follow own properties only and never write a prototype key.
+- `.claude/worktrees/` (agent worktrees) is git-ignored and excluded from ESLint and `tsc`: no check scans another branch's checkout any more.
 - Patched versions of `basic-ftp`, `compression`, `tmp` and `uuid` are forced (pnpm overrides) in the Lighthouse CI, `serve` and Sanity CLI tooling.
 
 ### Removed
@@ -46,6 +48,10 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - Prettier, `prettier-plugin-tailwindcss`, `eslint-config-prettier`, secretlint and `@storybook/react-vite`.
 
 - The `ScrollReveal` atom: `HomeView` is a client component and calls `useScrollReveal()` directly.
+
+### Fixed
+
+- The pre-commit secret scan, `pnpm secrets` and `pnpm sast` work inside git worktrees: the Docker fallback of `scripts/tool.sh` also mounts the shared git directory, read-only.
 
 ## [0.1.0] - 2026-10-13
 

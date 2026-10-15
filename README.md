@@ -58,6 +58,7 @@ pnpm dev
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports             |
 | `pnpm lint:language`   | Flags exclusionary terms                                            |
 | `pnpm check:agent`     | Every check, summarized in `.agents/work/checks.json` for AI agents |
+| `pnpm worktrees:prune` | Removes agent worktrees and branches whose PR is merged             |
 | `pnpm content:check`   | Validates the published Sanity content (both locales)               |
 | `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)                    |
 | `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)                          |
@@ -66,6 +67,8 @@ pnpm dev
 | `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)                |
 
 `pnpm secrets`, `pnpm audit:deps` and `pnpm sast` run tools that are not on npm (Betterleaks, OSV-Scanner, Semgrep) through `scripts/tool.sh`: the local binary when it is on the `PATH`, otherwise its pinned Docker image. Without either, a local run prints `[skipped]` and succeeds; CI always runs them. The pre-commit hook scans the staged changes for secrets (`scripts/secrets.sh --staged`), then formats and lints them (lint-staged).
+
+After a `git pull` (`post-merge`) and a branch checkout (`post-checkout`), Husky runs `pnpm worktrees:prune --quiet`: it removes each agent worktree under `.claude/worktrees/` whose pull request is merged, with its local branch and the `worktree-agent-<id>` branch the harness created, then deletes the local branches whose PR is merged and whose upstream is gone. It keeps the main worktree, a worktree with uncommitted changes (reported), and any branch whose PR is open, missing or followed by newer local commits. Without `gh` or network it prints a notice and skips; it never fails the git command and is skipped in CI. Preview with `pnpm worktrees:prune --dry-run`.
 
 ## Editing content
 
@@ -143,6 +146,8 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   └── pull_request_template.md
 ├── .husky/
 │   ├── commit-msg
+│   ├── post-checkout       # pnpm worktrees:prune after a branch checkout
+│   ├── post-merge          # pnpm worktrees:prune after git pull
 │   └── pre-commit
 ├── .storybook/
 │   ├── main.ts
@@ -175,6 +180,8 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   ├── check-agent.mjs
 │   ├── check-inclusive-language.mjs
 │   ├── content-check.ts
+│   ├── lib/                   # testable logic of the scripts (worktree-prune.mjs)
+│   ├── prune-worktrees.mjs
 │   ├── secrets.sh
 │   └── tool.sh
 ├── src/
