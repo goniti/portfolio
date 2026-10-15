@@ -23,6 +23,7 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 
 ### Changed
 
+- A project's source code URL is optional, like its demo URL: the card shows each button only when its URL is set, and no actions row without either (#29).
 - The build fails when a content field misses a language, Sanity is unreachable, or a required document is missing; the previous deploy stays online. `pnpm dev` shows a `[missing fr]` marker instead.
 - Job periods and note dates are formatted from dates (`Jul 2024 — Present`).
 - Project screenshots and the avatar are served by the Sanity image CDN; `public/` keeps only `resume.pdf`.

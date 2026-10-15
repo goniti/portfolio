@@ -216,7 +216,7 @@ const projectSchema = z
     technologies: z.array(z.string().min(1)).min(1),
     tint: z.enum(PROJECT_TINTS),
     demoUrl: z.url().nullish(),
-    sourceUrl: z.url(),
+    sourceUrl: z.url().nullish(),
   })
   .superRefine((project, context) => {
     if (project.image || project.placeholder) return;
@@ -226,7 +226,7 @@ const projectSchema = z
       message: 'required when the project has no screenshot',
     });
   })
-  .transform(({ image, demoUrl, ...project }) => ({
+  .transform(({ image, demoUrl, sourceUrl, ...project }) => ({
     ...withId(project),
     image: image
       ? {
@@ -236,6 +236,7 @@ const projectSchema = z
         }
       : null,
     demoUrl: demoUrl ?? null,
+    sourceUrl: sourceUrl ?? null,
   }));
 
 const watchNoteSchema = z

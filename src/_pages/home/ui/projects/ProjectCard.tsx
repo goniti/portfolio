@@ -79,20 +79,28 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
             </li>
           ))}
         </Flex>
-        <Flex gap="sm" className="pt-2">
-          {project.demoUrl ? (
-            <CtaButton {...OWN_CURSOR_TARGET} asChild tone="soft" size="md" block>
-              <Link href={project.demoUrl} variant="unstyled" aria-label={copy.demoLabel(title)}>
-                {copy.demo}
-              </Link>
-            </CtaButton>
-          ) : null}
-          <CtaButton {...OWN_CURSOR_TARGET} asChild tone="quiet" size="md" block>
-            <Link href={project.sourceUrl} variant="unstyled" aria-label={copy.sourceLabel(title)}>
-              {copy.source}
-            </Link>
-          </CtaButton>
-        </Flex>
+        {project.demoUrl || project.sourceUrl ? (
+          <Flex gap="sm" className="pt-2">
+            {project.demoUrl ? (
+              <CtaButton {...OWN_CURSOR_TARGET} asChild tone="soft" size="md" block>
+                <Link href={project.demoUrl} variant="unstyled" aria-label={copy.demoLabel(title)}>
+                  {copy.demo}
+                </Link>
+              </CtaButton>
+            ) : null}
+            {project.sourceUrl ? (
+              <CtaButton {...OWN_CURSOR_TARGET} asChild tone="quiet" size="md" block>
+                <Link
+                  href={project.sourceUrl}
+                  variant="unstyled"
+                  aria-label={copy.sourceLabel(title)}
+                >
+                  {copy.source}
+                </Link>
+              </CtaButton>
+            ) : null}
+          </Flex>
+        ) : null}
       </Flex>
     </Surface>
   );

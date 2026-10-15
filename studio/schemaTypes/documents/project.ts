@@ -70,15 +70,16 @@ export const project = defineType({
     defineField({
       name: 'demoUrl',
       title: 'Live demo URL',
-      description: 'Leave empty to hide the "Live Demo" button.',
+      description: 'Leave empty to hide the "Live demo" button.',
       type: 'url',
       validation: (rule) => rule.uri({ scheme: ['https'] }),
     }),
     defineField({
       name: 'sourceUrl',
       title: 'Source code URL',
+      description: 'Leave empty to hide the "Source code" button.',
       type: 'url',
-      validation: (rule) => rule.required().uri({ scheme: ['https'] }),
+      validation: (rule) => rule.uri({ scheme: ['https'] }),
     }),
     defineField({
       name: 'sortOrder',

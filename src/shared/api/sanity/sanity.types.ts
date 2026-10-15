@@ -89,7 +89,7 @@ export type Project = {
   technologies: Array<string>;
   tint: "amber" | "cyan" | "emerald" | "violet" | "sky";
   demoUrl?: string;
-  sourceUrl: string;
+  sourceUrl?: string;
   sortOrder: number;
 };
 
@@ -646,7 +646,7 @@ export type HOME_CONTENT_QUERY_RESULT = {
     technologies: Array<string>;
     tint: "amber" | "cyan" | "emerald" | "sky" | "violet";
     demoUrl: string | null;
-    sourceUrl: string;
+    sourceUrl: string | null;
   }>;
   notes: Array<{
     _id: string;
