@@ -20,7 +20,7 @@ function RevealDemo() {
           </Text>
         ))}
         <Flex justify="between" align="end" wrap="wrap" gap="lg" {...REVEAL.columns}>
-          <Text as="h2" className="text-3xl font-bold">
+          <Text as="h2" className="font-bold text-3xl">
             Heading from the left
           </Text>
           <Text className="text-foreground-muted">Action from the right</Text>

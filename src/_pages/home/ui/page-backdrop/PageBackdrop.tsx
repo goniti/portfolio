@@ -48,10 +48,11 @@ function ContourRings({ origin, rings, className }: ContourRingsProps) {
 export function PageBackdrop() {
   return (
     <Box aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0">
-      <Box className="absolute -top-55 left-1/2 h-175 w-275 -translate-x-3/5 radial-glow-indigo" />
-      <Box className="absolute top-30 -right-50 size-150 radial-glow-cyan" />
-      <Box className="absolute inset-x-0 top-0 h-275 parallax-slow mask-fade-bottom">
+      <Box className="radial-glow-indigo absolute -top-55 left-1/2 h-175 w-275 -translate-x-3/5" />
+      <Box className="radial-glow-cyan absolute top-30 -right-50 size-150" />
+      <Box className="parallax-slow mask-fade-bottom absolute inset-x-0 top-0 h-275">
         <svg
+          aria-hidden="true"
           width="100%"
           height="100%"
           viewBox="0 0 1440 1100"
@@ -70,7 +71,7 @@ export function PageBackdrop() {
           />
         </svg>
       </Box>
-      <Box className="absolute inset-x-0 top-0 h-250 parallax-fast bg-crosshair" />
+      <Box className="parallax-fast absolute inset-x-0 top-0 h-250 bg-crosshair" />
     </Box>
   );
 }

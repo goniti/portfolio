@@ -14,7 +14,7 @@ import { projectsMessages } from './messages';
 import { ProjectCard } from './ProjectCard';
 
 const filterOptionVariants = tv({
-  base: 'min-h-9 flex-none rounded-lg px-3.5 py-0 text-sm font-medium transition duration-200',
+  base: 'min-h-9 flex-none rounded-lg px-3.5 py-0 font-medium text-sm transition duration-200',
   variants: {
     active: {
       true: 'bg-tint-indigo/20 text-foreground-strong shadow-segment-active',

@@ -7,7 +7,7 @@ import type { Project } from '../../model/content';
 import type { ProjectsCopy } from './messages';
 
 const projectMediaVariants = tv({
-  base: 'relative grid aspect-16/10 place-items-center overflow-hidden border-b border-border bg-media',
+  base: 'relative grid aspect-16/10 place-items-center overflow-hidden border-border border-b bg-media',
   variants: {
     tint: {
       amber: 'media-tone-amber',
@@ -52,7 +52,7 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
           <Text
             as="span"
             variant="bodySm"
-            className="rounded-lg border border-dashed border-border-strong px-2.5 py-1.5 font-mono text-foreground-subtle"
+            className="rounded-lg border border-border-strong border-dashed px-2.5 py-1.5 font-mono text-foreground-subtle"
           >
             {project.placeholder ? localize(project.placeholder) : null}
           </Text>
@@ -66,10 +66,10 @@ export function ProjectCard({ project, copy }: ProjectCardProps) {
         </Text>
       </Box>
       <Flex direction="col" gap="md" className="flex-1 p-5.5">
-        <Text as="h3" variant="h2" className="text-xl leading-tight font-bold tracking-tight">
+        <Text as="h3" variant="h2" className="font-bold text-xl leading-tight tracking-tight">
           {title}
         </Text>
-        <Text variant="body" tone="muted" className="leading-relaxed text-pretty">
+        <Text variant="body" tone="muted" className="text-pretty leading-relaxed">
           {localize(project.description)}
         </Text>
         <Flex as="ul" wrap="wrap" className="mt-auto gap-1.5 pt-1.5">

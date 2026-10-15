@@ -13,7 +13,8 @@ export const pulseDotVariants = tv({
 });
 
 export interface PulseDotProps
-  extends HTMLAttributes<HTMLSpanElement>, VariantProps<typeof pulseDotVariants> {}
+  extends HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof pulseDotVariants> {}
 
 /** Decorative "live" indicator: a green dot with an expanding ring. */
 export function PulseDot({ size, className, ...props }: PulseDotProps) {

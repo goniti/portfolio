@@ -6,7 +6,7 @@ import { FINE_POINTER_QUERY, useMediaQuery, usePrefersReducedMotion } from '../.
 import { useCursorFollower } from './useCursorFollower';
 
 export const cursorFollowerVariants = tv({
-  base: 'cursor-geometry pointer-events-none fixed top-0 left-0 z-100 transition-opacity duration-200 will-change-transform',
+  base: 'pointer-events-none fixed top-0 left-0 z-100 cursor-geometry transition-opacity duration-200 will-change-transform',
   variants: {
     mode: {
       dot: 'cursor-dot',

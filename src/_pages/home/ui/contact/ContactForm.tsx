@@ -32,11 +32,11 @@ export function ContactForm({ recipient, openMailto }: ContactFormProps) {
           as="span"
           variant="h2"
           aria-hidden="true"
-          className="grid size-12 place-items-center rounded-2xl bg-tint-emerald/15 font-mono text-xl font-semibold text-success"
+          className="grid size-12 place-items-center rounded-2xl bg-tint-emerald/15 font-mono font-semibold text-success text-xl"
         >
           {copy.sent.glyph}
         </Text>
-        <Text as="h3" variant="h2" className="text-2xl font-bold tracking-tight">
+        <Text as="h3" variant="h2" className="font-bold text-2xl tracking-tight">
           {copy.sent.title}
         </Text>
         <Text variant="bodyLg" tone="muted" className="leading-relaxed">

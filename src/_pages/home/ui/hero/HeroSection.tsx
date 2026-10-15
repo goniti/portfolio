@@ -57,7 +57,7 @@ export function HeroSection({ hero, person, links }: HeroSectionProps) {
           <Text
             as="span"
             variant="bodySm"
-            className="inline-flex items-center gap-2.5 self-start rounded-full border border-tint-indigo/30 bg-tint-indigo-strong/10 py-1.5 pr-3.5 pl-2.5 font-mono font-medium text-accent-indigo"
+            className="inline-flex items-center gap-2.5 self-start rounded-full border border-tint-indigo/30 bg-tint-indigo-strong/10 py-1.5 pr-3.5 pl-2.5 font-medium font-mono text-accent-indigo"
           >
             <PulseDot />
             {person ? formatLocation(person.location, locale, copy.remote) : localize(hero.badge)}
@@ -72,7 +72,7 @@ export function HeroSection({ hero, person, links }: HeroSectionProps) {
               <Text
                 as="p"
                 variant="title"
-                className="text-2xl leading-heading tracking-tighter text-balance md:text-3xl"
+                className="text-balance text-2xl leading-heading tracking-tighter md:text-3xl"
               >
                 {tagline}
               </Text>
@@ -85,7 +85,7 @@ export function HeroSection({ hero, person, links }: HeroSectionProps) {
           <Text
             variant="bodyLg"
             tone="muted"
-            className="max-w-145 text-lg leading-relaxed text-pretty"
+            className="max-w-145 text-pretty text-lg leading-relaxed"
           >
             {localize(hero.lead)}
           </Text>

@@ -19,7 +19,7 @@ export function SectionHeading({ eyebrow, title, titleId, badge, ...props }: Sec
         <Text
           as="span"
           variant="bodySm"
-          className="font-mono font-medium tracking-widest text-accent-cyan uppercase"
+          className="font-medium font-mono text-accent-cyan uppercase tracking-widest"
         >
           {eyebrow}
         </Text>
@@ -29,7 +29,7 @@ export function SectionHeading({ eyebrow, title, titleId, badge, ...props }: Sec
         as="h2"
         variant="display"
         id={titleId}
-        className="max-w-3xl text-3xl leading-heading font-bold tracking-tighter text-balance md:text-4xl lg:text-5xl"
+        className="max-w-3xl text-balance font-bold text-3xl leading-heading tracking-tighter md:text-4xl lg:text-5xl"
       >
         {title}
       </Text>

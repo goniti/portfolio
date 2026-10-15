@@ -23,7 +23,7 @@ export function SiteFooter({ openToWork, status, credits }: SiteFooterProps) {
       align="center"
       wrap="wrap"
       gap="lg"
-      className="mx-auto max-w-300 border-t border-border px-5 pt-7 pb-12"
+      className="mx-auto max-w-300 border-border border-t px-5 pt-7 pb-12"
     >
       <Text
         as="span"
@@ -38,7 +38,7 @@ export function SiteFooter({ openToWork, status, credits }: SiteFooterProps) {
         size="none"
         title={copy.nextCredit}
         onClick={() => setCreditIndex((current) => (current + 1) % credits.length)}
-        className="min-h-9 font-mono text-xs text-foreground-subtle hover:text-accent-indigo"
+        className="min-h-9 font-mono text-foreground-subtle text-xs hover:text-accent-indigo"
       >
         {credit ? localize(credit) : null}
       </Button>

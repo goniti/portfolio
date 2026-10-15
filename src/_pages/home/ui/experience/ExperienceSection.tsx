@@ -50,21 +50,21 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
               className={tintVariants({
                 tint: job.tint,
                 className:
-                  'absolute top-8 -left-8 size-4 rounded-full border-2 border-current bg-background glow-current-lg',
+                  'glow-current-lg absolute top-8 -left-8 size-4 rounded-full border-2 border-current bg-background',
               })}
             />
             <Flex direction="col" gap="sm" className="shrink basis-60">
               <Text
                 as="span"
                 variant="bodySm"
-                className="font-mono font-medium text-foreground-subtle"
+                className="font-medium font-mono text-foreground-subtle"
               >
                 {formatPeriod(job.startDate, job.endDate, locale, copy.present)}
               </Text>
               <Text
                 as="h3"
                 variant="h2"
-                className="text-2xl leading-tight font-bold tracking-tight"
+                className="font-bold text-2xl leading-tight tracking-tight"
               >
                 {job.company}
               </Text>
@@ -90,7 +90,7 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
                   as="li"
                   key={localize(achievement)}
                   gap="md"
-                  className="text-base leading-relaxed text-foreground-soft"
+                  className="text-base text-foreground-soft leading-relaxed"
                 >
                   <span
                     aria-hidden="true"

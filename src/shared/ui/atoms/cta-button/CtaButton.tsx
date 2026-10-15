@@ -7,11 +7,11 @@ import { useMagnet } from '../../../lib/motion';
 import { MAGNET_CURSOR_TARGET } from '../cursor-follower';
 
 export const ctaButtonVariants = tv({
-  base: 'gap-2.5 font-semibold whitespace-nowrap duration-300 ease-spring',
+  base: 'gap-2.5 whitespace-nowrap font-semibold duration-300 ease-spring',
   variants: {
     tone: {
       gradient:
-        'bg-linear-135 from-tint-indigo-strong via-tint-indigo-deep via-60% to-tint-cyan-deep text-primary-foreground shadow-cta hover:text-primary-foreground hover:shadow-cta-hover',
+        'bg-linear-135 from-tint-indigo-strong via-60% via-tint-indigo-deep to-tint-cyan-deep text-primary-foreground shadow-cta hover:text-primary-foreground hover:shadow-cta-hover',
       outline:
         'border border-border-strong bg-chip text-foreground hover:border-tint-indigo/50 hover:text-foreground-strong',
       quiet: 'border border-border-strong text-foreground-soft hover:text-foreground-strong',
@@ -37,7 +37,8 @@ export const ctaButtonVariants = tv({
 });
 
 export interface CtaButtonProps
-  extends Omit<ButtonProps, 'variant' | 'size'>, VariantProps<typeof ctaButtonVariants> {}
+  extends Omit<ButtonProps, 'variant' | 'size'>,
+    VariantProps<typeof ctaButtonVariants> {}
 
 /** The primary (gradient) call to action is magnetic unless told otherwise. */
 function isMagneticByDefault(tone: CtaButtonProps['tone']): boolean {

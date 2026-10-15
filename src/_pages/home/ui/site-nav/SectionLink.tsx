@@ -5,8 +5,8 @@ const sectionLinkVariants = tv({
   base: 'transition-colors duration-200',
   variants: {
     layout: {
-      bar: 'flex-none rounded-full px-3.5 py-2 text-sm font-medium whitespace-nowrap',
-      menu: 'flex min-h-12 items-center justify-between rounded-xl px-3.5 text-base font-semibold',
+      bar: 'flex-none whitespace-nowrap rounded-full px-3.5 py-2 font-medium text-sm',
+      menu: 'flex min-h-12 items-center justify-between rounded-xl px-3.5 font-semibold text-base',
     },
     active: {
       true: 'bg-tint-indigo/20 text-foreground-strong',
@@ -17,7 +17,8 @@ const sectionLinkVariants = tv({
 });
 
 export interface SectionLinkProps
-  extends Omit<LinkProps, 'kind' | 'variant' | 'size'>, VariantProps<typeof sectionLinkVariants> {}
+  extends Omit<LinkProps, 'kind' | 'variant' | 'size'>,
+    VariantProps<typeof sectionLinkVariants> {}
 
 /** In-page link to a section; marked as the current location while that section is read. */
 export function SectionLink({ layout, active, className, ...props }: SectionLinkProps) {

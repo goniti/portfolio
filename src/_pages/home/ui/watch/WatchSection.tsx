@@ -18,7 +18,7 @@ import { NoteDialog } from './NoteDialog';
 import { watchMessages } from './messages';
 
 const noteFilterVariants = tv({
-  base: 'min-h-9 flex-none rounded-full border px-3.5 py-0 font-mono text-xs font-medium transition duration-200',
+  base: 'min-h-9 flex-none rounded-full border px-3.5 py-0 font-medium font-mono text-xs transition duration-200',
   variants: {
     active: {
       true: 'border-surface-inverse bg-surface-inverse text-foreground-inverse',
@@ -53,7 +53,7 @@ export function WatchSection({ title, notes }: WatchSectionProps) {
             <Text
               as="span"
               variant="bodySm"
-              className="inline-flex items-center gap-1.5 rounded-full border border-tint-emerald/35 bg-tint-emerald/10 px-2.5 py-1 font-mono text-2xs font-medium text-success"
+              className="inline-flex items-center gap-1.5 rounded-full border border-tint-emerald/35 bg-tint-emerald/10 px-2.5 py-1 font-medium font-mono text-2xs text-success"
             >
               <PulseDot size="sm" />
               {copy.continuous}
