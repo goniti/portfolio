@@ -17,7 +17,7 @@ export type Status = (typeof Status)[keyof typeof Status];
 ## 2. Functions
 
 - **KISS**: one function = one responsibility; an "and" in the name = two functions; three parameters max, beyond that an options object.
-- **DRY**: abstract at the 3rd occurrence, not before; a single source of truth per concept.
+- **DRY**: duplicated **knowledge** (a business rule, a formatting, a validation, a mapping, a constant) gets a single home at its **2nd occurrence**: a helper in `lib/`, a constant, a schema. Code that merely looks alike (two similar JSX blocks, two close tests) waits for the 3rd. `pnpm lint:dup` (jscpd) flags copy-pasted blocks.
 - **YAGNI**: only what is asked for now.
 - **Decompose from the first draft**: a block that deserves a name becomes a component or a function.
 
@@ -47,6 +47,9 @@ Inclusive terms only: `allowlist` / `denylist`, `main`, `primary` / `replica` (`
 
 Only touch what the task requires. No reordering of imports or keys, no out-of-scope reformatting or renaming, no unrequested "cleanup". When in doubt: **the minimal diff wins**.
 
+- Duplication your change **creates or extends** is in scope: factor it in the same change.
+- Duplication or debt you only **notice** elsewhere stays untouched and is reported: an issue labelled `refactor` (`docs/agents/issue-tracker.md`), or, without an issue tracker, an entry in `docs/backlog/refactor.md`.
+
 ## 7. Security (non-negotiable)
 
 - Every user input validated at the boundary; never a raw request body.
@@ -58,4 +61,4 @@ Only touch what the task requires. No reordering of imports or keys, no out-of-s
 
 ## 8. Subagents
 
-A subagent **does not inherit** these rules: the delegation prompt must restate the applicable ones (see `agent-routing.md`).
+Claude Code subagents load these rules like the main session. A tool whose subagents start without the project instructions does not: there, the delegation prompt restates the applicable ones (see `agent-routing.md`).

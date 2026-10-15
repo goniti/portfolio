@@ -1,0 +1,10 @@
+# Betterleaks configuration: the default rules plus this project's allowlist.
+# Allowlist a false positive here (path or regex), never a real secret: rotate it.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated files that hold hashes, not secrets"
+paths = [
+  '''^\.rust-wizard\.toml$''',
+]

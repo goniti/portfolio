@@ -62,6 +62,22 @@ Format: **Symptom → Cause → Fix**.
 
 **Fix:** run `pnpm next analyze`, filter on the client environment and click the zod module to see its import chain; cut the chain at the first client module. Validation belongs at build time: parse on the server and pass plain data as props. A form validates with a hand-written resolver (`createContactResolver` in `src/_pages/home/model/contact.ts`).
 
+### `sanity.types.ts` changes quotes after `pnpm typegen`
+
+**Symptom:** `pnpm typegen` rewrites every line of `src/shared/api/sanity/sanity.types.ts` from single to double quotes (or back), and the CI step "TypeGen drift" fails.
+
+**Cause:** Sanity TypeGen formats its output with Prettier when it can resolve it, otherwise it prints its own style. The repository has no Prettier since the switch to Biome, so the committed file is TypeGen's raw output.
+
+**Fix:** never reformat the file by hand or with Biome (it is ignored on purpose): run `pnpm typegen` and commit the result. Do not add Prettier back as a dependency.
+
+### `pnpm secrets`, `pnpm audit:deps` or `pnpm sast` prints `[skipped]`
+
+**Symptom:** the check passes locally with `[skipped] betterleaks: not installed and Docker is not running; CI runs it.` (or `osv-scanner`, `semgrep`); `check:agent` marks it `skipped`.
+
+**Cause:** these tools are not on npm: `scripts/tool.sh` runs the binary from the `PATH`, otherwise the pinned Docker image. With neither, a local run skips (CI fails instead).
+
+**Fix:** start Docker (`docker info` must succeed) or install the binary, then run the check again. The first run pulls the image.
+
 ### `pnpm start` fails after `pnpm build`
 
 **Symptom:** `"next start" does not work with "output: export" configuration`.

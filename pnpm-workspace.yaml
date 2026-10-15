@@ -9,6 +9,12 @@ packages:
 overrides:
   'js-yaml@>=3.0.0 <3.15.2': ^3.15.2
   'smol-toml@<1.7.1': ^1.9.1
+  # Same for the tooling of Lighthouse CI (`@lhci/cli`), `serve` and the Sanity CLI (`typeid-js`),
+  # flagged by `pnpm audit:deps` with no upstream release on the patched versions yet. Dev-time only.
+  'basic-ftp@<6.2.1': ^6.2.1
+  'compression@<1.8.2': ^1.8.2
+  'tmp@<0.2.6': ^0.2.6
+  'uuid@<11.1.1': ^11.1.1
 
 auditConfig:
   ignoreGhsas:

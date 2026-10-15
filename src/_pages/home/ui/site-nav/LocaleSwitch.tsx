@@ -6,7 +6,7 @@ import { navControlVariants } from './ThemeToggle';
 import { siteNavMessages } from './messages';
 
 const localeOptionVariants = tv({
-  base: 'h-7 flex-none rounded-full px-2.5 py-0 font-mono text-2xs font-medium',
+  base: 'h-7 flex-none rounded-full px-2.5 py-0 font-medium font-mono text-2xs',
   variants: {
     active: {
       true: 'bg-surface-inverse text-foreground-inverse',
@@ -54,7 +54,7 @@ export function LocaleToggle() {
       variant="unstyled"
       size="none"
       onClick={() => setLocale(next)}
-      className={navControlVariants({ size: 'lg', className: 'font-mono text-2xs font-medium' })}
+      className={navControlVariants({ size: 'lg', className: 'font-medium font-mono text-2xs' })}
     >
       {copy.localeCodes[locale]}{' '}
       <span className="sr-only">{copy.switchLocale(copy.localeNames[next])}</span>

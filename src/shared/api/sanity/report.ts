@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 import { localeIssueParams } from './localized';
-import { isRecord, readAt, type PathSegment } from './path';
+import { childAt, isRecord, readAt, type PathSegment } from './path';
 
 interface DocumentLocation {
   /** `project "project-meeple"`, or the query key when no document is found on the path. */
@@ -23,7 +23,7 @@ function locate(data: unknown, path: readonly PathSegment[]): DocumentLocation {
   let documentDepth = 0;
 
   path.forEach((segment, depth) => {
-    node = isRecord(node) ? node[segment] : undefined;
+    node = childAt(node, segment);
     if (isRecord(node) && typeof node._type === 'string' && typeof node._id === 'string') {
       documentLabel = `${node._type} "${node._id}"`;
       documentDepth = depth + 1;

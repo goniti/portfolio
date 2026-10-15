@@ -20,7 +20,7 @@ function mockMatchMedia(initialMatches: boolean) {
   return {
     change(nextMatches: boolean) {
       state.matches = nextMatches;
-      listeners.forEach((listener) => listener());
+      for (const listener of listeners) listener();
     },
     listenerCount: () => listeners.size,
   };

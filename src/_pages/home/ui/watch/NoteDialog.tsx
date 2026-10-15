@@ -29,12 +29,12 @@ export function NoteDialog({ note, onClose, copy }: NoteDialogProps) {
             justify="between"
             align="center"
             gap="md"
-            className="border-b border-border px-5 py-4"
+            className="border-border border-b px-5 py-4"
           >
             <Text
               as="span"
               variant="bodySm"
-              className={tintVariants({ tint: note.tint, className: 'font-mono font-medium' })}
+              className={tintVariants({ tint: note.tint, className: 'font-medium font-mono' })}
             >
               {note.meta}
             </Text>
@@ -42,24 +42,24 @@ export function NoteDialog({ note, onClose, copy }: NoteDialogProps) {
               <Button
                 variant="unstyled"
                 size="none"
-                className="h-11 min-w-11 flex-none rounded-xl border border-border-strong font-mono text-sm font-medium text-foreground-soft hover:text-foreground-strong"
+                className="h-11 min-w-11 flex-none rounded-xl border border-border-strong font-medium font-mono text-foreground-soft text-sm hover:text-foreground-strong"
               >
                 {copy.close} <span className="sr-only">{copy.closeLabel}</span>
               </Button>
             </Dialog.Close>
           </Flex>
           <Flex direction="col" className="gap-4.5 overflow-y-auto px-6 py-7">
-            <Dialog.Title className="text-3xl leading-tight font-extrabold tracking-tight text-balance">
+            <Dialog.Title className="text-balance font-extrabold text-3xl leading-tight tracking-tight">
               {note.title}
             </Dialog.Title>
-            <Dialog.Description className="text-lg leading-relaxed font-medium text-foreground">
+            <Dialog.Description className="font-medium text-foreground text-lg leading-relaxed">
               {note.excerpt}
             </Dialog.Description>
             {note.body.map((paragraph) => (
               <Text
                 key={paragraph}
                 variant="bodyLg"
-                className="leading-relaxed text-pretty text-foreground-soft"
+                className="text-pretty text-foreground-soft leading-relaxed"
               >
                 {paragraph}
               </Text>
@@ -73,7 +73,7 @@ export function NoteDialog({ note, onClose, copy }: NoteDialogProps) {
               <Text
                 as="span"
                 variant="bodySm"
-                className="font-mono font-medium tracking-wider text-accent-indigo uppercase"
+                className="font-medium font-mono text-accent-indigo uppercase tracking-wider"
               >
                 {copy.takeaways}
               </Text>

@@ -15,5 +15,5 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const WithBadge: Story = {
-  args: { badge: <span className="text-xs text-success">Continuous watch</span> },
+  args: { badge: <span className="text-success text-xs">Continuous watch</span> },
 };

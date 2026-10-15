@@ -21,8 +21,9 @@ const offenders = clientScripts(CHUNKS_DIR).filter((path) =>
 );
 
 if (offenders.length > 0) {
+  const offenderList = offenders.map((path) => `  ${path}`).join('\n');
   console.error(
-    `zod is in the client bundle:\n${offenders.map((path) => `  ${path}`).join('\n')}\nRun \`pnpm next analyze\` to find the import chain.`,
+    `zod is in the client bundle:\n${offenderList}\nRun \`pnpm next analyze\` to find the import chain.`,
   );
   process.exitCode = 1;
 } else {

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/jscpd.json",
+  "minLines": 5,
+  "minTokens": 50,
+  "threshold": 0,
+  "gitignore": true,
+  "absolute": false,
+  "reporters": ["consoleFull", "json"],
+  "output": ".agents/work/jscpd",
+  "format": ["typescript", "tsx", "javascript", "jsx"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/.next/**",
+    "**/out/**",
+    "**/storybook-static/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.stories.*",
+    "**/e2e/**",
+    "**/.agents/**",
+    "src/shared/api/sanity/sanity.types.ts"
+  ]
+}

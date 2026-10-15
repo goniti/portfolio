@@ -38,7 +38,7 @@ export function TerminalCard({ title, status, prompt, lines, stats }: TerminalCa
         className="absolute -inset-px rounded-3xl bg-terminal-halo opacity-35 blur-lg"
       />
       <Box className="relative overflow-hidden rounded-3xl border border-terminal-edge bg-linear-to-b from-terminal-top to-terminal-bottom text-terminal-text shadow-terminal">
-        <Flex align="center" gap="sm" className="border-b border-terminal-line px-4 py-3.5">
+        <Flex align="center" gap="sm" className="border-terminal-line border-b px-4 py-3.5">
           {[0, 1, 2].map((light) => (
             <span
               key={light}
@@ -49,14 +49,14 @@ export function TerminalCard({ title, status, prompt, lines, stats }: TerminalCa
           <Text
             as="span"
             variant="bodySm"
-            className="ml-2.5 font-mono font-medium text-terminal-dim"
+            className="ml-2.5 font-medium font-mono text-terminal-dim"
           >
             {title}
           </Text>
           <Text
             as="span"
             variant="bodySm"
-            className="ml-auto font-mono text-2xs font-medium text-terminal-green"
+            className="ml-auto font-medium font-mono text-2xs text-terminal-green"
           >
             {status}
           </Text>
@@ -68,7 +68,7 @@ export function TerminalCard({ title, status, prompt, lines, stats }: TerminalCa
               variant="body"
               className={terminalToneVariants({
                 tone: line.tone,
-                className: 'font-mono leading-relaxed break-words whitespace-pre-wrap',
+                className: 'whitespace-pre-wrap break-words font-mono leading-relaxed',
               })}
             >
               {line.command ? <span className="text-terminal-prompt">{prompt}</span> : null}
@@ -85,14 +85,14 @@ export function TerminalCard({ title, status, prompt, lines, stats }: TerminalCa
         <Grid
           cols={{ base: 3 }}
           gap="none"
-          className="divide-x divide-terminal-line border-t border-terminal-line"
+          className="divide-x divide-terminal-line border-terminal-line border-t"
         >
           {stats.map((stat) => (
             <Flex key={stat.label} direction="col" gap="xs" className="px-4.5 py-3.5">
               <Text
                 as="span"
                 variant="bodySm"
-                className="font-mono text-2xs font-medium tracking-wider text-terminal-dim uppercase"
+                className="font-medium font-mono text-2xs text-terminal-dim uppercase tracking-wider"
               >
                 {stat.label}
               </Text>

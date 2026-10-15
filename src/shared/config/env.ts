@@ -20,6 +20,7 @@ function buildEnvSchema() {
       NEXT_PUBLIC_SITE_URL: z.url().default(DEFAULT_SITE_URL),
       NEXT_PUBLIC_BASE_PATH: z
         .string()
+        // eslint-disable-next-line security/detect-unsafe-regex -- each repeated segment starts with the `/` its class excludes: linear, no backtracking
         .regex(/^(\/[\w.~-]+)*$/, 'must be empty or look like "/portfolio" (no trailing slash)')
         .default(''),
       NEXT_PUBLIC_CALENDLY_URL: z.preprocess(

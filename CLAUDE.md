@@ -5,9 +5,10 @@
 ## Claude Code
 
 - Specialized subagents are defined in `.claude/agents/`: delegate tasks of their role to them
-  with the Agent tool (`product`, `architect`, `dev`, `qa`, `docs`, `reviewer`, `debugger`, `lead`, `react-feature-builder`).
+  with the Agent tool (`product`, `architect`, `dev`, `qa`, `docs`, `reviewer`, `debugger`, `lead`, `quality`, `security`, `react-feature-builder`).
 - Before writing or editing files yourself, without a subagent: ask the user first
   (see "Delegation" in `AGENTS.md`).
+- The rules are loaded for you from `.claude/rules/`, the scoped ones when you touch matching files: never open the `.agents/rules/` copies.
 - Use `pnpm` for every command; never edit `pnpm-lock.yaml` by hand.
 
 ## Agent skills

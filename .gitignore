@@ -35,3 +35,6 @@ test-results/
 
 # Adaptation prompt batches (`rust-wizard adapt split`)
 docs/ai/batches/
+
+# Agent scratch files: plans, task lists, check reports (`check:agent`)
+.agents/work/

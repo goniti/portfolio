@@ -21,7 +21,7 @@ function CardDemo() {
               className: 'h-48 flex-col items-start justify-end gap-2 p-6 text-left',
             })}
           >
-            <Text as="span" variant="h2" className="text-lg font-bold">
+            <Text as="span" variant="h2" className="font-bold text-lg">
               {card}
             </Text>
             <Text as="span" variant="body" tone="muted">

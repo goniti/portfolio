@@ -32,7 +32,7 @@ export function NoteCard({ category, tint, meta, title, excerpt, cta, onOpen }: 
         <Text
           as="span"
           variant="bodySm"
-          className={tintVariants({ tint, className: 'font-mono font-medium' })}
+          className={tintVariants({ tint, className: 'font-medium font-mono' })}
         >
           {category}
         </Text>
@@ -43,7 +43,7 @@ export function NoteCard({ category, tint, meta, title, excerpt, cta, onOpen }: 
       <Text
         as="span"
         variant="h2"
-        className="text-lg leading-snug font-bold tracking-tight text-balance"
+        className="text-balance font-bold text-lg leading-snug tracking-tight"
       >
         {title}
       </Text>

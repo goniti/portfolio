@@ -52,13 +52,13 @@ export function SkillsSection({ title, skills }: SkillsSectionProps) {
                 as="li"
                 key={technology.name}
                 align="center"
-                className="gap-2.5 rounded-xl border border-border-strong bg-chip px-4 py-3 text-base font-medium transition duration-200 ease-spring hover:-translate-y-0.75 hover:scale-103 hover:border-tint-cyan/50 hover:shadow-chip-lift"
+                className="gap-2.5 rounded-xl border border-border-strong bg-chip px-4 py-3 font-medium text-base transition duration-200 ease-spring hover:-translate-y-0.75 hover:scale-103 hover:border-tint-cyan/50 hover:shadow-chip-lift"
               >
                 <span
                   aria-hidden="true"
                   className={tintVariants({
                     tint: technology.tint,
-                    className: 'size-2 rounded-full bg-current glow-current',
+                    className: 'glow-current size-2 rounded-full bg-current',
                   })}
                 />
                 {technology.name}
@@ -107,12 +107,12 @@ export function SkillsSection({ title, skills }: SkillsSectionProps) {
                 as="li"
                 key={practice._key}
                 align="baseline"
-                className="gap-3.5 border-b border-border py-3"
+                className="gap-3.5 border-border border-b py-3"
               >
                 <Text
                   as="span"
                   variant="bodySm"
-                  className="flex-none font-mono font-medium text-accent-violet"
+                  className="flex-none font-medium font-mono text-accent-violet"
                 >
                   {formatIndex(index, 1)}
                 </Text>

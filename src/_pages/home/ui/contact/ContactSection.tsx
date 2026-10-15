@@ -51,7 +51,7 @@ function ChannelItem({ href, label, value, external, children }: ChannelItemProp
         <Text
           as="span"
           variant="bodySm"
-          className="w-17 flex-none font-mono text-2xs font-medium text-foreground-subtle"
+          className="w-17 flex-none font-medium font-mono text-2xs text-foreground-subtle"
         >
           {label}
         </Text>
@@ -94,7 +94,7 @@ export function ContactSection({ contact, links, calendlyUrl }: ContactSectionPr
           <Text
             as="span"
             variant="bodySm"
-            className="font-mono font-medium tracking-widest text-accent-cyan uppercase"
+            className="font-medium font-mono text-accent-cyan uppercase tracking-widest"
           >
             {copy.eyebrow}
           </Text>
@@ -102,7 +102,7 @@ export function ContactSection({ contact, links, calendlyUrl }: ContactSectionPr
             as="h2"
             variant="display"
             id="contact-title"
-            className="text-4xl leading-none font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl"
+            className="text-balance font-extrabold text-4xl leading-none tracking-tighter md:text-5xl lg:text-6xl"
           >
             {localize(contact.title)}
           </Text>

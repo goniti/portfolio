@@ -1,1 +1,2 @@
+sh scripts/secrets.sh --staged
 pnpm exec lint-staged

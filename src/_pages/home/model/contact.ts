@@ -25,6 +25,7 @@ type ContactProblems = Partial<Record<keyof ContactValues, string>>;
 
 /** Same rule as zod's `z.email()`, which validates the content at build time. */
 const EMAIL_PATTERN =
+  // eslint-disable-next-line security/detect-unsafe-regex -- each repeated domain label ends with the `.` its class excludes: linear, no backtracking
   /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/;
 
 /** The values as sent: every field trimmed. */

@@ -14,6 +14,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - PR `feat/favicon-features-doc` open: monogram `app/icon.*` served under `/portfolio/` (e2e-checked), `docs/product/features.md` matches what shipped.
 - Branch `fix/storybook` (PR open): Storybook on `@storybook/nextjs-vite` (next/image, next/font via `app/fonts/index.ts`), `pnpm test:storybook` (addon-vitest, Chromium, a11y `error`) as CI job `storybook`; Storybook published at `/portfolio/storybook/` (`STORYBOOK_DIR` in `deploy.yml`, `noindex`).
 - The owner published a GitHub profile README himself (drafted in the untracked `EXEMPLE/` folder; not part of the repo).
+- Branch `chore/rust-wizard-0.2.0` (PR open): rust-wizard 0.2.0 update merged (10 conflicts resolved by hand, `.rw-new` deleted), Biome replaces Prettier, Betterleaks replaces secretlint, `pnpm check:agent` green. rust-wizard is not installed locally: `.claude/rules/*` were synced by hand (frontmatter + `.agents/rules` body).
 - Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`: locales, tints, categories, locale checks shared by site and Studio).
 
 ## Pending manual steps (owner)
@@ -36,4 +37,5 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - Vitest projects: `unit` (`pnpm test`, jsdom) and `storybook` (`pnpm test:storybook`). Accessible names start with the visible text (`sr-only` rest, no `aria-label` mismatch); tint labels use `text-tint-label-*`.
 - Scroll reveal: `HomeView` (client) calls `useScrollReveal()`; no null-rendering atom.
 - Client bundle (#18): zod stays server-side, checked by `pnpm bundle:check` in CI (260.9 KB gzip, was 291.8). Making `HomeView` a server component measured +1.3 KB (one client entry per section): sections need the client while the locale toggles client-side; revisit after #15. `use client` only on modules a server component reaches.
+- Tooling (rust-wizard 0.2.0): Biome formats (`format`, `format:check`) and lints with ESLint (`lint` = `biome check` + `eslint`); Tailwind classes sorted by `nursery/useSortedClasses` (fix `safe`, `className`/`class`/`tv`); organizeImports off (no import reordering). Biome skips SVG, Markdown, YAML and generated files. `sanity.types.ts` is TypeGen's raw output (no Prettier). `secrets`/`audit:deps`/`sast` run via `scripts/tool.sh` (binary or Docker). `security/detect-object-injection` is off (typed keys). Dev-tool CVEs pinned by overrides in `pnpm-workspace.yaml`.
 - `pnpm lighthouse` / CI job `lighthouse` (PRs only): export mounted at `.lighthouseci/site/portfolio`, mobile, warn-only ≥ 0.95, reports as artifact. Local perf ≈ 0.9 (LCP, TBT).

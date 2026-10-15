@@ -113,7 +113,7 @@ function CompactNavBar({ activeSection, avatarUrl, ownerName }: CompactNavBarPro
           <ThemeToggle size="lg" />
           <Collapsible.Trigger
             aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
-            className="size-11 flex-none rounded-xl bg-surface-inverse font-mono text-base font-semibold text-foreground-inverse"
+            className="size-11 flex-none rounded-xl bg-surface-inverse font-mono font-semibold text-base text-foreground-inverse"
           >
             <span aria-hidden="true">
               {isMenuOpen ? copy.menuGlyph.open : copy.menuGlyph.closed}

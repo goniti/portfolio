@@ -1,8 +1,6 @@
 'use client';
 
-import * as SegmentedControl from 'goniui/segmented-control';
 import { Flex, Grid } from 'goniui';
-import { tv } from 'tailwind-variants';
 import { useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
 import { REVEAL, revealStagger } from '@/shared/lib/motion';
 import { SectionHeading } from '@/shared/ui/molecules';
@@ -10,18 +8,9 @@ import { PageSection } from '@/shared/ui/templates';
 import type { Project } from '../../model/content';
 import { filterProjects, PROJECT_FILTERS } from '../../model/projects';
 import { useListFilter } from '../../model/useListFilter';
+import { FilterBar } from '../filter-bar/FilterBar';
 import { projectsMessages } from './messages';
 import { ProjectCard } from './ProjectCard';
-
-const filterOptionVariants = tv({
-  base: 'min-h-9 flex-none rounded-lg px-3.5 py-0 text-sm font-medium transition duration-200',
-  variants: {
-    active: {
-      true: 'bg-tint-indigo/20 text-foreground-strong shadow-segment-active',
-      false: 'bg-transparent text-foreground-muted hover:text-foreground-strong',
-    },
-  },
-});
 
 export interface ProjectsSectionProps {
   title: Localized<string>;
@@ -38,22 +27,14 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
     <PageSection id="projects" labelledBy="projects-title">
       <Flex justify="between" align="end" wrap="wrap" className="gap-6" {...REVEAL.columns}>
         <SectionHeading eyebrow={copy.eyebrow} title={localize(title)} titleId="projects-title" />
-        <SegmentedControl.Root
-          aria-label={copy.filtersLabel}
-          className="w-auto max-w-full rounded-xl border-border bg-chip p-1"
-        >
-          {PROJECT_FILTERS.map((option) => (
-            <SegmentedControl.Item
-              key={option}
-              active={option === filter}
-              aria-pressed={option === filter}
-              onClick={() => setFilter(option)}
-              className={filterOptionVariants({ active: option === filter })}
-            >
-              {copy.filters[option]}
-            </SegmentedControl.Item>
-          ))}
-        </SegmentedControl.Root>
+        <FilterBar
+          label={copy.filtersLabel}
+          options={PROJECT_FILTERS}
+          labels={copy.filters}
+          value={filter}
+          onChange={setFilter}
+          look="segment"
+        />
       </Flex>
       <Grid
         as="ul"
