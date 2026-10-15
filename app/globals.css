@@ -434,6 +434,14 @@
       )
   );
 }
+/* Scroll-driven blocks change without transitions while a programmatic scroll jump runs and for
+   the frame it lands on (`data-scroll-still` on <html>, written by `startScrollJump`). */
+@utility still-on-scroll-jump {
+  :root[data-scroll-still] &,
+  :root[data-scroll-still] & * {
+    transition: none;
+  }
+}
 /* goniui's Collapsible animates its content height with keyframes; a parent that drives the
    height itself (grid rows) turns them off for its subtree. */
 @utility collapsible-manual {

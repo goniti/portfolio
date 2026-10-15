@@ -1,7 +1,7 @@
 'use client';
 
 import { Box } from 'goniui';
-import { useScrollReveal } from '@/shared/lib/motion';
+import { useInPageLinkJumps, useScrollReveal } from '@/shared/lib/motion';
 import { CursorFollower } from '@/shared/ui/atoms';
 import type { HomeContent } from '../model/content';
 import { BackToTopButton } from './back-to-top/BackToTopButton';
@@ -27,6 +27,7 @@ export interface HomeViewProps {
 export function HomeView({ content, calendlyUrl }: HomeViewProps) {
   const { site, sectionTitles } = content;
   useScrollReveal();
+  useInPageLinkJumps();
 
   return (
     <>

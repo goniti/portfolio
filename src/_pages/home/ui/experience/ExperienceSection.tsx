@@ -12,8 +12,12 @@ import { JobCard } from './JobCard';
 import { experienceMessages } from './messages';
 import { TimelineRail } from './TimelineRail';
 
-/** Pinned: a tall track (sized by the step count) holding a panel stuck under the navigation. */
+/**
+ * Pinned: a tall track (sized by the step count) holding a panel stuck under the navigation. A
+ * jump across it (a menu link) snaps to where it lands, without transitions.
+ */
 const trackVariants = tv({
+  base: 'still-on-scroll-jump',
   variants: {
     pinned: { true: 'timeline-track', false: '' },
   },
@@ -40,9 +44,8 @@ export interface ExperienceSectionProps {
 export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
   const localize = useLocalized();
   const copy = useMessages(experienceMessages);
-  const { pinned, trackRef, panelRef, counter, reachedEnd, cardState, openCard } = useJobTimeline(
-    jobs.length,
-  );
+  const { pinned, trackRef, panelRef, activeStep, counter, reachedEnd, cardState, openCard } =
+    useJobTimeline(jobs.length);
 
   return (
     <PageSection id="experience" labelledBy="experience-title">
@@ -53,7 +56,7 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
         {...REVEAL.zoom}
       />
       {/* Plain elements: goniui's layout primitives take no ref. */}
-      <div ref={trackRef} className={trackVariants({ pinned })}>
+      <div ref={trackRef} data-active-step={activeStep} className={trackVariants({ pinned })}>
         <div ref={panelRef} className={panelVariants({ pinned })}>
           {pinned ? (
             <Flex aria-hidden="true" justify="between" align="center" gap="md">

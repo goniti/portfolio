@@ -2,6 +2,7 @@ import { act, render, renderHook, screen } from '@testing-library/react';
 import { motionValue } from 'motion/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { stubMatchMedia } from '../testing';
+import { startScrollJump } from './scrollJump';
 import { useScrollSteps } from './useScrollSteps';
 
 /** The scroll progress the mocked `useScroll` reports: the tests drive it by hand. */
@@ -57,6 +58,26 @@ describe('useScrollSteps', () => {
     for (let frame = 26; frame <= 45; frame += 1) scrollTo(frame * 0.01);
     expect(screen.getByRole('status').textContent).toBe('1');
     expect(renderCount).toBe(rendersAfterMount + 1);
+  });
+
+  it('holds still during a scroll jump, then lands on the final step at once', () => {
+    let renderCount = 0;
+    const { result } = renderHook(() => {
+      renderCount += 1;
+      return useScrollSteps({ itemCount: 4, openCount: 1 });
+    });
+    const rendersBeforeJump = renderCount;
+
+    act(() => startScrollJump());
+    for (let frame = 1; frame <= 9; frame += 1) scrollTo(frame * 0.1);
+    expect(result.current.activeStart).toBe(0);
+    expect(result.current.progress.get()).toBe(0);
+    expect(renderCount).toBe(rendersBeforeJump);
+
+    act(() => window.dispatchEvent(new Event('scrollend')));
+    expect(result.current.activeStart).toBe(3);
+    expect(result.current.progress.get()).toBeCloseTo(0.9);
+    expect(renderCount).toBe(rendersBeforeJump + 1);
   });
 
   it('follows a new window size under the same scroll position', () => {

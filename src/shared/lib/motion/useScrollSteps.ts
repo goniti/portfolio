@@ -4,11 +4,13 @@ import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useSta
 import {
   type MotionValue,
   type UseScrollOptions,
+  useMotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
 } from 'motion/react';
 import { usePrefersReducedMotion } from '../media';
+import { isScrollJumping, onScrollJumpEnd } from './scrollJump';
 import { clampOpenCount, scrollStepAt, scrollStepCount, stepScrollTop } from './scrollSteps';
 
 /** Progress runs from the track's top reaching the viewport top to its bottom reaching the bottom. */
@@ -23,7 +25,10 @@ export interface UseScrollStepsOptions {
 export interface ScrollSteps<Track extends HTMLElement> {
   /** The tall element the scroll runs through; it gets `--scroll-step-count` to size itself. */
   trackRef: RefObject<Track | null>;
-  /** Scroll progress through the track, 0 → 1 (no re-render). */
+  /**
+   * Scroll progress through the track, 0 → 1 (no re-render). It holds still during a
+   * programmatic scroll jump (`startScrollJump`) and catches up when the jump lands.
+   */
   progress: MotionValue<number>;
   /** Progress through the current step, 0 → 1 (no re-render). */
   fraction: MotionValue<number>;
@@ -45,7 +50,8 @@ export function useScrollSteps<Track extends HTMLElement = HTMLElement>({
   openCount: requestedOpenCount,
 }: UseScrollStepsOptions): ScrollSteps<Track> {
   const trackRef = useRef<Track>(null);
-  const { scrollYProgress: progress } = useScroll({ target: trackRef, offset: TRACK_OFFSET });
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: TRACK_OFFSET });
+  const progress = useMotionValue(scrollYProgress.get());
   const openCount = clampOpenCount(itemCount, requestedOpenCount);
   const stepCount = scrollStepCount(itemCount, openCount);
   const fraction = useTransform(
@@ -64,7 +70,25 @@ export function useScrollSteps<Track extends HTMLElement = HTMLElement>({
     },
     [itemCount, openCount],
   );
-  useMotionValueEvent(progress, 'change', syncStep);
+  const followScroll = useCallback(
+    (latest: number) => {
+      progress.set(latest);
+      syncStep(latest);
+    },
+    [progress, syncStep],
+  );
+  // A jump across the track (a menu link) does not play the steps: they wait for it to land.
+  const onScroll = useCallback(
+    (latest: number) => {
+      if (!isScrollJumping()) followScroll(latest);
+    },
+    [followScroll],
+  );
+  useMotionValueEvent(scrollYProgress, 'change', onScroll);
+  useEffect(
+    () => onScrollJumpEnd(() => followScroll(scrollYProgress.get())),
+    [followScroll, scrollYProgress],
+  );
   // A new item count or window size moves the steps under the current scroll position.
   useEffect(() => syncStep(progress.get()), [syncStep, progress]);
 

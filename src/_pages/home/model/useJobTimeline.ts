@@ -36,6 +36,8 @@ export interface JobTimeline {
   trackRef: RefObject<HTMLDivElement | null>;
   /** The sticky panel holding the rail and the cards. */
   panelRef: RefObject<HTMLDivElement | null>;
+  /** First open card (the step), for tests and tooling (`data-active-step`). */
+  activeStep: number;
   counter: TimelineCounter;
   /** The last card is open: the rail's tail lights up. */
   reachedEnd: boolean;
@@ -77,6 +79,7 @@ export function useJobTimeline(jobCount: number): JobTimeline {
     pinned,
     trackRef,
     panelRef,
+    activeStep: activeStart,
     counter: {
       first: formatIndex(activeStart, 1),
       last: formatIndex(activeStart + openCount - 1, 1),
