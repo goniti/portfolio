@@ -1,6 +1,7 @@
 import { homePage } from './documents/homePage';
 import { job } from './documents/job';
 import { project } from './documents/project';
+import { sector } from './documents/sector';
 import { siteSettings } from './documents/siteSettings';
 import { watchNote } from './documents/watchNote';
 import { localizedLine, localizedParagraph } from './objects/localizedItems';
@@ -9,6 +10,7 @@ export const schemaTypes = [
   siteSettings,
   homePage,
   job,
+  sector,
   project,
   watchNote,
   localizedLine,

@@ -1,5 +1,5 @@
 import type { Localized } from 'portfolio-content-model';
-import type { HomeContent } from '../../src/_pages/home/model/content';
+import type { HomeContent, Sector } from '../../src/_pages/home/model/content';
 
 /*
  * Maps the site's content fixture (domain shape, both locales) to Sanity documents with fixed
@@ -118,17 +118,36 @@ function homePage({ hero, sectionTitles, skills, contact }: HomeContent) {
   };
 }
 
+/** The sectors of the jobs, once each, in the order the jobs first use them. */
+function uniqueSectors({ jobs: items }: HomeContent): Sector[] {
+  const byId = new Map<string, Sector>();
+  for (const { sector } of items) {
+    if (sector && !byId.has(sector.id)) byId.set(sector.id, sector);
+  }
+  return [...byId.values()];
+}
+
+function sectors(content: HomeContent) {
+  return uniqueSectors(content).map((sector) => ({
+    _id: sector.id,
+    _type: 'sector',
+    name: localized(sector.name),
+    tint: sector.tint,
+  }));
+}
+
 function jobs({ jobs: items }: HomeContent) {
   return items.map((job) => ({
     _id: job.id,
     _type: 'job',
     company: job.company,
     role: localized(job.role),
+    summary: job.summary ? localized(job.summary) : undefined,
+    sector: job.sector ? { _type: 'reference', _ref: job.sector.id } : undefined,
     startDate: job.startDate,
     endDate: job.endDate ?? undefined,
     achievements: lines(job.achievements, 'achievement'),
     technologies: job.technologies,
-    tint: job.tint,
   }));
 }
 
@@ -180,14 +199,18 @@ export interface SeedDocument {
 }
 
 /** The `_id` of every document `buildDocuments` writes, known before any asset is uploaded. */
-export function seedDocumentIds({ jobs, projects, notes }: HomeContent): string[] {
-  return ['siteSettings', 'homePage', ...[...jobs, ...projects, ...notes].map(({ id }) => id)];
+export function seedDocumentIds(content: HomeContent): string[] {
+  const { jobs, projects, notes } = content;
+  const collections = [...uniqueSectors(content), ...jobs, ...projects, ...notes];
+  return ['siteSettings', 'homePage', ...collections.map(({ id }) => id)];
 }
 
 export function buildDocuments(content: HomeContent, assets: AssetRefs): SeedDocument[] {
   return [
     siteSettings(content, assets),
     homePage(content),
+    // Before the jobs that reference them.
+    ...sectors(content),
     ...jobs(content),
     ...projects(content, assets),
     ...watchNotes(content),

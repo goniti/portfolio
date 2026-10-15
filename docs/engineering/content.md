@@ -55,6 +55,8 @@ Rules the Studio enforces (and the build re-checks):
 
 One transitional exception: `siteSettings.person` (full name, job title, location) is required in the Studio, but the build still accepts its absence until it is first published (#16). Without it the hero keeps its tagline as the h1, and `pnpm content:check` prints a reminder. Once set, every field of it is checked like the rest, in both locales.
 
+A second transitional exception: `job.sector` (a reference to a `sector` document, #24) is required in the Studio, but the build accepts a job without one until the owner links every job. Such a card shows no sector label and no top line, and its dot and bullets keep the default indigo tint; `pnpm content:check` lists the jobs still without a sector. A sector's name is checked in both locales. The `tint` field that jobs had before sectors may stay in the stored documents: the query no longer reads it.
+
 ## Fallback policy
 
 | Context                                         | A missing locale…                                                                                   |

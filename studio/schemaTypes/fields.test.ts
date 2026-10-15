@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { JOB_TINTS } from 'portfolio-content-model';
+import { PROJECT_TINTS } from 'portfolio-content-model';
 import { technologiesField, tintField } from './fields';
 
 describe('technologiesField', () => {
@@ -16,14 +16,14 @@ describe('technologiesField', () => {
 
 describe('tintField', () => {
   it('offers only the allowed tints, as radio buttons', () => {
-    const field = tintField('Colour of the dot.', JOB_TINTS);
+    const field = tintField('Colour of the dot.', PROJECT_TINTS);
     expect(field).toMatchObject({
       name: 'tint',
       type: 'string',
       description: 'Colour of the dot.',
     });
     expect(field.options).toEqual({
-      list: JOB_TINTS.map((tint) => ({ title: tint, value: tint })),
+      list: PROJECT_TINTS.map((tint) => ({ title: tint, value: tint })),
       layout: 'radio',
     });
   });
