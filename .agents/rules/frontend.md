@@ -21,7 +21,7 @@ Placement litmus test: does it name a business noun or fetch data? **Yes** → t
 - **Tailwind utilities only**: no CSS file per component, no CSS Modules, no inline `style` (except a truly dynamic value, passed through a CSS variable).
 - **Tokens only**: colors, radii and fonts come from the tokens of `app/globals.css` (`bg-primary-400`, `text-foreground-muted`, `bg-surface`, `border-border`, `rounded-md`). Never a raw color (`#fff`, `bg-[#ff0]`), never an arbitrary value (`p-[13px]`) when the scale has a step. A missing token is added to `app/globals.css` (`:root`, `.dark`, `@theme inline`), then used.
 - **Variants through `tv`**: `tv({ base, variants, defaultVariants })`, props typed with `VariantProps<typeof xVariants>`, `className` merged last. A `cn(cond && '…')` chain choosing between style sets according to a prop is a variant: use `tv`. `cn()` only merges a passed `className` or a one-off toggle; it comes from `goniui` (`import { cn } from 'goniui'`), never a local helper.
-- Class order is Prettier's job (`prettier-plugin-tailwindcss`): do not sort by hand.
+- Class order is Biome's job (`useSortedClasses`, on `className`, `class` and `tv()`): do not sort by hand, `pnpm lint:fix` or the pre-commit hook sorts them.
 
 ```tsx
 // ❌ hand-rolled variant map, raw color
@@ -100,7 +100,8 @@ export function ProfileCard({ user }: ProfileCardProps) {
 
 - **The hook does the dirty work, the view reads**: validation, formatting, sanitization and integration quirks live in a hook returning view-ready values. No regex, sanitization or `dangerouslySetInnerHTML` in JSX.
 - Guard clauses over nested `if/else`; magic values named (`const TOAST_DURATION_MS = 4500`).
-- State scoped as narrowly as possible; abstraction at the 3rd occurrence, not before.
+- State scoped as narrowly as possible.
+- Duplicated knowledge (a formatter, a mapping, a validation, a class list) is factored at its **2nd occurrence**; look-alike markup waits for the 3rd (`code-quality.md`).
 - **No single-letter or cryptic names**, callbacks and tests included: `items.map((item) => …)`, `rowIndex`, never `i`, `x`, `el`, `c`.
 
 ## 6. No hard-coded copy
@@ -123,10 +124,7 @@ Every label, title, placeholder and message lives in the slice's `ui/messages.ts
 
 ## 9. Before declaring a UI task done
 
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm lint:arch`
-- `pnpm test`
+- `pnpm check:agent` is green; on failure, read `.agents/work/checks.json`, not the raw logs.
 - The UI library was searched before creating a component; no useless wrapper; composition over boolean props.
 - Tailwind utilities and tokens only; variants through `tv`.
 - No hard-coded copy, no single-letter names, accessible names everywhere.

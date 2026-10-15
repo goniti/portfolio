@@ -4,15 +4,15 @@ I created this portfolio to showcase my projects, share my ongoing tech watch, a
 
 ## Stack
 
-| Area            | Choice                                                                                 |
-| --------------- | -------------------------------------------------------------------------------------- |
-| Kind            | SSR / Fullstack                                                                        |
-| Framework       | Next.js                                                                                |
-| Build           | Turbopack                                                                              |
-| Package manager | pnpm (workspace: the site + `studio/` + `packages/content-model`)                      |
-| Content         | Sanity (standalone Studio, field-level EN/FR), fetched at build time                   |
-| Quality         | eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, knip, secretlint |
-| CI/CD           | github-ci, dependabot, security, governance                                            |
+| Area            | Choice                                                                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Kind            | SSR / Fullstack                                                                                                               |
+| Framework       | Next.js                                                                                                                       |
+| Build           | Turbopack                                                                                                                     |
+| Package manager | pnpm (workspace: the site + `studio/` + `packages/content-model`)                                                             |
+| Content         | Sanity (standalone Studio, field-level EN/FR), fetched at build time                                                          |
+| Quality         | eslint, biome, husky, lint-staged, commitlint, vitest, playwright, knip, betterleaks, jscpd, size-limit, semgrep, osv-scanner |
+| CI/CD           | github-ci, dependabot, security, governance                                                                                   |
 
 ## Getting started
 
@@ -30,35 +30,42 @@ pnpm dev
 
 ## Scripts
 
-| Command                | Description                                             |
-| ---------------------- | ------------------------------------------------------- |
-| `pnpm dev`             | Starts the development environment                      |
-| `pnpm build`           | Production build                                        |
-| `pnpm bundle:check`    | After a build: fails when zod ships to the browser      |
-| `pnpm start`           | Starts the built version                                |
-| `pnpm typecheck`       | TypeScript check                                        |
-| `pnpm storybook`       | Local Storybook (port 6006)                             |
-| `pnpm build-storybook` | Static Storybook build                                  |
-| `pnpm lint`            | Lint analysis                                           |
-| `pnpm lint:fix`        | Fixes lint errors automatically                         |
-| `pnpm format`          | Formats the code                                        |
-| `pnpm format:check`    | Checks formatting                                       |
-| `pnpm test`            | Unit tests                                              |
-| `pnpm test:watch`      | Tests in watch mode                                     |
-| `pnpm coverage`        | Tests with coverage                                     |
-| `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail   |
-| `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
-| `pnpm lighthouse`      | Mobile Lighthouse on the `/portfolio` export, warn only |
-| `pnpm knip`            | Finds unused files, exports and dependencies            |
-| `pnpm secrets`         | Scans the repository for committed secrets              |
-| `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
-| `pnpm lint:language`   | Flags exclusionary terms                                |
-| `pnpm content:check`   | Validates the published Sanity content (both locales)   |
-| `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)        |
-| `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)              |
-| `pnpm studio:deploy`   | Deploys the Studio and its schema                       |
-| `pnpm studio:seed`     | Recreates the content documents (idempotent)            |
-| `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)    |
+| Command                | Description                                                         |
+| ---------------------- | ------------------------------------------------------------------- |
+| `pnpm dev`             | Starts the development environment                                  |
+| `pnpm build`           | Production build                                                    |
+| `pnpm bundle:check`    | After a build: fails when zod ships to the browser                  |
+| `pnpm size`            | After a build: checks the client bundle size budget                 |
+| `pnpm start`           | Starts the built version                                            |
+| `pnpm typecheck`       | TypeScript check                                                    |
+| `pnpm storybook`       | Local Storybook (port 6006)                                         |
+| `pnpm build-storybook` | Static Storybook build                                              |
+| `pnpm format`          | Formats the code (Biome)                                            |
+| `pnpm format:check`    | Checks formatting (Biome)                                           |
+| `pnpm lint`            | Lint analysis                                                       |
+| `pnpm lint:fix`        | Fixes lint errors automatically                                     |
+| `pnpm test`            | Unit tests                                                          |
+| `pnpm test:watch`      | Tests in watch mode                                                 |
+| `pnpm coverage`        | Tests with coverage                                                 |
+| `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail               |
+| `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright               |
+| `pnpm lighthouse`      | Mobile Lighthouse on the `/portfolio` export, warn only             |
+| `pnpm knip`            | Finds unused files, exports and dependencies                        |
+| `pnpm secrets`         | Scans the git history for committed secrets (Betterleaks)           |
+| `pnpm audit:deps`      | Known vulnerabilities in the dependencies (OSV-Scanner)             |
+| `pnpm sast`            | Static security analysis (Semgrep)                                  |
+| `pnpm lint:dup`        | Finds copy-pasted code (jscpd)                                      |
+| `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports             |
+| `pnpm lint:language`   | Flags exclusionary terms                                            |
+| `pnpm check:agent`     | Every check, summarized in `.agents/work/checks.json` for AI agents |
+| `pnpm content:check`   | Validates the published Sanity content (both locales)               |
+| `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)                    |
+| `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)                          |
+| `pnpm studio:deploy`   | Deploys the Studio and its schema                                   |
+| `pnpm studio:seed`     | Recreates the content documents (idempotent)                        |
+| `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)                |
+
+`pnpm secrets`, `pnpm audit:deps` and `pnpm sast` run tools that are not on npm (Betterleaks, OSV-Scanner, Semgrep) through `scripts/tool.sh`: the local binary when it is on the `PATH`, otherwise its pinned Docker image. Without either, a local run prints `[skipped]` and succeeds; CI always runs them. The pre-commit hook scans the staged changes for secrets (`scripts/secrets.sh --staged`), then formats and lints them (lint-staged).
 
 ## Editing content
 
@@ -121,10 +128,14 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   ├── lead.md
 │   ├── product.md
 │   ├── qa.md
+│   ├── quality.md
 │   ├── react-feature-builder.md
-│   └── reviewer.md
+│   ├── reviewer.md
+│   └── security.md
 ├── .claude/
-│   └── agents/
+│   ├── agents/
+│   ├── rules/
+│   └── settings.json
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   ├── workflows/
@@ -145,6 +156,7 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   ├── adr/
 │   ├── agents/
 │   ├── ai/
+│   ├── backlog/
 │   ├── engineering/
 │   ├── patterns/
 │   ├── product/
@@ -159,8 +171,12 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 ├── public/
 │   └── .gitkeep
 ├── scripts/
+│   ├── audit-deps.mjs
+│   ├── check-agent.mjs
 │   ├── check-inclusive-language.mjs
-│   └── content-check.ts
+│   ├── content-check.ts
+│   ├── secrets.sh
+│   └── tool.sh
 ├── src/
 │   ├── _pages/
 │   └── shared/
@@ -169,15 +185,14 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 │   ├── seed/
 │   ├── sanity.cli.ts
 │   └── sanity.config.ts
+├── .betterleaks.toml
 ├── .dependency-cruiser.cjs
 ├── .editorconfig
 ├── .env.example
 ├── .gitignore
+├── .jscpd.json
 ├── .nvmrc
-├── .prettierignore
-├── .prettierrc.json
-├── .secretlintignore
-├── .secretlintrc.json
+├── .size-limit.cjs
 ├── AGENTS.md
 ├── CHANGELOG.md
 ├── CLAUDE.md
@@ -187,6 +202,7 @@ One-time repository setting: Settings → Pages → Source: **GitHub Actions** (
 ├── LICENSE
 ├── README.md
 ├── SECURITY.md
+├── biome.json
 ├── commitlint.config.mjs
 ├── eslint.config.mjs
 ├── knip.json
@@ -216,7 +232,9 @@ The repository ships agents preconfigured for this project:
 - **Docs agent** — README · guides · changelog ([rules](.agents/docs.md))
 - **Review agent** — pre-merge review · security · conventions ([rules](.agents/reviewer.md))
 - **Debug agent** — diagnosis · minimal fix · troubleshooting ([rules](.agents/debugger.md))
-- **Lead agent** — orchestration · delegation · session memory ([rules](.agents/lead.md))
+- **Lead agent** — planning · tasks.md · session memory ([rules](.agents/lead.md))
+- **Quality agent** — rules · duplication · architecture · check:agent ([rules](.agents/quality.md))
+- **Security agent** — boundaries · authorization · secrets · SAST · dependencies ([rules](.agents/security.md))
 - **React feature builder** — TSX features · UI library · styling · accessibility ([rules](.agents/react-feature-builder.md))
 
 Shared instructions live in [AGENTS.md](AGENTS.md).

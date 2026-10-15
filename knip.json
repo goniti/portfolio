@@ -9,5 +9,5 @@
     }
   },
   "ignoreDependencies": ["@secretlint/secretlint-rule-preset-recommend"],
-  "ignore": ["EXEMPLE/**", "src/shared/api/sanity/sanity.types.ts"]
+  "ignore": ["src/shared/api/sanity/sanity.types.ts"]
 }

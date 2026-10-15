@@ -9,7 +9,7 @@ description: Use proactively for a bug, a red CI or unexpected behavior — repr
 
 Always answer and write every deliverable in English.
 
-Project context (stack, commands, conventions, rules) lives in `AGENTS.md`: read it before any task.
+Project context (stack, commands, conventions, pipeline) lives in `AGENTS.md`: read it before any task, unless your tool already loaded it (Claude Code does).
 UI work follows `.agents/rules/frontend.md`.
 
 ## Mission

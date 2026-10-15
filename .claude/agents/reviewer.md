@@ -9,7 +9,7 @@ description: Use proactively before merging a branch — reviews the actual diff
 
 Always answer and write every deliverable in English.
 
-Project context (stack, commands, conventions, rules) lives in `AGENTS.md`: read it before any task.
+Project context (stack, commands, conventions, pipeline) lives in `AGENTS.md`: read it before any task, unless your tool already loaded it (Claude Code does).
 UI work follows `.agents/rules/frontend.md`.
 
 ## Mission

@@ -1,7 +1,7 @@
 # Stack conventions
 
 Foundation: **Next.js** · Turbopack · strict TypeScript · `pnpm` · Node.js 24.
-Quality: eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, knip, secretlint.
+Quality: eslint, biome, husky, lint-staged, commitlint, vitest, playwright, knip, betterleaks, jscpd, size-limit, semgrep, osv-scanner.
 
 ## Repository structure
 
@@ -16,10 +16,14 @@ Quality: eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, k
 │   ├── lead.md
 │   ├── product.md
 │   ├── qa.md
+│   ├── quality.md
 │   ├── react-feature-builder.md
-│   └── reviewer.md
+│   ├── reviewer.md
+│   └── security.md
 ├── .claude/
-│   └── agents/
+│   ├── agents/
+│   ├── rules/
+│   └── settings.json
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   ├── workflows/
@@ -42,24 +46,28 @@ Quality: eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, k
 ├── public/
 │   └── .gitkeep
 ├── scripts/
-│   └── check-inclusive-language.mjs
+│   ├── audit-deps.mjs
+│   ├── check-agent.mjs
+│   ├── check-inclusive-language.mjs
+│   ├── secrets.sh
+│   └── tool.sh
 ├── src/
 │   ├── _pages/
 │   └── shared/
+├── .betterleaks.toml
 ├── .dependency-cruiser.cjs
 ├── .editorconfig
 ├── .env.example
 ├── .gitignore
+├── .jscpd.json
 ├── .nvmrc
-├── .prettierignore
-├── .prettierrc.json
-├── .secretlintignore
-├── .secretlintrc.json
+├── .size-limit.cjs
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── CODE_OF_CONDUCT.md
 ├── LICENSE
 ├── SECURITY.md
+├── biome.json
 ├── commitlint.config.mjs
 ├── eslint.config.mjs
 ├── knip.json
@@ -90,26 +98,41 @@ Quality: eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, k
 
 ## Commands
 
-| Command                | Purpose                                                 |
-| ---------------------- | ------------------------------------------------------- |
-| `pnpm dev`             | Starts the development environment                      |
-| `pnpm build`           | Production build                                        |
-| `pnpm start`           | Starts the built version                                |
-| `pnpm typecheck`       | TypeScript check                                        |
-| `pnpm storybook`       | Local Storybook (port 6006)                             |
-| `pnpm build-storybook` | Static Storybook build                                  |
-| `pnpm lint`            | Lint analysis                                           |
-| `pnpm lint:fix`        | Fixes lint errors automatically                         |
-| `pnpm format`          | Formats the code                                        |
-| `pnpm format:check`    | Checks formatting                                       |
-| `pnpm test`            | Unit tests                                              |
-| `pnpm test:watch`      | Tests in watch mode                                     |
-| `pnpm coverage`        | Tests with coverage                                     |
-| `pnpm test:e2e`        | Playwright end-to-end tests                             |
-| `pnpm knip`            | Finds unused files, exports and dependencies            |
-| `pnpm secrets`         | Scans the repository for committed secrets              |
-| `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |
-| `pnpm lint:language`   | Flags exclusionary terms                                |
+| Command                | Purpose                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| `pnpm dev`             | Starts the development environment                                  |
+| `pnpm build`           | Production build                                                    |
+| `pnpm bundle:check`    | After a build: fails when zod ships to the browser                  |
+| `pnpm size`            | After a build: checks the client bundle size budget                 |
+| `pnpm start`           | Starts the built version                                            |
+| `pnpm typecheck`       | TypeScript check                                                    |
+| `pnpm storybook`       | Local Storybook (port 6006)                                         |
+| `pnpm build-storybook` | Static Storybook build                                              |
+| `pnpm format`          | Formats the code (Biome)                                            |
+| `pnpm format:check`    | Checks formatting (Biome)                                           |
+| `pnpm lint`            | Lint analysis                                                       |
+| `pnpm lint:fix`        | Fixes lint errors automatically                                     |
+| `pnpm test`            | Unit tests                                                          |
+| `pnpm test:watch`      | Tests in watch mode                                                 |
+| `pnpm coverage`        | Tests with coverage                                                 |
+| `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail               |
+| `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright               |
+| `pnpm lighthouse`      | Mobile Lighthouse on the `/portfolio` export, warn only             |
+| `pnpm knip`            | Finds unused files, exports and dependencies                        |
+| `pnpm secrets`         | Scans the git history for committed secrets (Betterleaks)           |
+| `pnpm audit:deps`      | Known vulnerabilities in the dependencies (OSV-Scanner)             |
+| `pnpm sast`            | Static security analysis (Semgrep)                                  |
+| `pnpm lint:dup`        | Finds copy-pasted code (jscpd)                                      |
+| `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports             |
+| `pnpm lint:language`   | Flags exclusionary terms                                            |
+| `pnpm check:agent`     | Every check, summarized in `.agents/work/checks.json` for AI agents |
+| `pnpm content:check`   | Validates the published Sanity content (both locales)               |
+| `pnpm icon:render`     | Renders `app/apple-icon.png` from `app/icon.svg`                    |
+| `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)                    |
+| `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)                          |
+| `pnpm studio:deploy`   | Deploys the Studio and its schema                                   |
+| `pnpm studio:seed`     | Recreates the content documents (idempotent)                        |
+| `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)                |
 
 ## Known pitfalls
 

@@ -17,5 +17,5 @@ Include the affected version, a description of the issue, reproduction steps and
 
 - Dependencies are audited on every CI run (`pnpm audit`, high severity and above).
 - CodeQL scans the code on every pull request and weekly.
-- secretlint blocks secrets at commit time and in CI.
+- Betterleaks blocks secrets in CI and, when installed (or through Docker), at commit time (`scripts/secrets.sh`).
 - Dependabot keeps dependencies up to date, waiting 7 days before adopting a new release.

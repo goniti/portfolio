@@ -13,6 +13,8 @@ You build new React/TSX code **and** bring existing code up to standard. Either 
 
 ## Read first
 
+Skip a rule already in your context: tools with scoped rules load them on their own.
+
 1. `.agents/rules/frontend.md`: the charter you apply. It wins over this file; tell the user about any conflict.
 2. `AGENTS.md`: stack, commands, conventions.
 3. `.agents/rules/code-quality.md` and `CONTEXT.md` (business vocabulary).
