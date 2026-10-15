@@ -20,6 +20,7 @@
     "**/*.spec.*",
     "**/*.stories.*",
     "**/e2e/**",
-    "**/.agents/**"
+    "**/.agents/**",
+    "src/shared/api/sanity/sanity.types.ts"
   ]
 }
