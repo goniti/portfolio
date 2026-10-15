@@ -76,7 +76,7 @@ Format: **Symptom → Cause → Fix**.
 
 **Cause:** these tools are not on npm: `scripts/tool.sh` runs the binary from the `PATH`, otherwise the pinned Docker image. With neither, a local run skips (CI fails instead).
 
-**Fix:** start Docker (`docker info` must succeed) or install the binary, then run the check again. The first run pulls the image.
+**Fix:** start Docker (`docker info` must succeed) or install the binary, then run the check again. The first run pulls the image. In a git worktree the Docker images cannot read the git metadata: `secrets` fails with `not a git repository` (put the checksum-verified `betterleaks` release binary on the `PATH`), and `sast` scans the ignored `.next/` and `out/` (delete them first).
 
 ### Pre-commit `secrets` or `pnpm sast` fails with "fatal: not a git repository" in a worktree
 

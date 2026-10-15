@@ -172,7 +172,7 @@ function projects({ projects: items }: HomeContent, assets: AssetRefs) {
       technologies: project.technologies,
       tint: project.tint,
       demoUrl: project.demoUrl ?? undefined,
-      sourceUrl: project.sourceUrl,
+      sourceUrl: project.sourceUrl ?? undefined,
       sortOrder: (index + 1) * SORT_ORDER_STEP,
     };
   });

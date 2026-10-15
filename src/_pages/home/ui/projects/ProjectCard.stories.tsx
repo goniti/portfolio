@@ -31,6 +31,17 @@ type Story = StoryObj<typeof meta>;
 
 export const WithScreenshot: Story = {};
 export const Placeholder: Story = { args: { project: bipper } };
-export const WithDemo: Story = {
-  args: { project: { ...meeple, demoUrl: 'https://example.com' } },
+export const SourceOnly: Story = {
+  args: { project: { ...meeple, demoUrl: null, sourceUrl: 'https://github.com/goniti' } },
+};
+export const DemoOnly: Story = {
+  args: { project: { ...meeple, demoUrl: 'https://example.com', sourceUrl: null } },
+};
+export const BothLinks: Story = {
+  args: {
+    project: { ...meeple, demoUrl: 'https://example.com', sourceUrl: 'https://github.com/goniti' },
+  },
+};
+export const NoLinks: Story = {
+  args: { project: { ...meeple, demoUrl: null, sourceUrl: null } },
 };

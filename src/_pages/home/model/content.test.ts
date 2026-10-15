@@ -236,6 +236,43 @@ describe('homeContentSchema', () => {
     ]);
   });
 
+  describe('project links', () => {
+    const projectLinks = (links: { demoUrl?: string | null; sourceUrl?: string | null }) => {
+      const raw = rawContent();
+      const [project] = raw.projects;
+      if (project) Object.assign(project, links);
+      return homeContentSchema.safeParse(raw);
+    };
+
+    it('maps a missing source or demo URL to null', () => {
+      const parsed = projectLinks({ demoUrl: null, sourceUrl: null });
+      expect(parsed.data?.projects[0]).toMatchObject({ demoUrl: null, sourceUrl: null });
+    });
+
+    it('maps an absent source URL field to null', () => {
+      const parsed = projectLinks({ sourceUrl: undefined });
+      expect(parsed.data?.projects[0]?.sourceUrl).toBeNull();
+    });
+
+    it('keeps both URLs when they are set', () => {
+      const parsed = projectLinks({
+        demoUrl: 'https://example.com',
+        sourceUrl: 'https://github.com/goniti',
+      });
+      expect(parsed.data?.projects[0]).toMatchObject({
+        demoUrl: 'https://example.com',
+        sourceUrl: 'https://github.com/goniti',
+      });
+    });
+
+    it('rejects a source URL that is not a URL', () => {
+      const parsed = projectLinks({ sourceUrl: 'not a url' });
+      expect(parsed.error?.issues.map((issue) => issue.path)).toEqual([
+        ['projects', 0, 'sourceUrl'],
+      ]);
+    });
+  });
+
   it('requires the eight lines of the terminal script', () => {
     const raw = rawContent();
     raw.homePage.hero.terminalScript = lines('only one');
