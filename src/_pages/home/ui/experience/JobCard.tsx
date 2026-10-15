@@ -125,7 +125,8 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
   const pinned = state !== 'listed';
 
   return (
-    <Collapsible.Root asChild open={unfolded} onOpenChange={onOpen}>
+    // An open card of the pinned timeline cannot fold or jump: its disclosure is disabled.
+    <Collapsible.Root asChild open={unfolded} onOpenChange={onOpen} disabled={pinned && unfolded}>
       <Surface
         as="li"
         radius="md"
@@ -160,7 +161,7 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
               <Text as="h3" variant="h2" {...RAIL_ANCHOR} className={companyVariants({ state })}>
                 {pinned ? (
                   <Collapsible.Trigger
-                    onFocus={unfolded ? undefined : onOpen}
+                    onFocus={onOpen}
                     className="rounded-sm text-left data-[state=closed]:cursor-pointer data-[state=closed]:after:absolute data-[state=closed]:after:inset-0 data-[state=closed]:after:rounded-2xl"
                   >
                     {job.company}

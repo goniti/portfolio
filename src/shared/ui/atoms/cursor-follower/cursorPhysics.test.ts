@@ -49,6 +49,13 @@ describe('classifyHoverTarget', () => {
     expect(hover).toEqual({ mode: 'magnet', element: button });
   });
 
+  it('ignores a disabled control: nothing to point at', () => {
+    const button = document.createElement('button');
+    button.disabled = true;
+    stubRect(button, 120, 40);
+    expect(classifyHoverTarget(button)).toEqual({ mode: 'dot', element: null });
+  });
+
   it('uses the ring for large targets and text fields', () => {
     const link = document.createElement('a');
     stubRect(link, 600, 300);

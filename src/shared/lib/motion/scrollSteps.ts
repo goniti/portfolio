@@ -54,6 +54,21 @@ export function itemStep(itemIndex: number, stepCount: number): number {
   return clamp(itemIndex, 0, stepCount - 1);
 }
 
+/**
+ * The step that opens an item with the least scroll: an item after the window becomes its last
+ * open item, an item before it its first; an open item needs no step (`null`).
+ */
+export function stepRevealing(
+  itemIndex: number,
+  activeStart: number,
+  openCount: number,
+  stepCount: number,
+): number | null {
+  if (itemIndex < activeStart) return itemStep(itemIndex, stepCount);
+  if (itemIndex >= activeStart + openCount) return itemStep(itemIndex - openCount + 1, stepCount);
+  return null;
+}
+
 /** Whether an item is before, inside or after the open window. */
 export function itemPhase(
   itemIndex: number,

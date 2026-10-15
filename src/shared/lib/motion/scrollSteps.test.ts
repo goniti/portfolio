@@ -5,6 +5,7 @@ import {
   itemStep,
   scrollStepAt,
   scrollStepCount,
+  stepRevealing,
   stepScrollTop,
 } from './scrollSteps';
 
@@ -84,5 +85,25 @@ describe('stepScrollTop', () => {
 
   it('stays on the track top when the track fits in the viewport', () => {
     expect(stepScrollTop(1, 2, { ...geometry, trackHeight: 800 })).toBe(1000);
+  });
+});
+
+describe('stepRevealing', () => {
+  // Four items, two open at a time: steps 0 to 2.
+  it('makes an item after the window its last open item, moving one step only', () => {
+    expect(stepRevealing(2, 0, 2, 3)).toBe(1);
+    expect(stepRevealing(3, 0, 2, 3)).toBe(2);
+    expect(stepRevealing(3, 0, 1, 4)).toBe(3);
+  });
+
+  it('makes an item before the window its first open item', () => {
+    expect(stepRevealing(0, 2, 2, 3)).toBe(0);
+    expect(stepRevealing(1, 2, 2, 3)).toBe(1);
+  });
+
+  it('leaves the scroll alone for an open item', () => {
+    expect(stepRevealing(0, 0, 2, 3)).toBeNull();
+    expect(stepRevealing(1, 0, 2, 3)).toBeNull();
+    expect(stepRevealing(2, 1, 2, 3)).toBeNull();
   });
 });

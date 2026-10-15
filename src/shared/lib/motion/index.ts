@@ -13,6 +13,7 @@ export {
   itemStep,
   scrollStepAt,
   scrollStepCount,
+  stepRevealing,
   stepScrollTop,
 } from './scrollSteps';
 export type { ScrollStepPhase, ScrollStepPosition, ScrollTrackGeometry } from './scrollSteps';

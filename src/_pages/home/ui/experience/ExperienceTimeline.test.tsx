@@ -84,6 +84,41 @@ describe('ExperienceSection timeline', () => {
     expect(scrollTo).toHaveBeenLastCalledWith(expect.objectContaining({ behavior: 'smooth' }));
   });
 
+  it('disables the disclosure and the dot of an open card: there is nothing to jump to', () => {
+    stubMatchMedia([MOTION_ALLOWED, WIDE]);
+    const scrollTo = vi.fn();
+    vi.stubGlobal('scrollTo', scrollTo);
+    render(<ExperienceSection title={title} jobs={jobs} />);
+    const [firstJob, secondJob, thirdJob] = jobButtons();
+    expect(firstJob?.hasAttribute('disabled')).toBe(true);
+    expect(secondJob?.hasAttribute('disabled')).toBe(true);
+    expect(secondJob?.getAttribute('aria-expanded')).toBe('true');
+    expect(thirdJob?.hasAttribute('disabled')).toBe(false);
+    const openDot = screen.getByRole('button', { name: 'PulseLife · Jan 2022 — Jun 2024' });
+    expect(openDot.hasAttribute('disabled')).toBe(true);
+
+    if (secondJob) fireEvent.click(secondJob);
+    fireEvent.click(openDot);
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('scrolls one step only to open the card after the window', () => {
+    stubMatchMedia([MOTION_ALLOWED, WIDE]);
+    const scrollTo = vi.fn();
+    vi.stubGlobal('scrollTo', scrollTo);
+    vi.stubGlobal('innerHeight', 1000);
+    const { container } = render(<ExperienceSection title={title} jobs={jobs} />);
+    const track = container.querySelector<HTMLElement>('.timeline-track');
+    if (!track) throw new Error('no track');
+    Object.defineProperty(track, 'offsetHeight', { value: 3000 });
+    track.getBoundingClientRect = () => new DOMRect(0, 0, 800, 3000);
+
+    const [, , thirdJob] = jobButtons();
+    if (thirdJob) fireEvent.click(thirdJob);
+    // Cards 2–3 open: step 1 of 2, landing 0.2 into it, over a 2000 px scroll span.
+    expect(scrollTo).toHaveBeenCalledWith({ top: 1200, behavior: 'smooth' });
+  });
+
   it('does not re-render while the scroll stays inside a step', () => {
     stubMatchMedia([MOTION_ALLOWED, WIDE]);
     const onRender = vi.fn();

@@ -31,7 +31,9 @@ export const CARD_PADDING = 6;
 const MAGNET_PULL = { x: 0.08, y: 0.12 } as const;
 /** Targets larger than this get the ring instead of the wrapping pill. */
 const MAGNET_MAX = { width: 360, height: 72 } as const;
-export const INTERACTIVE_SELECTOR = 'a,button,input,textarea,[data-cursor]';
+/** Disabled controls are not targets: the follower stays a dot over them. */
+export const INTERACTIVE_SELECTOR =
+  'a,button:not(:disabled),input:not(:disabled),textarea:not(:disabled),[data-cursor]';
 /**
  * Spread on an element that must always be wrapped by the pill, whatever its size
  * (a full-width call to action keeps the same cursor reaction as a compact one).

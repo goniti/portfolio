@@ -42,13 +42,15 @@ export function TimelineDot({ state, label, onOpen }: TimelineDotProps) {
     );
   }
 
+  // The dot of an open card is no jump target: disabled, full colour (no faded look).
   return (
     <Button
       variant="unstyled"
       size="none"
+      disabled={state === 'open'}
       onClick={onOpen}
-      onFocus={state === 'open' ? undefined : onOpen}
-      className={`group ${ON_RAIL} -left-12 z-10 grid size-11 place-items-center rounded-full`}
+      onFocus={onOpen}
+      className={`group ${ON_RAIL} -left-12 z-10 grid size-11 place-items-center rounded-full disabled:opacity-100`}
     >
       <span aria-hidden="true" className={dotVariants({ state })} />
       <span className="sr-only">{label}</span>

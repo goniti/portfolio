@@ -2,7 +2,12 @@
 
 import { type RefObject, useCallback } from 'react';
 import { MOTION_ALLOWED_QUERY, useMediaQuery } from '@/shared/lib/media';
-import { itemPhase, itemStep, type ScrollStepPhase, useScrollSteps } from '@/shared/lib/motion';
+import {
+  itemPhase,
+  type ScrollStepPhase,
+  stepRevealing,
+  useScrollSteps,
+} from '@/shared/lib/motion';
 import { formatIndex } from './format';
 import { useTimelineRail } from './useTimelineRail';
 
@@ -35,7 +40,7 @@ export interface JobTimeline {
   /** The last card is open: the rail's tail lights up. */
   reachedEnd: boolean;
   cardState: (jobIndex: number) => TimelineCardState;
-  /** Scrolls to the step opening a card. */
+  /** Scrolls the least needed to open a card; an open card stays put. */
   openCard: (jobIndex: number) => void;
 }
 
@@ -61,8 +66,11 @@ export function useJobTimeline(jobCount: number): JobTimeline {
     [pinned, activeStart, openCount],
   );
   const openCard = useCallback(
-    (jobIndex: number) => scrollToStep(itemStep(jobIndex, stepCount)),
-    [scrollToStep, stepCount],
+    (jobIndex: number) => {
+      const step = stepRevealing(jobIndex, activeStart, openCount, stepCount);
+      if (step !== null) scrollToStep(step);
+    },
+    [scrollToStep, activeStart, openCount, stepCount],
   );
 
   return {
