@@ -19,6 +19,7 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - `portfolio-content-model` workspace package (`packages/content-model`, ADR-004): the locales, tints, categories and locale-completeness rules, shared by the site and the Studio.
 - rust-wizard 0.2.0 tooling: `pnpm check:agent` (every check, summarized in `.agents/work/checks.json`), `pnpm lint:dup` (jscpd), `pnpm size` (size-limit, 250 kB brotli budget on the export's scripts), `pnpm audit:deps` (OSV-Scanner) and `pnpm sast` (Semgrep), all in CI; the quality and security agents, scoped Claude Code rules and a Claude Code `Stop` hook.
 - `pnpm worktrees:prune` (`--dry-run` to preview), run quietly by new Husky `post-merge` and `post-checkout` hooks: removes the agent worktrees under `.claude/worktrees/` and the local branches whose pull request is merged; never touches open or missing PRs, uncommitted changes or the main worktree.
+- Work section: a pinned, scroll-driven timeline. Cards open two at a time (one on phones) as the page scrolls, the rail fills towards the next job, and a card or its dot scrolls to it on click. With reduced motion it is a plain expanded list. Adds the `motion` dependency (ADR-005).
 
 ### Changed
 

@@ -1,16 +1,34 @@
 'use client';
 
 import { Flex, Text } from 'goniui';
-import { useLocale, useLocalized, useMessages, type Localized } from '@/shared/lib/i18n';
+import { tv } from 'tailwind-variants';
+import { type Localized, useLocalized, useMessages } from '@/shared/lib/i18n';
 import { REVEAL } from '@/shared/lib/motion';
-import { Surface, Tag } from '@/shared/ui/atoms';
 import { SectionHeading } from '@/shared/ui/molecules';
 import { PageSection } from '@/shared/ui/templates';
 import type { Job } from '../../model/content';
-import { formatPeriod } from '../../model/format';
-import { jobTint } from '../../model/sector';
-import { tintVariants } from '../tint';
+import { useJobTimeline } from '../../model/useJobTimeline';
+import { JobCard } from './JobCard';
 import { experienceMessages } from './messages';
+import { TimelineRail } from './TimelineRail';
+
+/**
+ * Pinned: a tall track (sized by the step count) holding a panel stuck under the navigation. A
+ * jump across it (a menu link) snaps to where it lands, without transitions.
+ */
+const trackVariants = tv({
+  base: 'still-on-scroll-jump',
+  variants: {
+    pinned: { true: 'timeline-track', false: '' },
+  },
+});
+
+const panelVariants = tv({
+  base: 'relative flex flex-col gap-3 pl-9',
+  variants: {
+    pinned: { true: 'sticky top-19 sm:top-21', false: '' },
+  },
+});
 
 export interface ExperienceSectionProps {
   title: Localized<string>;
@@ -18,13 +36,16 @@ export interface ExperienceSectionProps {
 }
 
 /**
- * Career timeline: one glass card per job along a gradient rail. The job's sector tints the card
- * (label, top line, dot, bullets); a job without a sector shows no label and no top line.
+ * Career timeline. While the page scrolls through it, the section stays pinned and walks
+ * through the jobs: two cards open at a time on wide screens (one on narrow ones), the others
+ * collapse, and a glowing rail fills towards the next job. With reduced motion, before
+ * hydration or without JavaScript, every card is open in a plain list along a full rail.
  */
 export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
-  const { locale } = useLocale();
   const localize = useLocalized();
   const copy = useMessages(experienceMessages);
+  const { pinned, trackRef, panelRef, activeStep, counter, reachedEnd, cardState, openCard } =
+    useJobTimeline(jobs.length);
 
   return (
     <PageSection id="experience" labelledBy="experience-title">
@@ -34,110 +55,40 @@ export function ExperienceSection({ title, jobs }: ExperienceSectionProps) {
         titleId="experience-title"
         {...REVEAL.zoom}
       />
-      <Flex
-        as="ol"
-        direction="col"
-        {...REVEAL.stagger}
-        className="relative gap-5 pl-8 before:absolute before:inset-y-2.5 before:left-1.75 before:w-0.5 before:rounded-xs before:bg-timeline-rail"
-      >
-        {jobs.map((job) => (
-          <Surface
-            key={job.id}
-            as="li"
-            radius="md"
-            hover="lift"
-            blur
-            className="group relative flex flex-wrap gap-x-10 gap-y-5 p-5 md:p-7"
-          >
-            {job.sector ? (
-              <span
-                aria-hidden="true"
-                className={tintVariants({
-                  tint: jobTint(job),
-                  className:
-                    'absolute inset-x-6 -top-px h-px bg-linear-to-r from-transparent via-current to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-100',
-                })}
-              />
-            ) : null}
-            <span
-              aria-hidden="true"
-              className={tintVariants({
-                tint: jobTint(job),
-                className:
-                  'glow-current-lg absolute top-8 -left-8 size-4 rounded-full border-2 border-current bg-background',
-              })}
-            />
-            <Flex direction="col" gap="sm" className="shrink basis-60">
-              {job.sector ? (
-                <Text
-                  as="span"
-                  variant="caption"
-                  className={tintVariants({
-                    tint: jobTint(job),
-                    className:
-                      'flex items-center gap-2 font-mono font-semibold text-2xs uppercase tracking-widest before:h-px before:w-4 before:bg-current',
-                  })}
-                >
-                  {localize(job.sector.name)}
-                </Text>
-              ) : null}
+      {/* Plain elements: goniui's layout primitives take no ref. */}
+      <div ref={trackRef} data-active-step={activeStep} className={trackVariants({ pinned })}>
+        <div ref={panelRef} className={panelVariants({ pinned })}>
+          {pinned ? (
+            <Flex aria-hidden="true" justify="between" align="center" gap="md">
               <Text
                 as="span"
-                variant="bodySm"
-                className="font-medium font-mono text-foreground-subtle"
+                variant="caption"
+                className="font-medium font-mono text-foreground-soft"
               >
-                {formatPeriod(job.startDate, job.endDate, locale, copy.present)}
+                {copy.counter(counter)}
               </Text>
               <Text
-                as="h3"
-                variant="h2"
-                className="font-bold text-2xl leading-tight tracking-tight"
+                as="span"
+                variant="caption"
+                className="font-medium font-mono text-2xs text-foreground-subtle uppercase tracking-widest"
               >
-                {job.company}
+                {copy.scrollHint} {copy.scrollHintGlyph}
               </Text>
-              <Text as="span" variant="bodyLg" className="font-medium text-accent-indigo">
-                {localize(job.role)}
-              </Text>
-              {job.summary ? (
-                <Text as="p" variant="body" className="text-foreground-muted leading-relaxed">
-                  {localize(job.summary)}
-                </Text>
-              ) : null}
-              <Flex
-                as="ul"
-                wrap="wrap"
-                aria-label={copy.technologiesLabel}
-                className="mt-1.5 gap-1.5"
-              >
-                {job.technologies.map((technology) => (
-                  <li key={technology}>
-                    <Tag>{technology}</Tag>
-                  </li>
-                ))}
-              </Flex>
             </Flex>
-            <Flex as="ul" direction="col" gap="md" className="grow basis-80">
-              {job.achievements.map((achievement) => (
-                <Flex
-                  as="li"
-                  key={localize(achievement)}
-                  gap="md"
-                  className="text-base text-foreground-soft leading-relaxed"
-                >
-                  <span
-                    aria-hidden="true"
-                    className={tintVariants({
-                      tint: jobTint(job),
-                      className: 'mt-2.25 size-1.5 flex-none rounded-xs bg-current',
-                    })}
-                  />
-                  <span>{localize(achievement)}</span>
-                </Flex>
-              ))}
-            </Flex>
-          </Surface>
-        ))}
-      </Flex>
+          ) : null}
+          <TimelineRail lit={reachedEnd} />
+          <Flex as="ol" direction="col" className="gap-2.5" {...REVEAL.stagger}>
+            {jobs.map((job, jobIndex) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                state={cardState(jobIndex)}
+                onOpen={() => openCard(jobIndex)}
+              />
+            ))}
+          </Flex>
+        </div>
+      </div>
     </PageSection>
   );
 }

@@ -30,6 +30,8 @@ export function useMediaQuery(query: string): boolean {
 }
 
 export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+/** Motion is welcome. False during server rendering, so scroll effects start once hydrated. */
+export const MOTION_ALLOWED_QUERY = '(prefers-reduced-motion: no-preference)';
 export const FINE_POINTER_QUERY = '(pointer: fine)';
 
 /** The user asked the system to minimise animation. */

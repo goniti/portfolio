@@ -252,6 +252,7 @@ Shared instructions live in [AGENTS.md](AGENTS.md).
 - [Content (Sanity)](docs/engineering/content.md)
 - [ADR-003: Sanity CMS, bilingual content, static export](docs/adr/0003-sanity-cms-bilingual-content.md)
 - [ADR-004: content model shared by the site and the Studio](docs/adr/0004-shared-content-model-package.md)
+- [ADR-005: `motion` hooks for scroll-driven animation](docs/adr/0005-motion-scroll-driven-timeline.md)
 
 ## Contributing
 

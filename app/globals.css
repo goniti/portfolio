@@ -83,6 +83,9 @@
   --motion-reveal-shift: 2.5rem;
   --motion-reveal-zoom: 0.96;
   --motion-reveal-stagger: 70ms;
+
+  /* Timeline rail gradient (indigo → cyan → violet): where cyan sits along the rail, 0 → 1. */
+  --timeline-mid-stop: 0.55;
 }
 
 .dark {
@@ -215,6 +218,7 @@
   --shadow-avatar: 0 0 22px rgb(99 102 241 / 0.55);
   --shadow-terminal: inset 0 1px 0 rgb(255 255 255 / 0.07);
   --shadow-progress: 0 0 12px rgb(103 232 249 / 0.6);
+  --shadow-timeline-tail: 0 0 12px rgb(56 189 248 / 0.35);
   --shadow-lift-indigo:
     inset 0 0 0 1px rgb(129 140 248 / 0.18), 0 20px 60px -24px rgb(99 102 241 / 0.55);
   --shadow-lift-project: 0 24px 60px -24px rgb(99 102 241 / 0.6);
@@ -359,14 +363,90 @@
   );
 }
 
-/* Timeline rail of the experience section. */
-@utility bg-timeline-rail {
+/* Open timeline dot: a soft ring and a halo in the element's text colour (its rail colour). */
+@utility glow-current-ring {
+  box-shadow:
+    0 0 0 6px color-mix(in oklab, currentColor 18%, transparent),
+    0 0 18px currentColor;
+}
+
+/* Experience timeline (pinned, scroll-driven). The hooks write `--scroll-step-count` on the track
+   (one viewport, plus `--timeline-step-scroll` of scroll per step), the rail geometry in px (`--rail-start`,
+   `--rail-length`: first to last card heading), its fill (`--rail-fill`, 0 → 1) and each card's
+   `--dot-y` (its heading's centre). The fallbacks draw the plain list before any measure. */
+@utility timeline-track {
+  /* The scroll runs from the track's top at the viewport top to its bottom at the viewport
+     bottom: one viewport plus the steps, so each step takes exactly this much scrolling. */
+  --timeline-step-scroll: 37.5vh;
+  height: calc(100vh + var(--scroll-step-count, 1) * var(--timeline-step-scroll));
+}
+/* Base line, ending in a 10rem fade. */
+@utility timeline-rail {
+  top: var(--rail-start, 0px);
+  height: calc(var(--rail-length, 100% - 10rem) + 10rem);
+  background-image: linear-gradient(180deg, var(--border-strong) calc(100% - 10rem), transparent);
+}
+/* The fill scales (compositor only) over the base line, in the brand gradient. */
+@utility timeline-fill {
+  top: var(--rail-start, 0px);
+  height: var(--rail-length, 100%);
   background-image: linear-gradient(
     180deg,
     var(--color-tint-indigo),
-    var(--color-tint-cyan) 50%,
-    rgb(192 132 252 / 0.15)
+    var(--color-tint-cyan) calc(var(--timeline-mid-stop) * 100%),
+    var(--color-tint-violet)
   );
+  transform: scaleY(var(--rail-fill, 1));
+  transform-origin: top;
+}
+/* Glowing run-out past the last card, lit once it is reached. */
+@utility timeline-tail {
+  top: calc(var(--rail-start, 0px) + var(--rail-length, 100%));
+  background-image: linear-gradient(
+    180deg,
+    var(--color-tint-sky),
+    rgb(56 189 248 / 0.35) 40%,
+    transparent
+  );
+}
+@utility timeline-dot {
+  top: var(--dot-y, 2.75rem);
+}
+/* The fill's colour where a card sits on the rail (`--rail-at`, 0 → 1, written with `--dot-y`):
+   indigo → cyan up to the mid stop, cyan → violet after it, as `timeline-fill` draws it. */
+@utility text-rail-gradient {
+  color: color-mix(
+    in srgb,
+    color-mix(
+      in srgb,
+      var(--color-tint-indigo),
+      var(--color-tint-cyan) calc(clamp(0, var(--rail-at, 0) / var(--timeline-mid-stop), 1) * 100%)
+    ),
+    var(--color-tint-violet)
+      calc(
+        clamp(
+          0,
+          (var(--rail-at, 0) - var(--timeline-mid-stop)) /
+          (1 - var(--timeline-mid-stop)),
+          1
+        ) *
+        100%
+      )
+  );
+}
+/* Scroll-driven blocks change without transitions while a programmatic scroll jump runs and for
+   the frame it lands on (`data-scroll-still` on <html>, written by `startScrollJump`). */
+@utility still-on-scroll-jump {
+  :root[data-scroll-still] &,
+  :root[data-scroll-still] & * {
+    transition: none;
+  }
+}
+/* goniui's Collapsible animates its content height with keyframes; a parent that drives the
+   height itself (grid rows) turns them off for its subtree. */
+@utility collapsible-manual {
+  --animate-collapsible-down: none;
+  --animate-collapsible-up: none;
 }
 
 /* Crosshair pattern faded by an ellipse (hero backdrop). */

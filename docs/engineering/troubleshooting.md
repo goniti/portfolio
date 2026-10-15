@@ -156,6 +156,14 @@ permissions:
   security-events: write
 ```
 
+### `position: sticky` does not stick
+
+**Symptom:** a sticky element (the pinned Experience timeline) scrolls away with the page instead of sticking under the navigation.
+
+**Cause:** an ancestor with `overflow: hidden` (Tailwind `overflow-hidden`) is a scroll container, so the element sticks to that ancestor, which never scrolls.
+
+**Fix:** clip with `overflow-clip` (`overflow: clip`) instead: it clips the same way without creating a scroll container. The page's `main` uses it (`HomeView.tsx`).
+
 ---
 
 Entry template:

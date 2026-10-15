@@ -16,6 +16,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - The owner published a GitHub profile README himself (drafted in the untracked `EXEMPLE/` folder; not part of the repo).
 - Branch `chore/rust-wizard-0.2.0` (PR open): rust-wizard 0.2.0 update merged (10 conflicts resolved by hand, `.rw-new` deleted), Biome replaces Prettier, Betterleaks replaces secretlint, `pnpm check:agent` green. rust-wizard is not installed locally: `.claude/rules/*` were synced by hand (frontmatter + `.agents/rules` body).
 - Branch `feat/24-job-sector` (PR open, #24): `sector` document (localized name + tint, `SECTOR_TINTS` = all 6), `job.sector` reference (required in the Studio, nullish in zod until the owner links the jobs), optional `job.summary`; job `tint` removed (leftover values ignored: the query no longer reads it). Card: sector label, 1px gradient top line (`via-current` + `tintVariants`), dot and bullets in the sector tint, default indigo without a sector.
+- Branch `feat/27-scroll-timeline` (PR on `feat/24-job-sector`, retarget to `main` after #25): pinned Work timeline, `motion` hooks only (ADR-005, +8.8 kB brotli); `useScrollSteps`/`useMotionCssVariable`/`scrollJump` (in-page link jumps freeze scroll-driven effects) in `shared/lib/motion`; dots coloured by rail position, not sector; `main` is `overflow-clip` (sticky).
 - Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`: locales, tints, categories, locale checks shared by site and Studio).
 
 ## Pending manual steps (owner)

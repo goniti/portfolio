@@ -1,7 +1,7 @@
 'use client';
 
 import { Box } from 'goniui';
-import { useScrollReveal } from '@/shared/lib/motion';
+import { useInPageLinkJumps, useScrollReveal } from '@/shared/lib/motion';
 import { CursorFollower } from '@/shared/ui/atoms';
 import type { HomeContent } from '../model/content';
 import { BackToTopButton } from './back-to-top/BackToTopButton';
@@ -27,12 +27,15 @@ export interface HomeViewProps {
 export function HomeView({ content, calendlyUrl }: HomeViewProps) {
   const { site, sectionTitles } = content;
   useScrollReveal();
+  useInPageLinkJumps();
 
   return (
     <>
       <ScrollProgress />
       <SiteNav ownerName={site.ownerName} avatarUrl={site.avatarUrl} />
-      <Box as="main" className="relative overflow-hidden">
+      {/* `overflow-clip`, not `hidden`: clips like it without becoming a scroll container, so the
+          pinned Experience timeline (`position: sticky`) still sticks to the viewport. */}
+      <Box as="main" className="relative overflow-clip">
         <PageBackdrop />
         <HeroSection hero={content.hero} person={site.person} links={site.links} />
         <ExperienceSection title={sectionTitles.experience} jobs={content.jobs} />
