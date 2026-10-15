@@ -102,6 +102,17 @@ describe('ExperienceSection timeline', () => {
     expect(scrollTo).not.toHaveBeenCalled();
   });
 
+  it('makes a whole collapsed card the cursor target, and its dot an outline of its own', () => {
+    stubMatchMedia([MOTION_ALLOWED, WIDE]);
+    render(<ExperienceSection title={title} jobs={jobs} />);
+    const cards = screen
+      .getAllByRole('listitem')
+      .filter((item) => item.hasAttribute('data-rail-item'));
+    expect(cards.map((card) => card.getAttribute('data-cursor'))).toEqual([null, null, 'card']);
+    const collapsedDot = screen.getByRole('button', { name: 'PulseLife · Jul 2021 — Jan 2022' });
+    expect(collapsedDot.getAttribute('data-cursor')).toBe('target');
+  });
+
   it('scrolls one step only to open the card after the window', () => {
     stubMatchMedia([MOTION_ALLOWED, WIDE]);
     const scrollTo = vi.fn();

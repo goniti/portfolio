@@ -2,7 +2,7 @@ import * as Collapsible from 'goniui/collapsible';
 import { Flex, Text } from 'goniui';
 import { tv } from 'tailwind-variants';
 import { useLocale, useLocalized, useMessages } from '@/shared/lib/i18n';
-import { Surface, Tag } from '@/shared/ui/atoms';
+import { CARD_CURSOR_TARGET, Surface, Tag } from '@/shared/ui/atoms';
 import type { Job } from '../../model/content';
 import { formatPeriod } from '../../model/format';
 import { jobTint } from '../../model/sector';
@@ -123,6 +123,8 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
   const period = formatPeriod(job.startDate, job.endDate, locale, copy.present);
   const unfolded = state === 'open' || state === 'listed';
   const pinned = state !== 'listed';
+  /** A pinned card the visitor can open: the whole card is its click and cursor target. */
+  const collapsed = pinned && !unfolded;
 
   return (
     // An open card of the pinned timeline cannot fold or jump: its disclosure is disabled.
@@ -133,6 +135,7 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
         hover={pinned ? 'none' : 'lift'}
         blur
         {...RAIL_ITEM}
+        {...(collapsed ? CARD_CURSOR_TARGET : {})}
         className={cardVariants({ state })}
       >
         {job.sector ? (
@@ -160,6 +163,8 @@ export function JobCard({ job, state, onOpen }: JobCardProps) {
             <Flex wrap="wrap" align="baseline" className="gap-x-3.5 gap-y-1">
               <Text as="h3" variant="h2" {...RAIL_ANCHOR} className={companyVariants({ state })}>
                 {pinned ? (
+                  // Collapsed, its `::after` stretches over the card (stretched-link pattern): the
+                  // whole card is the click target, the company name stays the accessible button.
                   <Collapsible.Trigger
                     onFocus={onOpen}
                     className="rounded-sm text-left data-[state=closed]:cursor-pointer data-[state=closed]:after:absolute data-[state=closed]:after:inset-0 data-[state=closed]:after:rounded-2xl"

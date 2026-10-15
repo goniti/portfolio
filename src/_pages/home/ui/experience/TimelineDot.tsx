@@ -1,4 +1,5 @@
 import { Button } from 'goniui';
+import { OWN_CURSOR_TARGET } from '@/shared/ui/atoms';
 import { tv } from 'tailwind-variants';
 import type { TimelineCardState } from '../../model/useJobTimeline';
 
@@ -48,6 +49,8 @@ export function TimelineDot({ state, label, onOpen }: TimelineDotProps) {
       variant="unstyled"
       size="none"
       disabled={state === 'open'}
+      // Its own snug outline, not its card's; a disabled dot is no cursor target at all.
+      {...(state === 'open' ? {} : OWN_CURSOR_TARGET)}
       onClick={onOpen}
       onFocus={onOpen}
       className={`group ${ON_RAIL} -left-12 z-10 grid size-11 place-items-center rounded-full disabled:opacity-100`}
