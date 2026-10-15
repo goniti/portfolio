@@ -35,13 +35,13 @@ Measured on the static export (`pnpm build`), all browser scripts:
 | | gzip | brotli (`pnpm size`) |
 | --- | --- | --- |
 | Before | 261.4 KB | 224.35 kB |
-| After | 271.2 KB | 232.75 kB |
-| Delta | +9.8 KB | +8.4 kB |
+| After | 271.7 KB | 233.15 kB |
+| Delta | +10.3 KB | +8.8 kB |
 
-The four `motion` hooks bundled alone weigh 21.7 KB minified, 8.5 KB gzip: the dependency is most of the delta, the timeline code the rest.
+The four `motion` hooks bundled alone weigh 21.7 KB minified, 8.5 KB gzip: the dependency is most of the delta, the timeline code and the scroll-jump signal the rest.
 
 ## Consequences
 
 - **Positive:** scroll-driven values never re-render React; the step maths is a pure, tested module (`scrollSteps.ts`); further scroll effects reuse `useScrollSteps` and `useMotionCssVariable` at no extra cost.
-- **Negative / accepted trade-offs:** +8.4 kB brotli (budget left: 17 kB). The `main` element clips with `overflow-clip` instead of `overflow-hidden`, so `position: sticky` works inside it.
+- **Negative / accepted trade-offs:** +8.8 kB brotli (budget left: 16.9 kB). The `main` element clips with `overflow-clip` instead of `overflow-hidden`, so `position: sticky` works inside it.
 - **Constraints introduced:** import from `motion/react` only, hooks only; a `motion`/`m` component needs a new measurement and a decision here first.

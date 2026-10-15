@@ -60,9 +60,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Each job in its sector: the two PulseLife jobs share the MedTech sector, so they match.
+ * Each job in its sector (label, hairline, bullets): the two PulseLife jobs share MedTech. The
+ * dots take the rail gradient's colour where they sit (indigo, cyan, violet).
  * Scroll the canvas: the section pins and walks through the jobs, two open at a time (one under
- * 700px), the rail filling towards the next one. Clicking a collapsed card or a dot scrolls to it.
+ * 700px), the rail filling towards the next one. Clicking a collapsed card or its dot scrolls the
+ * least needed to open it; an open card is no jump target.
  */
 export const Default: Story = {
   play: async ({ canvasElement }) => {
