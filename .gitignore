@@ -38,3 +38,7 @@ docs/ai/batches/
 
 # Agent scratch files: plans, task lists, check reports (`check:agent`)
 .agents/work/
+
+# Agent worktrees (Claude Code harness): full checkouts of other branches, never scanned or committed.
+# Pruned by `pnpm worktrees:prune` once their PR is merged.
+.claude/worktrees/
