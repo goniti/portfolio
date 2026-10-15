@@ -8,6 +8,5 @@
       "entry": ["seed/seed.ts"]
     }
   },
-  "ignoreDependencies": ["@secretlint/secretlint-rule-preset-recommend"],
   "ignore": ["src/shared/api/sanity/sanity.types.ts"]
 }
