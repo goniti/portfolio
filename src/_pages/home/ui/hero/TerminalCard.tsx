@@ -32,7 +32,7 @@ export interface TerminalCardProps {
 /** Always-dark terminal window: a typed script above a row of live stats. */
 export function TerminalCard({ title, status, prompt, lines, stats }: TerminalCardProps) {
   return (
-    <Box className="relative min-w-0 grow basis-95">
+    <Box className="relative min-w-0 grow basis-85">
       <Box
         aria-hidden="true"
         className="absolute -inset-px rounded-3xl bg-terminal-halo opacity-35 blur-lg"

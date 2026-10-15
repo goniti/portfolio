@@ -14,7 +14,7 @@ import { heroMessages } from './messages';
 import { TerminalCard } from './TerminalCard';
 
 const SOCIAL_LINK_CLASS =
-  'flex h-11 items-center rounded-lg px-3 font-mono text-xs font-medium text-foreground-muted hover:text-foreground-strong';
+  'flex h-11 items-center rounded-lg px-2 font-mono text-xs font-medium text-foreground-muted hover:text-foreground-strong';
 
 const HEADING_CLASS =
   'text-4xl leading-display font-extrabold tracking-tighter text-balance md:text-5xl lg:text-6xl';
@@ -52,8 +52,8 @@ export function HeroSection({ hero, person, links }: HeroSectionProps) {
       aria-labelledby="home-title"
       className="relative mx-auto max-w-300 px-5 pt-28 pb-16 lg:pt-36 lg:pb-24"
     >
-      <Flex align="center" wrap="wrap" className="gap-14">
-        <Flex direction="col" className="min-w-0 grow basis-130 gap-6.5">
+      <Flex align="center" wrap="wrap" className="gap-x-10 gap-y-14">
+        <Flex direction="col" className="min-w-0 grow basis-150 gap-6.5">
           <Text
             as="span"
             variant="bodySm"
@@ -89,7 +89,7 @@ export function HeroSection({ hero, person, links }: HeroSectionProps) {
           >
             {localize(hero.lead)}
           </Text>
-          <Flex align="center" wrap="wrap" gap="md">
+          <Flex align="center" wrap="wrap" gap="sm">
             <CtaButton asChild>
               <a href="#projects">
                 {copy.exploreWork}
