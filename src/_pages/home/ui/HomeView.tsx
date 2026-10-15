@@ -32,7 +32,9 @@ export function HomeView({ content, calendlyUrl }: HomeViewProps) {
     <>
       <ScrollProgress />
       <SiteNav ownerName={site.ownerName} avatarUrl={site.avatarUrl} />
-      <Box as="main" className="relative overflow-hidden">
+      {/* `overflow-clip`, not `hidden`: clips like it without becoming a scroll container, so the
+          pinned Experience timeline (`position: sticky`) still sticks to the viewport. */}
+      <Box as="main" className="relative overflow-clip">
         <PageBackdrop />
         <HeroSection hero={content.hero} person={site.person} links={site.links} />
         <ExperienceSection title={sectionTitles.experience} jobs={content.jobs} />
