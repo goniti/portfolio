@@ -47,6 +47,7 @@ Always answer and write every deliverable in English.
 | `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)              |
 | `pnpm studio:deploy`   | Deploys the Studio and its schema                       |
 | `pnpm studio:seed`     | Recreates the content documents (idempotent)            |
+| `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)    |
 
 ## Conventions
 

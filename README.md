@@ -58,21 +58,38 @@ pnpm dev
 | `pnpm studio:dev`      | Runs the Sanity Studio locally (port 3333)              |
 | `pnpm studio:deploy`   | Deploys the Studio and its schema                       |
 | `pnpm studio:seed`     | Recreates the content documents (idempotent)            |
+| `pnpm run deploy`      | Runs the deploy workflow on `main` (needs `gh` auth)    |
 
 ## Editing content
 
 Content lives in Sanity, project `8i6zw2b7`, dataset `production`; UI copy (labels, buttons, aria) stays in each slice's `ui/messages.ts`.
 
 - **Studio:** <https://goniti-portfolio.sanity.studio> (opens in the Sanity dashboard). Edit, then **Publish**: publishing is blocked while a field misses its English or French text, and document lists show `Missing: fr`.
-- **Going live:** a publish triggers `deploy.yml` through a Sanity webhook (one-time setup: [`docs/engineering/content.md`](docs/engineering/content.md#sanity--github-webhook-manual-one-time)). Without it, run the "Deploy to GitHub Pages" workflow by hand.
+- **Going live:** a publish does not deploy the site by itself; see [Publishing content changes](#publishing-content-changes).
 - **A failed build:** the deploy stops at `pnpm content:check` with one line per problem, e.g. `project "project-meeple" › description › fr: missing translation`. Fix it in the Studio and publish again; the previous site stays online meanwhile.
 - **Changing the model**, the fallback policy and the failure-path test: [`docs/engineering/content.md`](docs/engineering/content.md).
+
+## Publishing content changes
+
+1. Edit and **Publish** in the [Studio](https://goniti-portfolio.sanity.studio).
+2. Start the deploy. With an authenticated `gh` CLI:
+
+   ```bash
+   pnpm run deploy   # runs the "Deploy to GitHub Pages" workflow on main
+   gh run watch      # follow the run
+   ```
+
+   Use `pnpm run deploy`: `pnpm deploy` is a built-in pnpm command and shadows the script. Without `gh`, open [Actions → "Deploy to GitHub Pages"](https://github.com/goniti/portfolio/actions/workflows/deploy.yml) → **Run workflow**.
+
+3. The site updates 2 to 4 minutes later.
+
+Invalid content, for example a missing French translation, fails the build at `pnpm content:check`; the current site stays online. Details: [`docs/engineering/content.md`](docs/engineering/content.md#publishing).
 
 ## Deployment
 
 The site is a static export (`output: 'export'`, see [ADR-003](docs/adr/0003-sanity-cms-bilingual-content.md)) published to GitHub Pages at <https://goniti.github.io/portfolio/>.
 
-- `.github/workflows/deploy.yml` checks the content (`pnpm content:check`), builds `out/` and deploys it on every push to `main`, on demand (`workflow_dispatch`), and on the `sanity-content-published` `repository_dispatch` event sent by the Sanity webhook.
+- `.github/workflows/deploy.yml` checks the content (`pnpm content:check`), builds `out/` and deploys it on every push to `main` and on demand (`workflow_dispatch`, `pnpm run deploy`). It also accepts the `sanity-content-published` `repository_dispatch` event, so a Sanity webhook can be added later; none is configured.
 - `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION` and `NEXT_PUBLIC_CALENDLY_URL` are GitHub Actions repository **variables** (not secrets), used by `ci.yml` and `deploy.yml`. Without `NEXT_PUBLIC_CALENDLY_URL`, the deployed site has no "Book a call" tab (setup: [`docs/engineering/repository-settings.md`](docs/engineering/repository-settings.md#repository-variables)).
 - Images come from the Sanity CDN (`https://cdn.sanity.io/…`, sized by URL): absolute URLs, untouched by the base path.
 - The project page lives under `/portfolio`: the build sets `NEXT_PUBLIC_BASE_PATH=/portfolio` (Next.js `basePath` and `assetPrefix`) and `NEXT_PUBLIC_SITE_URL=https://goniti.github.io/portfolio`. Both are validated by `src/shared/config/env.ts` when `next.config.ts` loads. Locally they default to the domain root, so `pnpm dev` runs at `/`; the e2e tests build and serve under `/portfolio/`, like Pages.

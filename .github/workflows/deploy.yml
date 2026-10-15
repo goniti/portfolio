@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Sent by the Sanity webhook once content is published (ADR-003, step 10).
+  # Kept for an optional Sanity publish webhook; none is configured, content is deployed by hand (ADR-003, amendment 2026-10-15).
   repository_dispatch:
     types: [sanity-content-published]
 

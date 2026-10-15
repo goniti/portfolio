@@ -30,6 +30,7 @@ How the portfolio content is edited, checked and published. Decision record: [AD
 | `pnpm studio:deploy` | Builds and deploys the Studio to `goniti-portfolio.sanity.studio`, and deploys the schema                 |
 | `pnpm studio:seed`   | (Re)creates every document from the fixture, with your own Sanity login (`sanity exec --with-user-token`) |
 | `pnpm typegen`       | Extracts the schema and regenerates `sanity.types.ts`: run it after changing the schema or the query      |
+| `pnpm run deploy`    | Runs the "Deploy to GitHub Pages" workflow on `main` (`gh workflow run`): see [Publishing](#publishing)   |
 
 The CLI uses your login (`pnpm --filter portfolio-studio exec sanity login` once). No token is stored anywhere: the dataset is public, and writes use your own session.
 
@@ -43,7 +44,7 @@ A Studio draft of a seeded document holds unpublished edits, and would hide the 
 
 1. Open the Studio, edit, then **Publish**. Every localized field shows an English and a French slot.
 2. Publish is blocked while a localized field misses a language or has a blank value: the field shows `Français (fr) translation is required` or `English (en) is empty`, and lists show `Missing: fr` in the subtitle.
-3. Once the Sanity webhook is set up (below), a publish starts `deploy.yml`; the change is live 2 to 4 minutes later. Until then, run the **Deploy to GitHub Pages** workflow by hand (Actions → Run workflow).
+3. Publishing in the Studio does not deploy the site: start the deploy by hand, as described in [Publishing](#publishing).
 
 Rules the Studio enforces (and the build re-checks):
 
@@ -97,35 +98,25 @@ SANITY_DATASET=development pnpm build           # fails with the same report
 cd studio && pnpm exec sanity dataset delete development --force
 ```
 
-## Sanity → GitHub webhook (manual, one time)
+## Publishing
 
-A publish should start `deploy.yml` through GitHub's `repository_dispatch`. This needs a GitHub token that only the owner can create. Steps:
+The site is a static export: a publish in the Studio reaches the site only after the **Deploy to GitHub Pages** workflow (`deploy.yml`) rebuilds it. You start that workflow by hand.
 
-1. **Create a fine-grained personal access token** at <https://github.com/settings/personal-access-tokens/new>:
-   - Token name: `sanity-portfolio-webhook`; expiration: 1 year (set a reminder to rotate it).
-   - Resource owner: `goniti`. Repository access: **Only select repositories** → `goniti/portfolio`.
-   - Repository permissions: **Contents: Read and write** (required by `repository_dispatch`; Metadata: Read-only is added automatically). Nothing else.
-   - Generate, copy the token (`github_pat_…`). Never commit it.
-2. **Check the token** (expects `HTTP 204`, then a new "Deploy to GitHub Pages" run in Actions):
+1. Edit and **Publish** in the Studio.
+2. Start the deploy, either way:
+   - from the repository, with an authenticated `gh` CLI (`gh auth login` once):
 
-   ```bash
-   curl -i -X POST https://api.github.com/repos/goniti/portfolio/dispatches \
-     -H "Authorization: Bearer github_pat_…" \
-     -H "Accept: application/vnd.github+json" \
-     -H "X-GitHub-Api-Version: 2022-11-28" \
-     -d '{"event_type":"sanity-content-published"}'
-   ```
+     ```bash
+     pnpm run deploy   # gh workflow run deploy.yml --ref main
+     gh run watch      # pick the run, follow it to the end
+     ```
 
-3. **Create the webhook** at <https://www.sanity.io/manage/project/8i6zw2b7/api/webhooks> → **Create webhook**:
-   - Name: `GitHub Pages deploy`.
-   - URL: `https://api.github.com/repos/goniti/portfolio/dispatches`.
-   - Dataset: `production`.
-   - Trigger on: **Create**, **Update**, **Delete**.
-   - Filter: `_type in ["siteSettings", "homePage", "job", "project", "watchNote"]`.
-   - Projection: `{"event_type": "sanity-content-published", "client_payload": {"id": _id, "op": delta::operation()}}`.
-   - Status: enabled. HTTP method: **POST**.
-   - HTTP headers: `Authorization: Bearer github_pat_…`, `Accept: application/vnd.github+json`, `X-GitHub-Api-Version: 2022-11-28`.
-   - Advanced: **Drafts off**, **Versions off** (only published changes deploy). Secret: leave empty (GitHub does not verify it).
-4. **Test it**: fix a typo in the Studio and publish; a "Deploy to GitHub Pages" run starts within seconds (event `repository_dispatch`). The webhook's attempt log in Sanity shows `204`.
+     Type `pnpm run deploy`, not `pnpm deploy`: `pnpm deploy` is a built-in pnpm command and never reaches the script.
 
-The token is visible to anyone who can read the webhook configuration: never share the webhook, and rotate the token when it expires (edit the header in place). `deploy.yml` cancels an in-progress deploy when a newer one starts, so a burst of publishes collapses into one deploy.
+   - or from GitHub: <https://github.com/goniti/portfolio/actions/workflows/deploy.yml> → **Run workflow** → branch `main`.
+
+3. The site updates 2 to 4 minutes later.
+
+The deploy runs `pnpm content:check` first. Invalid content, for example a missing French translation, fails the run with one line per problem; the current site stays online. Fix it in the Studio, publish, and deploy again. `deploy.yml` cancels an in-progress deploy when a newer one starts, so only the latest run deploys.
+
+A Sanity webhook could start the deploy on publish later: `deploy.yml` still listens for the `sanity-content-published` `repository_dispatch` event, and ADR-003 ("Configuration and secrets") specifies the webhook.
