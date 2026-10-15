@@ -1,5 +1,3 @@
-'use client';
-
 import * as Dialog from 'goniui/dialog';
 import { Button, Flex, Text } from 'goniui';
 import type { Tint } from 'portfolio-content-model';

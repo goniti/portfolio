@@ -1,27 +1,68 @@
 import { describe, expect, it } from 'vitest';
-import { buildContactMailto, calendlyEmbedUrl, createContactSchema } from './contact';
+import type { ResolverOptions } from 'react-hook-form';
+import {
+  buildContactMailto,
+  calendlyEmbedUrl,
+  createContactResolver,
+  validateContact,
+  type ContactValues,
+} from './contact';
 
-const schema = createContactSchema({
+const copy = {
   nameTooShort: 'name',
   invalidEmail: 'email',
-  messageTooShort: (missing) => `${missing} more`,
-});
+  messageTooShort: (missing: number) => `${missing} more`,
+};
 
-describe('createContactSchema', () => {
-  it('accepts a complete message and trims it', () => {
-    const result = schema.parse({
-      name: ' Jane ',
-      email: 'jane@company.com',
-      message: 'Hello there!',
-    });
-    expect(result.name).toBe('Jane');
+const VALID: ContactValues = { name: 'Jane', email: 'jane@company.com', message: 'Hello there!' };
+
+describe('validateContact', () => {
+  it('accepts a complete message', () => {
+    expect(validateContact(VALID, copy)).toEqual({});
   });
 
   it('reports each invalid field with its copy', () => {
-    const result = schema.safeParse({ name: 'J', email: 'nope', message: 'Hi' });
-    expect(result.success).toBe(false);
-    const messages = result.error?.issues.map((issue) => issue.message);
-    expect(messages).toEqual(['name', 'email', '8 more']);
+    expect(validateContact({ name: 'J', email: 'nope', message: 'Hi' }, copy)).toEqual({
+      name: 'name',
+      email: 'email',
+      message: '8 more',
+    });
+  });
+
+  it.each(['jane@company', 'jane@@company.com', '.jane@company.com', 'jane..doe@company.com'])(
+    'rejects the email %j',
+    (email) => {
+      expect(validateContact({ ...VALID, email }, copy).email).toBe('email');
+    },
+  );
+
+  it.each(['jane.doe+work@company.co.uk', "o'neil@mail.company.dev"])(
+    'accepts the email %j',
+    (email) => {
+      expect(validateContact({ ...VALID, email }, copy)).toEqual({});
+    },
+  );
+});
+
+describe('createContactResolver', () => {
+  const resolve = createContactResolver(copy);
+  const options: ResolverOptions<ContactValues> = {
+    fields: {},
+    shouldUseNativeValidation: undefined,
+  };
+
+  it('trims the values it accepts', async () => {
+    const result = await resolve(
+      { name: ' Jane ', email: ' jane@company.com ', message: ' Hello there! ' },
+      undefined,
+      options,
+    );
+    expect(result).toEqual({ values: VALID, errors: {} });
+  });
+
+  it('validates the trimmed values', async () => {
+    const result = await resolve({ ...VALID, name: ' J ' }, undefined, options);
+    expect(result).toEqual({ values: {}, errors: { name: { type: 'validate', message: 'name' } } });
   });
 });
 

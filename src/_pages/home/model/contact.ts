@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { FieldErrors, Resolver } from 'react-hook-form';
 import { CALENDLY_PAGE_PATTERN } from '@/shared/config';
 import { mailtoHref } from '@/shared/lib/mailto';
 
@@ -12,25 +12,58 @@ export interface ContactValidationCopy {
   messageTooShort: (missingCharacters: number) => string;
 }
 
-/** Contact form schema; error messages come from the locale's copy. */
-export function createContactSchema(copy: ContactValidationCopy) {
-  return z.object({
-    name: z.string().trim().min(NAME_MIN_LENGTH, copy.nameTooShort),
-    email: z.string().trim().pipe(z.email(copy.invalidEmail)),
-    message: z
-      .string()
-      .trim()
-      .superRefine((value, context) => {
-        if (value.length >= MESSAGE_MIN_LENGTH) return;
-        context.addIssue({
-          code: 'custom',
-          message: copy.messageTooShort(MESSAGE_MIN_LENGTH - value.length),
-        });
-      }),
-  });
+export interface ContactValues {
+  name: string;
+  email: string;
+  message: string;
 }
 
-export type ContactValues = z.infer<ReturnType<typeof createContactSchema>>;
+const CONTACT_FIELDS = ['name', 'email', 'message'] as const;
+
+/** The error message of each invalid field; a valid field has none. */
+type ContactProblems = Partial<Record<keyof ContactValues, string>>;
+
+/** Same rule as zod's `z.email()`, which validates the content at build time. */
+const EMAIL_PATTERN =
+  /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/;
+
+/** The values as sent: every field trimmed. */
+function trimContact(values: ContactValues): ContactValues {
+  return { name: values.name.trim(), email: values.email.trim(), message: values.message.trim() };
+}
+
+/** Checks trimmed values; error messages come from the locale's copy. */
+export function validateContact(
+  values: ContactValues,
+  copy: ContactValidationCopy,
+): ContactProblems {
+  const problems: ContactProblems = {};
+  if (values.name.length < NAME_MIN_LENGTH) problems.name = copy.nameTooShort;
+  if (!EMAIL_PATTERN.test(values.email)) problems.email = copy.invalidEmail;
+  if (values.message.length < MESSAGE_MIN_LENGTH) {
+    problems.message = copy.messageTooShort(MESSAGE_MIN_LENGTH - values.message.length);
+  }
+  return problems;
+}
+
+/**
+ * The form's react-hook-form resolver: trims, then validates. Hand-written rather than zod, which
+ * stays on the server so the browser bundle does not ship it.
+ */
+export function createContactResolver(copy: ContactValidationCopy): Resolver<ContactValues> {
+  return (values) => {
+    const trimmed = trimContact(values);
+    const problems = validateContact(trimmed, copy);
+    const errors: FieldErrors<ContactValues> = {};
+    for (const field of CONTACT_FIELDS) {
+      const message = problems[field];
+      if (message) errors[field] = { type: 'validate', message };
+    }
+    return Object.keys(errors).length === 0
+      ? { values: trimmed, errors: {} }
+      : { values: {}, errors };
+  };
+}
 
 export const EMPTY_CONTACT: ContactValues = { name: '', email: '', message: '' };
 

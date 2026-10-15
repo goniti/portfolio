@@ -1,5 +1,3 @@
-'use client';
-
 import * as Form from 'goniui/form';
 import { Text } from 'goniui';
 import { useMessages } from '@/shared/lib/i18n';

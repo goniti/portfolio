@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from 'goniui';
 import { tv, type VariantProps } from 'tailwind-variants';
 import { useMessages } from '@/shared/lib/i18n';

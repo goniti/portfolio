@@ -22,6 +22,7 @@ Always answer and write every deliverable in English.
 | ---------------------- | ------------------------------------------------------- |
 | `pnpm dev`             | Starts the development environment                      |
 | `pnpm build`           | Production build                                        |
+| `pnpm bundle:check`    | After a build: fails when zod ships to the browser      |
 | `pnpm start`           | Starts the built version                                |
 | `pnpm typecheck`       | TypeScript check                                        |
 | `pnpm storybook`       | Local Storybook (port 6006)                             |
@@ -35,6 +36,7 @@ Always answer and write every deliverable in English.
 | `pnpm coverage`        | Tests with coverage                                     |
 | `pnpm test:storybook`  | Renders every story in Chromium, a11y violations fail   |
 | `pnpm test:e2e`        | Builds the export under `/portfolio`, runs Playwright   |
+| `pnpm lighthouse`      | Mobile Lighthouse on the `/portfolio` export, warn only |
 | `pnpm knip`            | Finds unused files, exports and dependencies            |
 | `pnpm secrets`         | Scans the repository for committed secrets              |
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports |

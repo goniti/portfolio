@@ -1,5 +1,3 @@
-'use client';
-
 import * as SegmentedControl from 'goniui/segmented-control';
 import { Button } from 'goniui';
 import { tv } from 'tailwind-variants';

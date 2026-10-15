@@ -4,7 +4,7 @@ import type { HOME_CONTENT_QUERY_RESULT } from '@/shared/api';
 import { homeContentSchema } from './content';
 
 // Image URLs need the project and dataset; unit tests have no Sanity environment.
-vi.mock('@/shared/config', () => ({
+vi.mock('@/shared/config/server', () => ({
   env: {
     SANITY_PROJECT_ID: '8i6zw2b7',
     SANITY_DATASET: 'production',

@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { preconnect } from 'react-dom';
 import { Flex } from 'goniui';

@@ -1,11 +1,8 @@
-'use client';
-
 import { useMemo, useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
   buildContactMailto,
-  createContactSchema,
+  createContactResolver,
   EMPTY_CONTACT,
   type ContactValidationCopy,
   type ContactValues,
@@ -23,7 +20,7 @@ export interface UseContactFormOptions {
 const openInMailApp = (href: string) => window.location.assign(href);
 
 /**
- * Contact form state: validation (zod, on blur then on change), submission through the
+ * Contact form state: validation (on blur then on change), submission through the
  * visitor's mail app, and the "sent" confirmation with the sender's details.
  */
 export function useContactForm({
@@ -32,9 +29,9 @@ export function useContactForm({
   subject,
   openMailto = openInMailApp,
 }: UseContactFormOptions) {
-  const schema = useMemo(() => createContactSchema(validationCopy), [validationCopy]);
+  const resolver = useMemo(() => createContactResolver(validationCopy), [validationCopy]);
   const methods = useForm<ContactValues>({
-    resolver: zodResolver(schema),
+    resolver,
     mode: 'onTouched',
     defaultValues: EMPTY_CONTACT,
   });

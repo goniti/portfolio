@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "bundle:check": "tsx scripts/check-client-bundle.ts",
     "start": "next start",
     "typecheck": "tsc --noEmit && pnpm -r typecheck",
     "storybook": "storybook dev -p 6006",
@@ -22,6 +23,7 @@
     "coverage": "vitest run --project unit --coverage",
     "test:storybook": "vitest run --project storybook",
     "test:e2e": "playwright test",
+    "lighthouse": "tsx scripts/lighthouse-site.ts && lhci autorun",
     "knip": "knip",
     "secrets": "secretlint \"**/*\"",
     "prepare": "husky",
@@ -35,7 +37,6 @@
     "studio:seed": "pnpm --filter portfolio-studio seed"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.9.1",
     "@sanity/client": "^8.9.0",
     "@sanity/image-url": "^2.1.1",
     "goniui": "^0.1.0",
@@ -53,6 +54,7 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@feature-sliced/steiger-plugin": "^0.8.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@storybook/addon-a11y": "^10.6.1",

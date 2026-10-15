@@ -13,6 +13,8 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main`, on demand, and on the `sanity-content-published` dispatch event.
 - `NEXT_PUBLIC_BASE_PATH` environment variable (validated) and the `withBasePath()` helper for public asset URLs.
 - `NEXT_PUBLIC_CALENDLY_URL` environment variable (optional, validated as a Calendly page): sets the "Book a call" page. CI and the deploy read it from the `NEXT_PUBLIC_CALENDLY_URL` repository variable, which the owner must create.
+- `pnpm lighthouse` and a "Lighthouse (mobile, warn only)" CI job on pull requests: audits the static export served under `/portfolio`, warns under 95 in performance, accessibility, best practices or SEO, writes the scores to the job summary and uploads the reports as the `lighthouse-report` artifact.
+- `pnpm bundle:check`, run in CI after the build: fails when zod reaches a browser chunk.
 - `portfolio-content-model` workspace package (`packages/content-model`, ADR-004): the locales, tints, categories and locale-completeness rules, shared by the site and the Studio.
 
 ### Changed
@@ -26,7 +28,8 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - `pnpm studio:seed` refuses to overwrite documents that have Studio drafts unless run with `--discard-drafts`, and ends by running `pnpm content:check` on the seeded dataset.
 - `pnpm test:e2e` builds the static export under `/portfolio` and serves it like GitHub Pages on port 3100. Every run rebuilds; a server already on the port fails the run.
 - The "Book a call" tab comes from `NEXT_PUBLIC_CALENDLY_URL` instead of a constant in `src/_pages/home/config/site.ts`; unset or empty hides it.
-- Public variables are validated by a client-safe `clientEnv` (`src/shared/config/clientEnv.ts`); the server env (`env.ts`) is validated lazily. Only `src/shared/config/` reads `process.env`.
+- Public variables are read by a client-safe `clientEnv` (`src/shared/config/clientEnv.ts`, no zod); `env.ts` validates every variable, public ones included, when `next.config.ts` loads. Server code imports it through `@/shared/config/server`. Only `src/shared/config/` reads `process.env`.
+- zod no longer ships to the browser: client JS drops from 291.8 KB to 260.9 KB gzip. The contact form validates with a hand-written resolver; `@hookform/resolvers` is removed.
 - The Studio no longer keeps copies of the locales, tints and categories, or its own locale checks: it imports them from `portfolio-content-model`.
 - Code names say "locale", not "language" (`LocaleSwitch`, `LOCALE_OPTIONS`, `localeLabel`, `missingLocales`…). Missing locales are listed in locale order.
 - Shared helpers replace duplicated code: `mailtoHref` for the owner's email links, plus id mapping, localized line lists and problem lists in the Sanity layer.

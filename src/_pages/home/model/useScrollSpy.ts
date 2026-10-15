@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { activeSection, PARALLAX_MAX_SCROLL, scrollProgress } from './scrollSpy';
 import { SECTION_IDS, type SectionId } from './sections';

@@ -76,7 +76,7 @@ Quality: eslint, prettier, husky, lint-staged, commitlint, vitest, playwright, k
 
 **Feature-Sliced Design + Atomic Design**, checked by `pnpm lint:arch`: the layers, the import rules and where each kind of code goes are in `architecture.md`; the UI rules (library, styling, composition, copy, accessibility) in `frontend.md`.
 
-- Configuration: every new environment variable goes into `.env.example` and a schema in `src/shared/config/`: `clientEnv.ts` for a public `NEXT_PUBLIC_*` variable (read by its literal name, safe in client components), `env.ts` for a server or build-time one. Code outside `src/shared/config/` never reads `process.env` directly; the only exceptions are `studio/env.ts` (the Studio's own env module) and `playwright.config.ts` (tooling).
+- Configuration: every new environment variable goes into `.env.example` and the zod schema of `src/shared/config/env.ts`, which `next.config.ts` validates at startup; server code imports it through `@/shared/config/server`. A public `NEXT_PUBLIC_*` variable is also read in `clientEnv.ts`, by its literal name and without zod (safe in client components, `@/shared/config`). Client code never imports `@/shared/config/server` or a zod schema: `pnpm bundle:check` fails when zod reaches the browser. Code outside `src/shared/config/` never reads `process.env` directly; the only exceptions are `studio/env.ts` (the Studio's own env module) and `playwright.config.ts` (tooling).
 
 <!-- ADAPT: name the business features or domains and the folder each one lives in. -->
 

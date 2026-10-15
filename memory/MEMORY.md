@@ -31,7 +31,9 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - Localized content in components: `useLocalized()` from `@/shared/lib/i18n`; `copy` props carry UI copy only.
 - `pnpm studio:seed` refuses when drafts exist (opt-in `--discard-drafts`) and ends with `pnpm content:check`.
 - `pnpm test:e2e` builds the export with `NEXT_PUBLIC_BASE_PATH=/portfolio` and serves it under `/portfolio/` on port 3100; `reuseExistingServer: false` (busy port fails).
-- Env: `process.env` only in `src/shared/config/` (`clientEnv.ts` public, literal reads; both `clientEnv` and `env` validate on first read). No module-level env reads: the Calendly URL is a prop from `HomePage`; `RESUME_PATH` goes through `withBasePath` at render. Exceptions: `studio/env.ts`, `playwright.config.ts`.
+- Env: `process.env` only in `src/shared/config/` (`clientEnv.ts` public, literal reads, no zod; `env.ts` validates every variable with zod, called by `next.config.ts`, imported through `@/shared/config/server`; the `@/shared/config` barrel is client-safe). No module-level env reads: the Calendly URL is a prop from `HomePage`; `RESUME_PATH` goes through `withBasePath` at render. Exceptions: `studio/env.ts`, `playwright.config.ts`.
 - No `as` casts (Studio uses `schemaTypes/guards.ts`); code says "locale", the stored Sanity field stays `language`.
 - Vitest projects: `unit` (`pnpm test`, jsdom) and `storybook` (`pnpm test:storybook`). Accessible names start with the visible text (`sr-only` rest, no `aria-label` mismatch); tint labels use `text-tint-label-*`.
 - Scroll reveal: `HomeView` (client) calls `useScrollReveal()`; no null-rendering atom.
+- Client bundle (#18): zod stays server-side, checked by `pnpm bundle:check` in CI (260.9 KB gzip, was 291.8). Making `HomeView` a server component measured +1.3 KB (one client entry per section): sections need the client while the locale toggles client-side; revisit after #15. `use client` only on modules a server component reaches.
+- `pnpm lighthouse` / CI job `lighthouse` (PRs only): export mounted at `.lighthouseci/site/portfolio`, mobile, warn-only ≥ 0.95, reports as artifact. Local perf ≈ 0.9 (LCP, TBT).
