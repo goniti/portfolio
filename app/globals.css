@@ -371,11 +371,14 @@
 }
 
 /* Experience timeline (pinned, scroll-driven). The hooks write `--scroll-step-count` on the track
-   (75vh of scroll per step, plus 60vh to leave it), the rail geometry in px (`--rail-start`,
+   (one viewport, plus `--timeline-step-scroll` of scroll per step), the rail geometry in px (`--rail-start`,
    `--rail-length`: first to last card heading), its fill (`--rail-fill`, 0 → 1) and each card's
    `--dot-y` (its heading's centre). The fallbacks draw the plain list before any measure. */
 @utility timeline-track {
-  height: calc(var(--scroll-step-count, 1) * 75vh + 60vh);
+  /* The scroll runs from the track's top at the viewport top to its bottom at the viewport
+     bottom: one viewport plus the steps, so each step takes exactly this much scrolling. */
+  --timeline-step-scroll: 37.5vh;
+  height: calc(100vh + var(--scroll-step-count, 1) * var(--timeline-step-scroll));
 }
 /* Base line, ending in a 10rem fade. */
 @utility timeline-rail {
