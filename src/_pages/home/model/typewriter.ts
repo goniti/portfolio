@@ -49,7 +49,7 @@ export function typeScript(script: readonly TerminalLine[], tick: number): Typed
   }
 
   const last = shown.at(-1);
-  if (!last || !last.command) shown.push(EMPTY_PROMPT);
+  if (!last?.command) shown.push(EMPTY_PROMPT);
 
   return shown.map((line, position) => ({
     ...line,

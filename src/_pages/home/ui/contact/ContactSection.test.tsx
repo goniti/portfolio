@@ -28,7 +28,9 @@ describe('ContactSection', () => {
 
   it('links the email channel to a blank message', () => {
     render(<ContactSection contact={contact} links={site.links} />);
-    const emailLink = screen.getByRole('link', { name: new RegExp(site.links.email) });
+    const emailLink = screen.getByRole('link', {
+      name: (name) => name.includes(site.links.email),
+    });
     expect(emailLink.getAttribute('href')).toBe(`mailto:${site.links.email}`);
   });
 });

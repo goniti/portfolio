@@ -48,6 +48,7 @@ describe('loadEnv', () => {
   it.each([
     'https://example.com',
     'https://example.com/carlos/intro',
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- the plain-HTTP URL the schema must reject
     'http://calendly.com/carlos',
     'https://calendly.com/',
     'calendly',

@@ -12,9 +12,24 @@ export default defineConfig([
   sonarjs.configs.recommended,
   security.configs.recommended,
   {
+    rules: {
+      // Flags every `object[key]`; TypeScript types the keys here (unions, indexes), so every hit
+      // is a false positive. Data-driven paths guard against prototype keys (`shared/api/sanity/path.ts`).
+      'security/detect-object-injection': 'off',
+    },
+  },
+  {
     // Repository tooling runs git and the package manager from the PATH.
     files: ['scripts/**'],
     rules: { 'sonarjs/no-os-command-from-path': 'off' },
+  },
+  {
+    // Repository tooling: file paths and patterns are built from the repository's own constants.
+    files: ['scripts/**', 'playwright.config.ts'],
+    rules: {
+      'security/detect-non-literal-fs-filename': 'off',
+      'security/detect-non-literal-regexp': 'off',
+    },
   },
   // Biome covers the general rules: ESLint keeps the Next.js and React Hooks ones.
   biome,

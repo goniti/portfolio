@@ -1,8 +1,20 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 const CALENDLY_FRAME = /^https:\/\/calendly\.com\//;
 /** Mirrors `PAST_HERO_VIEWPORTS`: the back-to-top button and Calendly share it. */
 const PAST_HERO_VIEWPORTS = 0.9;
+
+/** Scrolls to `top` and waits two frames: the scroll handlers and observers have run. */
+async function scrollAndSettle(page: Page, top: number): Promise<void> {
+  await page.evaluate((target) => window.scrollTo({ top: target, behavior: 'instant' }), top);
+  await page.waitForFunction((target) => Math.round(window.scrollY) === target, top);
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
+  );
+}
 
 for (const viewport of [
   { width: 1440, height: 900 },
@@ -25,8 +37,7 @@ for (const viewport of [
     const backToTop = page.getByRole('button', { name: /back to top/i });
 
     const justBefore = Math.floor(viewport.height * PAST_HERO_VIEWPORTS) - 20;
-    await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), justBefore);
-    await page.waitForTimeout(300);
+    await scrollAndSettle(page, justBefore);
     await expect(backToTop).toBeHidden();
     expect(calendlyRequests).toEqual([]);
 

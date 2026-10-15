@@ -36,8 +36,8 @@ async function renderAppleIcon(): Promise<void> {
         background: TILE_COLOR,
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- Satori markup, not a page */}
-      <img
+      {/* biome-ignore lint/performance/noImgElement: Satori markup, not a page */}
+      <img // eslint-disable-line @next/next/no-img-element -- Satori markup, not a page
         alt=""
         src={`data:image/svg+xml;base64,${monogram}`}
         width={SIZE.width}

@@ -13,7 +13,7 @@ export function readLocale(): Locale {
 /** Stores the locale and notifies every subscriber of this tab. */
 export function writeLocale(locale: Locale): void {
   writePreference(LOCALE_PREFERENCE, locale);
-  listeners.forEach((listener) => listener());
+  for (const listener of listeners) listener();
 }
 
 /** Listens to locale changes, from this tab and from the other ones (`storage` event). */

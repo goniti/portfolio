@@ -60,8 +60,8 @@ function issueParams(problem: LocaleProblem, fallback: string | undefined): Loca
 
 function toLocalized(items: readonly LocalizedItem[]): Localized<string> {
   const byLocale = new Map(items.map((item) => [item.language, item.value ?? '']));
-  const valueOf = (locale: Locale): string => byLocale.get(locale) ?? '';
-  return { en: valueOf('en'), fr: valueOf('fr') };
+  const textIn = (locale: Locale): string => byLocale.get(locale) ?? '';
+  return { en: textIn('en'), fr: textIn('fr') };
 }
 
 const ItemsSchema = z.array(LocalizedItemSchema).nullish();
