@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CogIcon } from '@sanity/icons/Cog';
+import { COUNTRY_CODE_PATTERN } from 'portfolio-content-model';
 import { optionalString, stringField } from '../guards';
 import { localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
@@ -81,6 +82,63 @@ export const siteSettings = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'person',
+      title: 'Person',
+      description:
+        'Who the site is about: the hero heading and the structured data for search engines. The owner name above is the alternate name; the GitHub and LinkedIn URLs are the other profiles.',
+      type: 'object',
+      group: 'identity',
+      options: { collapsible: false },
+      fields: [
+        defineField({
+          name: 'fullName',
+          title: 'Full name',
+          description: 'Opens the hero heading ("<full name> — <job title>").',
+          type: 'string',
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: 'jobTitle',
+          title: 'Job title',
+          type: 'internationalizedArrayString',
+          validation: requireLocales(),
+        }),
+        defineField({
+          name: 'location',
+          description: 'Shown in the hero as "Lyon, France · Remote".',
+          type: 'object',
+          options: { collapsible: false },
+          fields: [
+            defineField({
+              name: 'locality',
+              description: 'City (not translated).',
+              type: 'string',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'country',
+              title: 'Country code',
+              description:
+                'ISO 3166-1 alpha-2 code, e.g. FR: the page names the country in each language.',
+              type: 'string',
+              validation: (rule) =>
+                rule.required().regex(COUNTRY_CODE_PATTERN, { name: 'two-letter country code' }),
+            }),
+            defineField({
+              name: 'remote',
+              title: 'Works remotely',
+              description: 'Adds "Remote" after the place.',
+              type: 'boolean',
+              initialValue: true,
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          validation: (rule) => rule.required(),
+        }),
+      ],
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'status',
       title: 'Footer status',
       type: 'object',
@@ -133,16 +191,18 @@ export const siteSettings = defineType({
   preview: {
     select: {
       ownerName: 'ownerName',
+      jobTitle: 'person.jobTitle',
       open: 'status.open',
       busy: 'status.busy',
       credits: 'credits',
       seoTitle: 'seo.title',
       seoDescription: 'seo.description',
     },
-    prepare: ({ ownerName, open, busy, credits, seoTitle, seoDescription }) => ({
+    prepare: ({ ownerName, jobTitle, open, busy, credits, seoTitle, seoDescription }) => ({
       title: 'Site settings',
       subtitle:
         missingLocalesSubtitle([
+          jobTitle,
           open,
           busy,
           ...localizedFieldsOf(credits, 'text'),

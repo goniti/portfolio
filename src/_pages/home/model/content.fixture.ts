@@ -2,7 +2,8 @@ import type { Localized } from '@/shared/lib/i18n';
 import type { HomeContent } from './content';
 
 /*
- * The home page content as published in Sanity on 2026-10-14, in the shape the sections consume.
+ * The home page content as published in Sanity on 2026-10-14, plus the person and the reworded SEO
+ * fields of #16 (not yet published), in the shape the sections consume.
  * Two uses: tests and stories render it (they never fetch), and `studio/seed/seed.ts` imports it
  * to (re)create the documents. Sanity is the source of truth: this copy is not kept in sync.
  */
@@ -28,6 +29,13 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
       },
     },
     openToWork: true,
+    person: {
+      fullName: 'Carlos Gonzalez Lo Vullo',
+      alternateName: 'Carlos G. Lo Vullo',
+      jobTitle: both('Lead Front-End Developer', 'Lead Développeur Front-End'),
+      location: { locality: 'Lyon', country: 'FR', remote: true },
+      sameAs: ['https://github.com/goniti', 'https://www.linkedin.com/in/carlos-gonzalez-lo-vullo'],
+    },
     status: {
       open: both(
         'Open to Tech Lead & Senior Roles • Based in Lyon / Remote',
@@ -44,9 +52,13 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
       both('Designed & coded in Lyon', 'Designé & codé à Lyon'),
     ],
     seo: {
-      title: both('Carlos Gonzalez Lo Vullo — Tech Lead & Senior Front-End Engineer'),
+      title: both(
+        'Carlos Gonzalez Lo Vullo — Lead Front-End Developer, Lyon',
+        'Carlos Gonzalez Lo Vullo — Lead Développeur Front-End, Lyon',
+      ),
       description: both(
-        'Front-End Engineer & Tech Lead fusing modern React architectures with AI-driven workflows. Projects, experience, tech watch and contact.',
+        'Carlos Gonzalez Lo Vullo, Lead Front-End Developer in Lyon, France · Remote. React, Vue and TypeScript architecture with AI-augmented workflows.',
+        'Carlos Gonzalez Lo Vullo, Lead Développeur Front-End à Lyon, France · Télétravail. Architecture React, Vue et TypeScript, workflows augmentés par l’IA.',
       ),
     },
   },

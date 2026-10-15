@@ -19,7 +19,7 @@ describe('HomePage', () => {
   it('renders the fetched content', async () => {
     render(await HomePage());
     expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
-      'AI-Augmented Workflows',
+      'Carlos Gonzalez Lo Vullo',
     );
   });
 
@@ -33,8 +33,8 @@ describe('HomePage', () => {
 
   it('takes the <head> from the SEO fields, in the default locale', async () => {
     expect(await generateHomeMetadata()).toEqual({
-      title: 'Carlos Gonzalez Lo Vullo — Tech Lead & Senior Front-End Engineer',
-      description: expect.stringContaining('Front-End Engineer & Tech Lead'),
+      title: 'Carlos Gonzalez Lo Vullo — Lead Front-End Developer, Lyon',
+      description: expect.stringContaining('Lyon, France · Remote'),
     });
   });
 });

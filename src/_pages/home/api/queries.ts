@@ -18,6 +18,11 @@ export const HOME_CONTENT_QUERY = defineQuery(`{
     linkedinUrl,
     linkedinName,
     openToWork,
+    person{
+      fullName,
+      jobTitle[]{ _key, language, value },
+      location{ locality, country, remote }
+    },
     status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },
     credits[]{ _key, text[]{ _key, language, value } },
     seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }

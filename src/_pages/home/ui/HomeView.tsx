@@ -34,7 +34,7 @@ export function HomeView({ content, calendlyUrl }: HomeViewProps) {
       <SiteNav ownerName={site.ownerName} avatarUrl={site.avatarUrl} />
       <Box as="main" className="relative overflow-hidden">
         <PageBackdrop />
-        <HeroSection hero={content.hero} links={site.links} />
+        <HeroSection hero={content.hero} person={site.person} links={site.links} />
         <ExperienceSection title={sectionTitles.experience} jobs={content.jobs} />
         <SkillsSection title={sectionTitles.skills} skills={content.skills} />
         <ProjectsSection title={sectionTitles.projects} projects={content.projects} />

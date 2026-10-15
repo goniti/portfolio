@@ -1,4 +1,5 @@
 import {
+  COUNTRY_CODE_PATTERN,
   JOB_TINTS,
   NOTE_CATEGORIES,
   PROJECT_CATEGORIES,
@@ -73,6 +74,17 @@ function localizedLines(count: LineCount, message?: string) {
   return counted.transform((items) => items.map((item) => item.text));
 }
 
+/** Who the site is about: the hero heading and the structured data (schema.org `Person`). */
+const personSchema = z.object({
+  fullName: z.string().min(1),
+  jobTitle: localizedString(),
+  location: z.object({
+    locality: z.string().min(1),
+    country: z.string().regex(COUNTRY_CODE_PATTERN, 'not a two-letter country code'),
+    remote: z.boolean(),
+  }),
+});
+
 const siteSettingsSchema = z
   .object({
     ...documentFields,
@@ -84,6 +96,8 @@ const siteSettingsSchema = z
     linkedinUrl: z.url().nullish(),
     linkedinName: z.string().nullish(),
     openToWork: z.boolean(),
+    // Optional until the owner fills it in the Studio (#16): the hero keeps its tagline heading.
+    person: personSchema.nullish(),
     status: z.object({ open: localizedString(), busy: localizedString() }),
     credits: localizedLines({ min: 1 }, 'add at least one credit line'),
     seo: z.object({ title: localizedString(), description: localizedString() }),
@@ -114,6 +128,13 @@ const siteSettingsSchema = z
           : null,
     },
     openToWork: settings.openToWork,
+    person: settings.person
+      ? {
+          ...settings.person,
+          alternateName: settings.ownerName,
+          sameAs: [settings.githubUrl, settings.linkedinUrl].filter((url) => url != null),
+        }
+      : null,
     status: settings.status,
     credits: settings.credits,
     seo: settings.seo,
@@ -241,6 +262,8 @@ export const homeContentSchema = z
 export type HomeContent = z.output<typeof homeContentSchema>;
 export type SiteSettings = HomeContent['site'];
 export type OwnerLinks = SiteSettings['links'];
+export type Person = NonNullable<SiteSettings['person']>;
+export type PersonLocation = Person['location'];
 export type HeroContent = HomeContent['hero'];
 export type SkillsContent = HomeContent['skills'];
 export type ContactContent = HomeContent['contact'];

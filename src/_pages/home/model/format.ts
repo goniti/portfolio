@@ -1,4 +1,5 @@
-import type { Locale } from '@/shared/lib/i18n';
+import { INTL_LOCALE, type Locale } from '@/shared/lib/i18n';
+import type { PersonLocation } from './content';
 
 /** Two-digit ordinal label ("00", "01"…) for numbered lists. */
 export function formatIndex(index: number, offset = 0): string {
@@ -41,4 +42,15 @@ export function formatPeriod(
 ): string {
   const end = endDate ? formatMonthYear(endDate, locale) : presentLabel;
   return `${formatMonthYear(startDate, locale)} — ${end}`;
+}
+
+/** "Lyon, France · Remote": the place, its country named in the locale, and the remote mention. */
+export function formatLocation(
+  { locality, country, remote }: PersonLocation,
+  locale: Locale,
+  remoteLabel: string,
+): string {
+  const countryName = new Intl.DisplayNames(INTL_LOCALE[locale], { type: 'region' }).of(country);
+  const place = `${locality}, ${countryName ?? country}`;
+  return remote ? `${place} · ${remoteLabel}` : place;
 }

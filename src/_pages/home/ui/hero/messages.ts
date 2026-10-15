@@ -1,6 +1,7 @@
 import type { Localized } from '@/shared/lib/i18n';
 
-// The pitch (badge, title, lead), the terminal script and the focus stat are content (Sanity).
+// The pitch (badge, tagline, lead), the person (name, job title, location), the terminal script
+// and the focus stat are content (Sanity).
 const terminal = {
   title: '~/carlos — zsh',
   live: '● live',
@@ -14,6 +15,9 @@ const terminal = {
 };
 
 const en = {
+  /** Between the full name and the job title of the heading. */
+  titleSeparator: ' — ',
+  remote: 'Remote',
   exploreWork: 'Explore My Work',
   arrow: '→',
   getInTouch: 'Get in Touch',
@@ -26,6 +30,7 @@ export const heroMessages: Localized<typeof en> = {
   en,
   fr: {
     ...en,
+    remote: 'Télétravail',
     exploreWork: 'Voir mes projets',
     getInTouch: 'Me contacter',
     newTab: '(nouvel onglet)',

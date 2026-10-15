@@ -14,6 +14,11 @@ async function checkContent(): Promise<void> {
     console.log(
       `Content OK (${target}): ${content.jobs.length} jobs, ${content.projects.length} projects, ${content.notes.length} watch notes, every field in every locale.`,
     );
+    if (!content.site.person) {
+      console.warn(
+        'Reminder: siteSettings › person is not filled yet; the hero keeps its tagline as the heading. Fill it in the Studio (Site settings › Identity).',
+      );
+    }
   } catch (error) {
     if (!(error instanceof ContentError)) throw error;
     console.error(`Content check failed (${target}).\n${error.message}`);

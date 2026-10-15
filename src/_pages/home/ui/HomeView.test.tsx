@@ -11,11 +11,25 @@ describe('HomeView', () => {
     window.localStorage.clear();
   });
 
-  it('pitches the engineer in the main heading', () => {
+  it('names the engineer and the role in the main heading, the tagline below it', () => {
     render(<HomeView content={HOME_CONTENT_FIXTURE} />);
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+      'Carlos Gonzalez Lo Vullo — Lead Front-End Developer',
+    );
+    expect(screen.getByText('AI-Augmented Workflows').closest('h1')).toBeNull();
+    expect(screen.getByText('Lyon, France · Remote')).toBeTruthy();
+  });
+
+  it('keeps the tagline as the main heading until the person is filled', () => {
+    const content = {
+      ...HOME_CONTENT_FIXTURE,
+      site: { ...HOME_CONTENT_FIXTURE.site, person: null },
+    };
+    render(<HomeView content={content} />);
     expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
       'AI-Augmented Workflows',
     );
+    expect(screen.getByText(/Tech Lead & Senior Front-End Engineer/)).toBeTruthy();
   });
 
   it('renders every section with its heading', () => {
@@ -73,9 +87,11 @@ describe('HomeView', () => {
   it('shows the content in French once the visitor picks it', () => {
     window.localStorage.setItem('pf-lang', 'fr');
     render(<HomeView content={HOME_CONTENT_FIXTURE} />);
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain(
-      'Productivité augmentée par l’IA',
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+      'Carlos Gonzalez Lo Vullo — Lead Développeur Front-End',
     );
+    expect(screen.getByText('Productivité augmentée par l’IA')).toBeTruthy();
+    expect(screen.getByText('Lyon, France · Télétravail')).toBeTruthy();
     expect(screen.getByText('Juil. 2024 — Aujourd’hui')).toBeTruthy();
   });
 });

@@ -56,6 +56,14 @@ function siteSettings({ site }: HomeContent, assets: AssetRefs) {
     linkedinUrl: site.links.linkedin?.url,
     linkedinName: site.links.linkedin?.name,
     openToWork: site.openToWork,
+    // The alternate name and the other profiles derive from `ownerName` and the profile URLs.
+    person: site.person
+      ? {
+          fullName: site.person.fullName,
+          jobTitle: localized(site.person.jobTitle),
+          location: site.person.location,
+        }
+      : undefined,
     status: { open: localized(site.status.open), busy: localized(site.status.busy) },
     credits: lines(site.credits, 'credit'),
     seo: {
