@@ -15,6 +15,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 - Branch `fix/storybook` (PR open): Storybook on `@storybook/nextjs-vite` (next/image, next/font via `app/fonts/index.ts`), `pnpm test:storybook` (addon-vitest, Chromium, a11y `error`) as CI job `storybook`; Storybook published at `/portfolio/storybook/` (`STORYBOOK_DIR` in `deploy.yml`, `noindex`).
 - The owner published a GitHub profile README himself (drafted in the untracked `EXEMPLE/` folder; not part of the repo).
 - Branch `chore/rust-wizard-0.2.0` (PR open): rust-wizard 0.2.0 update merged (10 conflicts resolved by hand, `.rw-new` deleted), Biome replaces Prettier, Betterleaks replaces secretlint, `pnpm check:agent` green. rust-wizard is not installed locally: `.claude/rules/*` were synced by hand (frontmatter + `.agents/rules` body).
+- Branch `feat/24-job-sector` (PR open, #24): `sector` document (localized name + tint, `SECTOR_TINTS` = all 6), `job.sector` reference (required in the Studio, nullish in zod until the owner links the jobs), optional `job.summary`; job `tint` removed (leftover values ignored: the query no longer reads it). Card: sector label, 1px gradient top line (`via-current` + `tintVariants`), dot and bullets in the sector tint, default indigo without a sector.
 - Workspace: root site, `studio/`, `packages/content-model` (`portfolio-content-model`: locales, tints, categories, locale checks shared by site and Studio).
 
 ## Pending manual steps (owner)
@@ -22,7 +23,8 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 1. Review and merge PR #9 and the favicon/features PR (squash).
 2. After publishing in the Studio, deploy by hand: `pnpm run deploy` (not `pnpm deploy`, a pnpm built-in) or Actions → Run workflow. No webhook, no PAT (ADR-003 amendment 2026-10-15).
 3. Try the seed's draft check, its final `content:check` and the Studio "Missing: fr" previews on a throwaway `development` dataset.
-4. Optional: `docs/ai/ADAPT_PROMPT.md` to adapt the kit to the business domain.
+4. #24 sectors, once merged: `pnpm studio:deploy`, create the sectors, link each job to its sector and fill its summary, publish, then `pnpm run deploy`.
+5. Optional: `docs/ai/ADAPT_PROMPT.md` to adapt the kit to the business domain.
 
 ## Recent decisions
 

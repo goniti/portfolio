@@ -85,6 +85,13 @@ Format: **Symptom → Cause → Fix**.
 **Cause:** in a worktree, `.git` is a file pointing by absolute path to `<repo>/.git/worktrees/<name>`. The Docker fallback of `scripts/tool.sh` only mounted the current folder, so the pointer led nowhere inside the container.
 
 **Fix:** `scripts/tool.sh` now mounts the shared git directory (`git rev-parse --git-common-dir`) read-only at the same absolute path when it differs from `--git-dir`. Pull the fix; never commit with `--no-verify` to get around the hook.
+### `pnpm secrets` or `pnpm sast` fails in a git worktree
+
+**Symptom:** in a `git worktree` (for example an agent's `.claude/worktrees/<name>`), `check:agent` marks `secrets` or `sast` as failed with `fatal: not a git repository: …/.git/worktrees/<name>`.
+
+**Cause:** with Docker, `scripts/tool.sh` mounts only the worktree. Its `.git` is a file pointing at the main checkout's `.git/worktrees/<name>`, which is not in the container, so the tools cannot read the git history.
+
+**Fix:** nothing to fix in the code: CI runs both on a normal checkout. For a local check, scan the files instead of the history, e.g. `docker run --rm -v "$PWD:/src" -w /src ghcr.io/betterleaks/betterleaks:v1.9.0 dir --redact src`, or run the checks from the main checkout.
 
 ### `pnpm start` fails after `pnpm build`
 
