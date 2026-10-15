@@ -2,7 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { RocketIcon } from '@sanity/icons/Rocket';
 import { localizedValue, PROJECT_TINTS, type LocalizedItem } from 'portfolio-content-model';
 import { PROJECT_CATEGORY_OPTIONS } from '../categories';
-import { tintOptions } from '../tints';
+import { technologiesField, tintField } from '../fields';
 import { joinSubtitle, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales, validateLocales } from '../validation/requireLocales';
 
@@ -65,20 +65,8 @@ export const project = defineType({
       options: { list: PROJECT_CATEGORY_OPTIONS },
       validation: (rule) => rule.required().min(1).unique(),
     }),
-    defineField({
-      name: 'technologies',
-      type: 'array',
-      of: [defineArrayMember({ type: 'string' })],
-      options: { layout: 'tags' },
-      validation: (rule) => rule.required().min(1).unique(),
-    }),
-    defineField({
-      name: 'tint',
-      description: 'Background tone behind the screenshot or placeholder.',
-      type: 'string',
-      options: tintOptions(PROJECT_TINTS),
-      validation: (rule) => rule.required(),
-    }),
+    technologiesField(),
+    tintField('Background tone behind the screenshot or placeholder.', PROJECT_TINTS),
     defineField({
       name: 'demoUrl',
       title: 'Live demo URL',

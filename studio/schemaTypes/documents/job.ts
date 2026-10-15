@@ -2,7 +2,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CaseIcon } from '@sanity/icons/Case';
 import { JOB_TINTS, localizedValue } from 'portfolio-content-model';
 import { optionalString } from '../guards';
-import { tintOptions } from '../tints';
+import { technologiesField, tintField } from '../fields';
 import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
@@ -43,20 +43,8 @@ export const job = defineType({
       of: [defineArrayMember({ type: 'localizedLine' })],
       validation: (rule) => rule.required().min(1),
     }),
-    defineField({
-      name: 'technologies',
-      type: 'array',
-      of: [defineArrayMember({ type: 'string' })],
-      options: { layout: 'tags' },
-      validation: (rule) => rule.required().min(1).unique(),
-    }),
-    defineField({
-      name: 'tint',
-      description: 'Colour of the timeline dot and bullets.',
-      type: 'string',
-      options: tintOptions(JOB_TINTS),
-      validation: (rule) => rule.required(),
-    }),
+    technologiesField(),
+    tintField('Colour of the timeline dot and bullets.', JOB_TINTS),
   ],
   orderings: [
     {
