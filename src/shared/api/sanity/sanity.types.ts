@@ -16,24 +16,24 @@ export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
 export type LocalizedParagraph = {
-  _type: 'localizedParagraph';
+  _type: "localizedParagraph";
   text?: InternationalizedArrayText;
 };
 
 export type LocalizedLine = {
-  _type: 'localizedLine';
+  _type: "localizedLine";
   text?: InternationalizedArrayString;
 };
 
 export type WatchNote = {
   _id: string;
-  _type: 'watchNote';
+  _type: "watchNote";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
   title?: InternationalizedArrayString;
   publishedAt: string;
-  category: 'ai' | 'front-end' | 'architecture' | 'ux';
+  category: "ai" | "front-end" | "architecture" | "ux";
   readingMinutes: number;
   excerpt?: InternationalizedArrayText;
   body: Array<
@@ -62,14 +62,14 @@ export type InternationalizedArrayString = Array<
 
 export type SanityImageAssetReference = {
   _ref: string;
-  _type: 'reference';
+  _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type Project = {
   _id: string;
-  _type: 'project';
+  _type: "project";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -82,19 +82,19 @@ export type Project = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: InternationalizedArrayString;
-    _type: 'image';
+    _type: "image";
   };
   placeholder?: InternationalizedArrayString;
   categories: Array<string>;
   technologies: Array<string>;
-  tint: 'amber' | 'cyan' | 'emerald' | 'violet' | 'sky';
+  tint: "amber" | "cyan" | "emerald" | "violet" | "sky";
   demoUrl?: string;
   sourceUrl: string;
   sortOrder: number;
 };
 
 export type SanityImageCrop = {
-  _type: 'sanity.imageCrop';
+  _type: "sanity.imageCrop";
   top: number;
   bottom: number;
   left: number;
@@ -102,7 +102,7 @@ export type SanityImageCrop = {
 };
 
 export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot';
+  _type: "sanity.imageHotspot";
   x: number;
   y: number;
   height: number;
@@ -111,7 +111,7 @@ export type SanityImageHotspot = {
 
 export type Job = {
   _id: string;
-  _type: 'job';
+  _type: "job";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -125,12 +125,12 @@ export type Job = {
     } & LocalizedLine
   >;
   technologies: Array<string>;
-  tint: 'indigo' | 'cyan' | 'violet';
+  tint: "indigo" | "cyan" | "violet";
 };
 
 export type HomePage = {
   _id: string;
-  _type: 'homePage';
+  _type: "homePage";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -156,22 +156,22 @@ export type HomePage = {
   skills: {
     coreStack: Array<{
       name: string;
-      tint: 'indigo' | 'cyan' | 'violet' | 'emerald' | 'sky' | 'amber';
-      _type: 'coreTechnology';
+      tint: "indigo" | "cyan" | "violet" | "emerald" | "sky" | "amber";
+      _type: "coreTechnology";
       _key: string;
     }>;
     backendStack: Array<string>;
     aiPractices: Array<{
       title?: InternationalizedArrayString;
       description?: InternationalizedArrayString;
-      _type: 'aiPractice';
+      _type: "aiPractice";
       _key: string;
     }>;
     leadership: Array<{
       title?: InternationalizedArrayString;
       description?: InternationalizedArrayString;
       monogram: string;
-      _type: 'leadershipSkill';
+      _type: "leadershipSkill";
       _key: string;
     }>;
   };
@@ -183,7 +183,7 @@ export type HomePage = {
 
 export type SiteSettings = {
   _id: string;
-  _type: 'siteSettings';
+  _type: "siteSettings";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -193,7 +193,7 @@ export type SiteSettings = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    _type: 'image';
+    _type: "image";
   };
   email: string;
   githubUrl: string;
@@ -226,19 +226,19 @@ export type SiteSettings = {
 };
 
 export type InternationalizedArrayTextValue = {
-  _type: 'internationalizedArrayTextValue';
+  _type: "internationalizedArrayTextValue";
   value?: string;
   language: string;
 };
 
 export type InternationalizedArrayStringValue = {
-  _type: 'internationalizedArrayStringValue';
+  _type: "internationalizedArrayStringValue";
   value?: string;
   language: string;
 };
 
 export type SanityImagePaletteSwatch = {
-  _type: 'sanity.imagePaletteSwatch';
+  _type: "sanity.imagePaletteSwatch";
   background?: string;
   foreground?: string;
   population?: number;
@@ -246,7 +246,7 @@ export type SanityImagePaletteSwatch = {
 };
 
 export type SanityImagePalette = {
-  _type: 'sanity.imagePalette';
+  _type: "sanity.imagePalette";
   darkMuted?: SanityImagePaletteSwatch;
   lightVibrant?: SanityImagePaletteSwatch;
   darkVibrant?: SanityImagePaletteSwatch;
@@ -257,14 +257,14 @@ export type SanityImagePalette = {
 };
 
 export type SanityImageDimensions = {
-  _type: 'sanity.imageDimensions';
+  _type: "sanity.imageDimensions";
   height: number;
   width: number;
   aspectRatio: number;
 };
 
 export type SanityImageMetadata = {
-  _type: 'sanity.imageMetadata';
+  _type: "sanity.imageMetadata";
   location?: Geopoint;
   dimensions?: SanityImageDimensions;
   palette?: SanityImagePalette;
@@ -277,7 +277,7 @@ export type SanityImageMetadata = {
 
 export type SanityFileAsset = {
   _id: string;
-  _type: 'sanity.fileAsset';
+  _type: "sanity.fileAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -298,7 +298,7 @@ export type SanityFileAsset = {
 };
 
 export type SanityAssetSourceData = {
-  _type: 'sanity.assetSourceData';
+  _type: "sanity.assetSourceData";
   name?: string;
   id?: string;
   url?: string;
@@ -306,7 +306,7 @@ export type SanityAssetSourceData = {
 
 export type SanityImageAsset = {
   _id: string;
-  _type: 'sanity.imageAsset';
+  _type: "sanity.imageAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -328,14 +328,14 @@ export type SanityImageAsset = {
 };
 
 export type Geopoint = {
-  _type: 'geopoint';
+  _type: "geopoint";
   lat?: number;
   lng?: number;
   alt?: number;
 };
 
 export type Slug = {
-  _type: 'slug';
+  _type: "slug";
   current: string;
   source?: string;
 };
@@ -370,8 +370,8 @@ export type AllSanitySchemaTypes =
 // Query: {  "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{    _id,    _type,    ownerName,    avatar{ asset->{ _id, metadata{ lqip } }, hotspot, crop },    email,    githubUrl,    githubHandle,    linkedinUrl,    linkedinName,    openToWork,    person{      fullName,      jobTitle[]{ _key, language, value },      location{ locality, country, remote }    },    status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },    credits[]{ _key, text[]{ _key, language, value } },    seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }  },  "homePage": *[_type == "homePage" && _id == "homePage"][0]{    _id,    _type,    hero{      badge[]{ _key, language, value },      titleStart[]{ _key, language, value },      titleHighlight[]{ _key, language, value },      titleEnd[]{ _key, language, value },      lead[]{ _key, language, value },      terminalScript[]{ _key, text[]{ _key, language, value } },      focus[]{ _key, language, value }    },    sections{      experience[]{ _key, language, value },      skills[]{ _key, language, value },      projects[]{ _key, language, value },      watch[]{ _key, language, value }    },    skills{      coreStack[]{ _key, name, tint },      backendStack,      aiPractices[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value }      },      leadership[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value },        monogram      }    },    contact{ title[]{ _key, language, value }, lead[]{ _key, language, value } }  },  "jobs": *[_type == "job"] | order(startDate desc){    _id,    _type,    company,    role[]{ _key, language, value },    startDate,    endDate,    achievements[]{ _key, text[]{ _key, language, value } },    technologies,    tint  },  "projects": *[_type == "project"] | order(sortOrder asc){    _id,    _type,    title[]{ _key, language, value },    kind[]{ _key, language, value },    description[]{ _key, language, value },    placeholder[]{ _key, language, value },    image{      asset->{ _id, metadata{ lqip } },      hotspot,      crop,      alt[]{ _key, language, value }    },    categories,    technologies,    tint,    demoUrl,    sourceUrl  },  "notes": *[_type == "watchNote"] | order(publishedAt desc){    _id,    _type,    title[]{ _key, language, value },    publishedAt,    category,    readingMinutes,    excerpt[]{ _key, language, value },    body[]{ _key, text[]{ _key, language, value } },    takeaways[]{ _key, text[]{ _key, language, value } }  }}
 export type HOME_CONTENT_QUERY_RESULT = {
   siteSettings: {
-    _id: 'siteSettings';
-    _type: 'siteSettings';
+    _id: "siteSettings";
+    _type: "siteSettings";
     ownerName: string;
     avatar: {
       asset: {
@@ -436,8 +436,8 @@ export type HOME_CONTENT_QUERY_RESULT = {
     };
   } | null;
   homePage: {
-    _id: 'homePage';
-    _type: 'homePage';
+    _id: "homePage";
+    _type: "homePage";
     hero: {
       badge: Array<{
         _key: string;
@@ -504,7 +504,7 @@ export type HOME_CONTENT_QUERY_RESULT = {
       coreStack: Array<{
         _key: string;
         name: string;
-        tint: 'amber' | 'cyan' | 'emerald' | 'indigo' | 'sky' | 'violet';
+        tint: "amber" | "cyan" | "emerald" | "indigo" | "sky" | "violet";
       }>;
       backendStack: Array<string>;
       aiPractices: Array<{
@@ -550,7 +550,7 @@ export type HOME_CONTENT_QUERY_RESULT = {
   } | null;
   jobs: Array<{
     _id: string;
-    _type: 'job';
+    _type: "job";
     company: string;
     role: Array<{
       _key: string;
@@ -568,11 +568,11 @@ export type HOME_CONTENT_QUERY_RESULT = {
       }> | null;
     }>;
     technologies: Array<string>;
-    tint: 'cyan' | 'indigo' | 'violet';
+    tint: "cyan" | "indigo" | "violet";
   }>;
   projects: Array<{
     _id: string;
-    _type: 'project';
+    _type: "project";
     title: Array<{
       _key: string;
       language: string;
@@ -610,20 +610,20 @@ export type HOME_CONTENT_QUERY_RESULT = {
     } | null;
     categories: Array<string>;
     technologies: Array<string>;
-    tint: 'amber' | 'cyan' | 'emerald' | 'sky' | 'violet';
+    tint: "amber" | "cyan" | "emerald" | "sky" | "violet";
     demoUrl: string | null;
     sourceUrl: string;
   }>;
   notes: Array<{
     _id: string;
-    _type: 'watchNote';
+    _type: "watchNote";
     title: Array<{
       _key: string;
       language: string;
       value: string | null;
     }> | null;
     publishedAt: string;
-    category: 'ai' | 'architecture' | 'front-end' | 'ux';
+    category: "ai" | "architecture" | "front-end" | "ux";
     readingMinutes: number;
     excerpt: Array<{
       _key: string;
@@ -656,6 +656,6 @@ declare global {
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
-declare module '@sanity/client' {
+declare module "@sanity/client" {
   interface SanityQueries extends globalThis.SanityQueries {}
 }
