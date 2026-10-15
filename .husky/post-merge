@@ -1,0 +1,5 @@
+# After `git pull`: delete the agent worktrees and local branches whose PR is merged.
+# Quiet, skipped in CI, and never fails the git command.
+if [ "${CI:-}" != "true" ] && [ -f scripts/prune-worktrees.mjs ]; then
+	node scripts/prune-worktrees.mjs --quiet || true
+fi

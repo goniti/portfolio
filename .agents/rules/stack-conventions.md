@@ -31,6 +31,8 @@ Quality: eslint, biome, husky, lint-staged, commitlint, vitest, playwright, knip
 │   └── pull_request_template.md
 ├── .husky/
 │   ├── commit-msg
+│   ├── post-checkout
+│   ├── post-merge
 │   └── pre-commit
 ├── .storybook/
 │   ├── main.ts
@@ -49,6 +51,8 @@ Quality: eslint, biome, husky, lint-staged, commitlint, vitest, playwright, knip
 │   ├── audit-deps.mjs
 │   ├── check-agent.mjs
 │   ├── check-inclusive-language.mjs
+│   ├── lib/
+│   ├── prune-worktrees.mjs
 │   ├── secrets.sh
 │   └── tool.sh
 ├── src/
@@ -126,6 +130,7 @@ Quality: eslint, biome, husky, lint-staged, commitlint, vitest, playwright, knip
 | `pnpm lint:arch`       | Checks the architecture: forbidden and circular imports             |
 | `pnpm lint:language`   | Flags exclusionary terms                                            |
 | `pnpm check:agent`     | Every check, summarized in `.agents/work/checks.json` for AI agents |
+| `pnpm worktrees:prune` | Removes agent worktrees and branches whose PR is merged             |
 | `pnpm content:check`   | Validates the published Sanity content (both locales)               |
 | `pnpm icon:render`     | Renders `app/apple-icon.png` from `app/icon.svg`                    |
 | `pnpm typegen`         | Regenerates the Sanity types (`sanity.types.ts`)                    |

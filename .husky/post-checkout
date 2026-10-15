@@ -1,0 +1,9 @@
+# After a branch checkout: delete the agent worktrees and local branches whose PR is merged.
+# Arguments: previous HEAD, new HEAD, 1 for a branch checkout (0 for a file checkout).
+# Skipped for file checkouts, for a new clone or worktree (previous HEAD is all zeros) and in CI;
+# quiet, and never fails the git command.
+null_head=0000000000000000000000000000000000000000
+if [ "${3:-0}" = "1" ] && [ "$1" != "$null_head" ] && [ "${CI:-}" != "true" ] &&
+	[ -f scripts/prune-worktrees.mjs ]; then
+	node scripts/prune-worktrees.mjs --quiet || true
+fi

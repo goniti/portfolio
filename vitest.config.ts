@@ -15,7 +15,8 @@ export default defineConfig({
           environment: 'jsdom',
           // `studio/`: the Studio's validation helpers (pure functions, no Studio runtime).
           // `packages/`: the shared content model (ADR-004).
-          include: ['{app,src,studio,packages}/**/*.test.{ts,tsx}'],
+          // `scripts/`: the logic of the repository tooling (`scripts/lib/`).
+          include: ['{app,src,studio,packages,scripts}/**/*.test.{ts,tsx}'],
           setupFiles: ['./vitest.setup.ts'],
         },
       },

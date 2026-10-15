@@ -37,6 +37,7 @@
     "studio:seed": "pnpm --filter portfolio-studio seed",
     "deploy": "gh workflow run deploy.yml --ref main",
     "check:agent": "node scripts/check-agent.mjs",
+    "worktrees:prune": "node scripts/prune-worktrees.mjs",
     "audit:deps": "node scripts/audit-deps.mjs",
     "sast": "sh scripts/tool.sh semgrep semgrep/semgrep:1.181.0 scan --metrics=off --error --quiet --config p/typescript --config p/react --config p/nextjs",
     "lint:dup": "jscpd .",
