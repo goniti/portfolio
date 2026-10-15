@@ -47,6 +47,10 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 
 - The `ScrollReveal` atom: `HomeView` is a client component and calls `useScrollReveal()` directly.
 
+### Fixed
+
+- The pre-commit secret scan, `pnpm secrets` and `pnpm sast` work inside git worktrees: the Docker fallback of `scripts/tool.sh` also mounts the shared git directory, read-only.
+
 ## [0.1.0] - 2026-10-13
 
 First public release: the home page implements the Portfolio v2 design.

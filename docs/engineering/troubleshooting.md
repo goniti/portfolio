@@ -78,6 +78,14 @@ Format: **Symptom → Cause → Fix**.
 
 **Fix:** start Docker (`docker info` must succeed) or install the binary, then run the check again. The first run pulls the image.
 
+### Pre-commit `secrets` or `pnpm sast` fails with "fatal: not a git repository" in a worktree
+
+**Symptom:** in a git worktree (`.claude/worktrees/agent-*`, or any `git worktree add`), the pre-commit hook or `pnpm secrets` stops with `[git] fatal: not a git repository: <repo>/.git/worktrees/<name>`.
+
+**Cause:** in a worktree, `.git` is a file pointing by absolute path to `<repo>/.git/worktrees/<name>`. The Docker fallback of `scripts/tool.sh` only mounted the current folder, so the pointer led nowhere inside the container.
+
+**Fix:** `scripts/tool.sh` now mounts the shared git directory (`git rev-parse --git-common-dir`) read-only at the same absolute path when it differs from `--git-dir`. Pull the fix; never commit with `--no-verify` to get around the hook.
+
 ### `pnpm start` fails after `pnpm build`
 
 **Symptom:** `"next start" does not work with "output: export" configuration`.
