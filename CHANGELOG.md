@@ -10,11 +10,12 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 - `pnpm content:check`: validates the published content in both locales and reports each problem as `document › field › locale`; runs in CI and first in the deploy.
 - `pnpm studio:dev`, `pnpm studio:deploy`, `pnpm studio:seed` and `pnpm typegen` (generated types committed and drift-checked in CI).
 - `SANITY_PROJECT_ID`, `SANITY_DATASET` and `SANITY_API_VERSION` environment variables (validated).
-- Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main`, on demand, and on the `sanity-content-published` dispatch event.
+- Deployment to GitHub Pages at <https://goniti.github.io/portfolio/>: `.github/workflows/deploy.yml` runs on push to `main` and on demand. Content changes go live with a manual run (no Sanity webhook); the `sanity-content-published` dispatch trigger stays for an optional webhook later.
 - `NEXT_PUBLIC_BASE_PATH` environment variable (validated) and the `withBasePath()` helper for public asset URLs.
 - `NEXT_PUBLIC_CALENDLY_URL` environment variable (optional, validated as a Calendly page): sets the "Book a call" page. CI and the deploy read it from the `NEXT_PUBLIC_CALENDLY_URL` repository variable, which the owner must create.
 - `pnpm lighthouse` and a "Lighthouse (mobile, warn only)" CI job on pull requests: audits the static export served under `/portfolio`, warns under 95 in performance, accessibility, best practices or SEO, writes the scores to the job summary and uploads the reports as the `lighthouse-report` artifact.
 - `pnpm bundle:check`, run in CI after the build: fails when zod reaches a browser chunk.
+- `pnpm run deploy`: runs the "Deploy to GitHub Pages" workflow on `main` with the `gh` CLI, to publish content changes (`pnpm deploy` is a pnpm built-in, so type `run`).
 - `portfolio-content-model` workspace package (`packages/content-model`, ADR-004): the locales, tints, categories and locale-completeness rules, shared by the site and the Studio.
 
 ### Changed

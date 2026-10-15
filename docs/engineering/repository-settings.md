@@ -50,4 +50,4 @@ gh variable set NEXT_PUBLIC_CALENDLY_URL --body https://calendly.com/<user>/<eve
 
 `.github/workflows/deploy.yml` publishes the static export to <https://goniti.github.io/portfolio/>. Enable it once: Settings → Pages → Build and deployment → Source: **GitHub Actions**. The workflow deploys to the `github-pages` environment; keep its deployment branch rule on `main`.
 
-Later, the Sanity webhook triggers a rebuild through the `sanity-content-published` `repository_dispatch` event (ADR-003, step 10).
+Content changes are deployed by hand: `pnpm run deploy` or Actions → **Run workflow** (see [`content.md`](content.md#publishing)). No Sanity webhook and no GitHub token are configured; the workflow keeps its `sanity-content-published` `repository_dispatch` trigger so one can be added later (ADR-003, amendment 2026-10-15).

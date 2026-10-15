@@ -19,7 +19,7 @@ Context cache read at the start of each session. **Under 100 lines**: this is no
 ## Pending manual steps (owner)
 
 1. Review and merge PR #9 and the favicon/features PR (squash).
-2. Create the fine-grained PAT + Sanity webhook (`docs/engineering/content.md`, "Sanity → GitHub webhook").
+2. After publishing in the Studio, deploy by hand: `pnpm run deploy` (not `pnpm deploy`, a pnpm built-in) or Actions → Run workflow. No webhook, no PAT (ADR-003 amendment 2026-10-15).
 3. Try the seed's draft check, its final `content:check` and the Studio "Missing: fr" previews on a throwaway `development` dataset.
 4. Optional: `docs/ai/ADAPT_PROMPT.md` to adapt the kit to the business domain.
 

@@ -34,7 +34,8 @@
     "typegen": "pnpm --filter portfolio-studio typegen",
     "studio:dev": "pnpm --filter portfolio-studio dev",
     "studio:deploy": "pnpm --filter portfolio-studio deploy",
-    "studio:seed": "pnpm --filter portfolio-studio seed"
+    "studio:seed": "pnpm --filter portfolio-studio seed",
+    "deploy": "gh workflow run deploy.yml --ref main"
   },
   "dependencies": {
     "@sanity/client": "^8.9.0",
