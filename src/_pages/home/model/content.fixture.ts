@@ -1,5 +1,5 @@
 import type { Localized } from '@/shared/lib/i18n';
-import type { HomeContent } from './content';
+import type { HomeContent, Sector } from './content';
 
 /*
  * The home page content as published in Sanity on 2026-10-14, plus the person and the reworded SEO
@@ -15,6 +15,16 @@ const CDN = 'https://cdn.sanity.io/images/8i6zw2b7/production';
 /** The owner's public Calendly page (`NEXT_PUBLIC_CALENDLY_URL` on the site), for tests and stories. */
 export const CALENDLY_URL_FIXTURE =
   'https://calendly.com/gonzalezlovullocarlos/30-minutes-google-meet';
+
+/** Industry sectors of the jobs: two jobs of the same sector share its name and its tint. */
+export const SECTORS_FIXTURE = {
+  publicAffairs: {
+    id: 'sector-public-affairs',
+    name: both('Public affairs & influence', 'Affaires publiques & influence'),
+    tint: 'amber',
+  },
+  medTech: { id: 'sector-medtech', name: both('MedTech'), tint: 'emerald' },
+} as const satisfies Record<string, Sector>;
 
 export const HOME_CONTENT_FIXTURE: HomeContent = {
   site: {
@@ -180,6 +190,11 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
       id: 'job-saper-vedere',
       company: 'Saper Vedere',
       role: both('Tech Lead / Front-End Dev'),
+      summary: both(
+        'Public affairs consultancy building influence and monitoring tools.',
+        'Cabinet d’affaires publiques qui conçoit des outils d’influence et de veille.',
+      ),
+      sector: SECTORS_FIXTURE.publicAffairs,
       startDate: '2024-07-01',
       endDate: null,
       achievements: [
@@ -195,12 +210,16 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
         ),
       ],
       technologies: ['Vue 3', 'TypeScript', 'AI Workflows'],
-      tint: 'indigo',
     },
     {
       id: 'job-pulselife-react',
       company: 'PulseLife',
       role: both('Front-End Dev'),
+      summary: both(
+        'Health-tech company building clinical apps for care teams.',
+        'Entreprise de santé numérique qui conçoit des applications cliniques pour les soignants.',
+      ),
+      sector: SECTORS_FIXTURE.medTech,
       startDate: '2022-01-01',
       endDate: '2024-06-01',
       achievements: [
@@ -212,12 +231,16 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
         ),
       ],
       technologies: ['React', 'React Native', 'GraphQL', 'AWS'],
-      tint: 'cyan',
     },
     {
       id: 'job-pulselife-vue',
       company: 'PulseLife',
       role: both('Front-End Dev'),
+      summary: both(
+        'Health-tech company building clinical apps for care teams.',
+        'Entreprise de santé numérique qui conçoit des applications cliniques pour les soignants.',
+      ),
+      sector: SECTORS_FIXTURE.medTech,
       startDate: '2021-07-01',
       endDate: '2022-01-01',
       achievements: [
@@ -225,7 +248,6 @@ export const HOME_CONTENT_FIXTURE: HomeContent = {
         both('Shared component library.', 'Bibliothèque de composants partagée.'),
       ],
       technologies: ['Vue.js'],
-      tint: 'violet',
     },
   ],
   projects: [

@@ -1,9 +1,9 @@
 import {
   COUNTRY_CODE_PATTERN,
-  JOB_TINTS,
   NOTE_CATEGORIES,
   PROJECT_CATEGORIES,
   PROJECT_TINTS,
+  SECTOR_TINTS,
   TINTS,
 } from 'portfolio-content-model';
 import { z } from 'zod';
@@ -178,18 +178,30 @@ const homePageSchema = z.object({
   contact: z.object({ title: localizedString(), lead: localizedString() }),
 });
 
+const sectorSchema = z
+  .object({ ...documentFields, name: localizedString(), tint: z.enum(SECTOR_TINTS) })
+  .transform(withId);
+
 const jobSchema = z
   .object({
     ...documentFields,
     company: z.string().min(1),
     role: localizedString(),
+    summary: optionalLocalizedString(),
+    // Required in the Studio, optional here until the owner links every job to a sector (#24):
+    // without one the card shows no label and no top line, and keeps the default tint.
+    sector: sectorSchema.nullish(),
     startDate: z.iso.date(),
     endDate: z.iso.date().nullish(),
     achievements: localizedLines({ min: 1 }),
     technologies: z.array(z.string().min(1)).min(1),
-    tint: z.enum(JOB_TINTS),
   })
-  .transform((job) => ({ ...withId(job), endDate: job.endDate ?? null }));
+  .transform(({ summary, sector, endDate, ...job }) => ({
+    ...withId(job),
+    summary: summary ?? null,
+    sector: sector ?? null,
+    endDate: endDate ?? null,
+  }));
 
 const projectSchema = z
   .object({
@@ -268,5 +280,6 @@ export type HeroContent = HomeContent['hero'];
 export type SkillsContent = HomeContent['skills'];
 export type ContactContent = HomeContent['contact'];
 export type Job = HomeContent['jobs'][number];
+export type Sector = NonNullable<Job['sector']>;
 export type Project = HomeContent['projects'][number];
 export type WatchNote = HomeContent['notes'][number];

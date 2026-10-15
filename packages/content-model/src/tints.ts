@@ -3,8 +3,8 @@ export const TINTS = ['indigo', 'cyan', 'violet', 'emerald', 'sky', 'amber'] as 
 
 export type Tint = (typeof TINTS)[number];
 
-/** Tints a job may use (timeline dot and bullets). */
-export const JOB_TINTS = ['indigo', 'cyan', 'violet'] as const satisfies readonly Tint[];
+/** Tints a sector may use: it colours the label, top line, timeline dot and bullets of its jobs. */
+export const SECTOR_TINTS = [...TINTS] as const satisfies readonly Tint[];
 
 /** Tints a project may use (background behind the screenshot or placeholder). */
 export const PROJECT_TINTS = [

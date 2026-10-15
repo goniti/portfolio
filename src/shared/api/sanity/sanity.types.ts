@@ -109,6 +109,13 @@ export type SanityImageHotspot = {
   width: number;
 };
 
+export type SectorReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sector";
+};
+
 export type Job = {
   _id: string;
   _type: "job";
@@ -117,6 +124,8 @@ export type Job = {
   _rev: string;
   company: string;
   role?: InternationalizedArrayString;
+  summary?: InternationalizedArrayString;
+  sector: SectorReference;
   startDate: string;
   endDate?: string;
   achievements: Array<
@@ -125,7 +134,16 @@ export type Job = {
     } & LocalizedLine
   >;
   technologies: Array<string>;
-  tint: "indigo" | "cyan" | "violet";
+};
+
+export type Sector = {
+  _id: string;
+  _type: "sector";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: InternationalizedArrayString;
+  tint: "indigo" | "cyan" | "violet" | "emerald" | "sky" | "amber";
 };
 
 export type HomePage = {
@@ -350,7 +368,9 @@ export type AllSanitySchemaTypes =
   | Project
   | SanityImageCrop
   | SanityImageHotspot
+  | SectorReference
   | Job
+  | Sector
   | HomePage
   | SiteSettings
   | InternationalizedArrayTextValue
@@ -367,7 +387,7 @@ export type AllSanitySchemaTypes =
 
 // Source: ../src/_pages/home/api/queries.ts
 // Variable: HOME_CONTENT_QUERY
-// Query: {  "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{    _id,    _type,    ownerName,    avatar{ asset->{ _id, metadata{ lqip } }, hotspot, crop },    email,    githubUrl,    githubHandle,    linkedinUrl,    linkedinName,    openToWork,    person{      fullName,      jobTitle[]{ _key, language, value },      location{ locality, country, remote }    },    status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },    credits[]{ _key, text[]{ _key, language, value } },    seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }  },  "homePage": *[_type == "homePage" && _id == "homePage"][0]{    _id,    _type,    hero{      badge[]{ _key, language, value },      titleStart[]{ _key, language, value },      titleHighlight[]{ _key, language, value },      titleEnd[]{ _key, language, value },      lead[]{ _key, language, value },      terminalScript[]{ _key, text[]{ _key, language, value } },      focus[]{ _key, language, value }    },    sections{      experience[]{ _key, language, value },      skills[]{ _key, language, value },      projects[]{ _key, language, value },      watch[]{ _key, language, value }    },    skills{      coreStack[]{ _key, name, tint },      backendStack,      aiPractices[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value }      },      leadership[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value },        monogram      }    },    contact{ title[]{ _key, language, value }, lead[]{ _key, language, value } }  },  "jobs": *[_type == "job"] | order(startDate desc){    _id,    _type,    company,    role[]{ _key, language, value },    startDate,    endDate,    achievements[]{ _key, text[]{ _key, language, value } },    technologies,    tint  },  "projects": *[_type == "project"] | order(sortOrder asc){    _id,    _type,    title[]{ _key, language, value },    kind[]{ _key, language, value },    description[]{ _key, language, value },    placeholder[]{ _key, language, value },    image{      asset->{ _id, metadata{ lqip } },      hotspot,      crop,      alt[]{ _key, language, value }    },    categories,    technologies,    tint,    demoUrl,    sourceUrl  },  "notes": *[_type == "watchNote"] | order(publishedAt desc){    _id,    _type,    title[]{ _key, language, value },    publishedAt,    category,    readingMinutes,    excerpt[]{ _key, language, value },    body[]{ _key, text[]{ _key, language, value } },    takeaways[]{ _key, text[]{ _key, language, value } }  }}
+// Query: {  "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{    _id,    _type,    ownerName,    avatar{ asset->{ _id, metadata{ lqip } }, hotspot, crop },    email,    githubUrl,    githubHandle,    linkedinUrl,    linkedinName,    openToWork,    person{      fullName,      jobTitle[]{ _key, language, value },      location{ locality, country, remote }    },    status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },    credits[]{ _key, text[]{ _key, language, value } },    seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }  },  "homePage": *[_type == "homePage" && _id == "homePage"][0]{    _id,    _type,    hero{      badge[]{ _key, language, value },      titleStart[]{ _key, language, value },      titleHighlight[]{ _key, language, value },      titleEnd[]{ _key, language, value },      lead[]{ _key, language, value },      terminalScript[]{ _key, text[]{ _key, language, value } },      focus[]{ _key, language, value }    },    sections{      experience[]{ _key, language, value },      skills[]{ _key, language, value },      projects[]{ _key, language, value },      watch[]{ _key, language, value }    },    skills{      coreStack[]{ _key, name, tint },      backendStack,      aiPractices[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value }      },      leadership[]{        _key,        title[]{ _key, language, value },        description[]{ _key, language, value },        monogram      }    },    contact{ title[]{ _key, language, value }, lead[]{ _key, language, value } }  },  "jobs": *[_type == "job"] | order(startDate desc){    _id,    _type,    company,    role[]{ _key, language, value },    summary[]{ _key, language, value },    sector->{ _id, _type, name[]{ _key, language, value }, tint },    startDate,    endDate,    achievements[]{ _key, text[]{ _key, language, value } },    technologies  },  "projects": *[_type == "project"] | order(sortOrder asc){    _id,    _type,    title[]{ _key, language, value },    kind[]{ _key, language, value },    description[]{ _key, language, value },    placeholder[]{ _key, language, value },    image{      asset->{ _id, metadata{ lqip } },      hotspot,      crop,      alt[]{ _key, language, value }    },    categories,    technologies,    tint,    demoUrl,    sourceUrl  },  "notes": *[_type == "watchNote"] | order(publishedAt desc){    _id,    _type,    title[]{ _key, language, value },    publishedAt,    category,    readingMinutes,    excerpt[]{ _key, language, value },    body[]{ _key, text[]{ _key, language, value } },    takeaways[]{ _key, text[]{ _key, language, value } }  }}
 export type HOME_CONTENT_QUERY_RESULT = {
   siteSettings: {
     _id: "siteSettings";
@@ -557,6 +577,21 @@ export type HOME_CONTENT_QUERY_RESULT = {
       language: string;
       value: string | null;
     }> | null;
+    summary: Array<{
+      _key: string;
+      language: string;
+      value: string | null;
+    }> | null;
+    sector: {
+      _id: string;
+      _type: "sector";
+      name: Array<{
+        _key: string;
+        language: string;
+        value: string | null;
+      }> | null;
+      tint: "amber" | "cyan" | "emerald" | "indigo" | "sky" | "violet";
+    };
     startDate: string;
     endDate: string | null;
     achievements: Array<{
@@ -568,7 +603,6 @@ export type HOME_CONTENT_QUERY_RESULT = {
       }> | null;
     }>;
     technologies: Array<string>;
-    tint: "cyan" | "indigo" | "violet";
   }>;
   projects: Array<{
     _id: string;
@@ -652,7 +686,7 @@ export type HOME_CONTENT_QUERY_RESULT = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '{\n  "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    _id,\n    _type,\n    ownerName,\n    avatar{ asset->{ _id, metadata{ lqip } }, hotspot, crop },\n    email,\n    githubUrl,\n    githubHandle,\n    linkedinUrl,\n    linkedinName,\n    openToWork,\n    person{\n      fullName,\n      jobTitle[]{ _key, language, value },\n      location{ locality, country, remote }\n    },\n    status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },\n    credits[]{ _key, text[]{ _key, language, value } },\n    seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }\n  },\n  "homePage": *[_type == "homePage" && _id == "homePage"][0]{\n    _id,\n    _type,\n    hero{\n      badge[]{ _key, language, value },\n      titleStart[]{ _key, language, value },\n      titleHighlight[]{ _key, language, value },\n      titleEnd[]{ _key, language, value },\n      lead[]{ _key, language, value },\n      terminalScript[]{ _key, text[]{ _key, language, value } },\n      focus[]{ _key, language, value }\n    },\n    sections{\n      experience[]{ _key, language, value },\n      skills[]{ _key, language, value },\n      projects[]{ _key, language, value },\n      watch[]{ _key, language, value }\n    },\n    skills{\n      coreStack[]{ _key, name, tint },\n      backendStack,\n      aiPractices[]{\n        _key,\n        title[]{ _key, language, value },\n        description[]{ _key, language, value }\n      },\n      leadership[]{\n        _key,\n        title[]{ _key, language, value },\n        description[]{ _key, language, value },\n        monogram\n      }\n    },\n    contact{ title[]{ _key, language, value }, lead[]{ _key, language, value } }\n  },\n  "jobs": *[_type == "job"] | order(startDate desc){\n    _id,\n    _type,\n    company,\n    role[]{ _key, language, value },\n    startDate,\n    endDate,\n    achievements[]{ _key, text[]{ _key, language, value } },\n    technologies,\n    tint\n  },\n  "projects": *[_type == "project"] | order(sortOrder asc){\n    _id,\n    _type,\n    title[]{ _key, language, value },\n    kind[]{ _key, language, value },\n    description[]{ _key, language, value },\n    placeholder[]{ _key, language, value },\n    image{\n      asset->{ _id, metadata{ lqip } },\n      hotspot,\n      crop,\n      alt[]{ _key, language, value }\n    },\n    categories,\n    technologies,\n    tint,\n    demoUrl,\n    sourceUrl\n  },\n  "notes": *[_type == "watchNote"] | order(publishedAt desc){\n    _id,\n    _type,\n    title[]{ _key, language, value },\n    publishedAt,\n    category,\n    readingMinutes,\n    excerpt[]{ _key, language, value },\n    body[]{ _key, text[]{ _key, language, value } },\n    takeaways[]{ _key, text[]{ _key, language, value } }\n  }\n}': HOME_CONTENT_QUERY_RESULT;
+    '{\n  "siteSettings": *[_type == "siteSettings" && _id == "siteSettings"][0]{\n    _id,\n    _type,\n    ownerName,\n    avatar{ asset->{ _id, metadata{ lqip } }, hotspot, crop },\n    email,\n    githubUrl,\n    githubHandle,\n    linkedinUrl,\n    linkedinName,\n    openToWork,\n    person{\n      fullName,\n      jobTitle[]{ _key, language, value },\n      location{ locality, country, remote }\n    },\n    status{ open[]{ _key, language, value }, busy[]{ _key, language, value } },\n    credits[]{ _key, text[]{ _key, language, value } },\n    seo{ title[]{ _key, language, value }, description[]{ _key, language, value } }\n  },\n  "homePage": *[_type == "homePage" && _id == "homePage"][0]{\n    _id,\n    _type,\n    hero{\n      badge[]{ _key, language, value },\n      titleStart[]{ _key, language, value },\n      titleHighlight[]{ _key, language, value },\n      titleEnd[]{ _key, language, value },\n      lead[]{ _key, language, value },\n      terminalScript[]{ _key, text[]{ _key, language, value } },\n      focus[]{ _key, language, value }\n    },\n    sections{\n      experience[]{ _key, language, value },\n      skills[]{ _key, language, value },\n      projects[]{ _key, language, value },\n      watch[]{ _key, language, value }\n    },\n    skills{\n      coreStack[]{ _key, name, tint },\n      backendStack,\n      aiPractices[]{\n        _key,\n        title[]{ _key, language, value },\n        description[]{ _key, language, value }\n      },\n      leadership[]{\n        _key,\n        title[]{ _key, language, value },\n        description[]{ _key, language, value },\n        monogram\n      }\n    },\n    contact{ title[]{ _key, language, value }, lead[]{ _key, language, value } }\n  },\n  "jobs": *[_type == "job"] | order(startDate desc){\n    _id,\n    _type,\n    company,\n    role[]{ _key, language, value },\n    summary[]{ _key, language, value },\n    sector->{ _id, _type, name[]{ _key, language, value }, tint },\n    startDate,\n    endDate,\n    achievements[]{ _key, text[]{ _key, language, value } },\n    technologies\n  },\n  "projects": *[_type == "project"] | order(sortOrder asc){\n    _id,\n    _type,\n    title[]{ _key, language, value },\n    kind[]{ _key, language, value },\n    description[]{ _key, language, value },\n    placeholder[]{ _key, language, value },\n    image{\n      asset->{ _id, metadata{ lqip } },\n      hotspot,\n      crop,\n      alt[]{ _key, language, value }\n    },\n    categories,\n    technologies,\n    tint,\n    demoUrl,\n    sourceUrl\n  },\n  "notes": *[_type == "watchNote"] | order(publishedAt desc){\n    _id,\n    _type,\n    title[]{ _key, language, value },\n    publishedAt,\n    category,\n    readingMinutes,\n    excerpt[]{ _key, language, value },\n    body[]{ _key, text[]{ _key, language, value } },\n    takeaways[]{ _key, text[]{ _key, language, value } }\n  }\n}': HOME_CONTENT_QUERY_RESULT;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

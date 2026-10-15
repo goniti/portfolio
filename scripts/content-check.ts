@@ -19,6 +19,13 @@ async function checkContent(): Promise<void> {
         'Reminder: siteSettings › person is not filled yet; the hero keeps its tagline as the heading. Fill it in the Studio (Site settings › Identity).',
       );
     }
+    const jobsWithoutSector = content.jobs.filter((job) => !job.sector);
+    if (jobsWithoutSector.length > 0) {
+      const ids = jobsWithoutSector.map((job) => job.id).join(', ');
+      console.warn(
+        `Reminder: ${jobsWithoutSector.length} job(s) have no sector yet (${ids}); their cards show no sector label and no top line. Link each job to a sector in the Studio (#24).`,
+      );
+    }
   } catch (error) {
     if (!(error instanceof ContentError)) throw error;
     console.error(`Content check failed (${target}).\n${error.message}`);

@@ -67,11 +67,12 @@ export const HOME_CONTENT_QUERY = defineQuery(`{
     _type,
     company,
     role[]{ _key, language, value },
+    summary[]{ _key, language, value },
+    sector->{ _id, _type, name[]{ _key, language, value }, tint },
     startDate,
     endDate,
     achievements[]{ _key, text[]{ _key, language, value } },
-    technologies,
-    tint
+    technologies
   },
   "projects": *[_type == "project"] | order(sortOrder asc){
     _id,

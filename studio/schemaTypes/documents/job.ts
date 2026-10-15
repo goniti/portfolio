@@ -1,8 +1,8 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { CaseIcon } from '@sanity/icons/Case';
-import { JOB_TINTS, localizedValue } from 'portfolio-content-model';
+import { localizedValue } from 'portfolio-content-model';
 import { optionalString } from '../guards';
-import { technologiesField, tintField } from '../fields';
+import { technologiesField } from '../fields';
 import { joinSubtitle, localizedFieldsOf, missingLocalesSubtitle } from '../validation/preview';
 import { requireLocales } from '../validation/requireLocales';
 
@@ -18,6 +18,19 @@ export const job = defineType({
       name: 'role',
       type: 'internationalizedArrayString',
       validation: requireLocales(),
+    }),
+    defineField({
+      name: 'summary',
+      description: 'Optional one-line description of the company, shown under the role.',
+      type: 'internationalizedArrayString',
+      validation: requireLocales({ optional: true }),
+    }),
+    defineField({
+      name: 'sector',
+      description: 'Its name labels the card; its colour tints the card, the dot and the bullets.',
+      type: 'reference',
+      to: [{ type: 'sector' }],
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'startDate',
@@ -44,7 +57,6 @@ export const job = defineType({
       validation: (rule) => rule.required().min(1),
     }),
     technologiesField(),
-    tintField('Colour of the timeline dot and bullets.', JOB_TINTS),
   ],
   orderings: [
     {
@@ -57,13 +69,20 @@ export const job = defineType({
     select: {
       company: 'company',
       role: 'role',
+      summary: 'summary',
+      sector: 'sector.name',
       achievements: 'achievements',
       startDate: 'startDate',
     },
-    prepare: ({ company, role, achievements, startDate }) => ({
+    prepare: ({ company, role, summary, sector, achievements, startDate }) => ({
       title: company,
       subtitle: joinSubtitle(
-        missingLocalesSubtitle([role, ...localizedFieldsOf(achievements, 'text')]),
+        missingLocalesSubtitle([
+          role,
+          { items: summary, optional: true },
+          ...localizedFieldsOf(achievements, 'text'),
+        ]),
+        localizedValue(sector),
         localizedValue(role),
         optionalString(startDate),
       ),

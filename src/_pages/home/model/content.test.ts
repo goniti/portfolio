@@ -185,6 +185,48 @@ describe('homeContentSchema', () => {
     });
   });
 
+  describe('job sector and summary', () => {
+    const medTech = (name = both('MedTech')) => ({
+      _id: 'sector-medtech',
+      _type: 'sector',
+      name,
+      tint: 'emerald',
+    });
+
+    it('maps the sector and the summary of a job', () => {
+      const raw = rawContent();
+      Object.assign(raw.jobs[0] ?? {}, {
+        sector: medTech(),
+        summary: both('Health-tech company', 'Santé numérique'),
+      });
+      expect(homeContentSchema.parse(raw).jobs[0]).toMatchObject({
+        sector: { id: 'sector-medtech', name: { en: 'MedTech', fr: 'MedTech' }, tint: 'emerald' },
+        summary: { en: 'Health-tech company', fr: 'Santé numérique' },
+      });
+    });
+
+    it('accepts a job published before sectors existed, and drops its old tint', () => {
+      // Production today: no sector, no summary, and the removed `tint` field still stored.
+      const job = homeContentSchema.parse(rawContent()).jobs[0];
+      expect(job).toMatchObject({ sector: null, summary: null });
+      expect(job).not.toHaveProperty('tint');
+    });
+
+    it('requires the sector name in every locale', () => {
+      const raw = rawContent();
+      Object.assign(raw.jobs[0] ?? {}, { sector: medTech(both('MedTech').slice(0, 1)) });
+      expect(homeContentSchema.safeParse(raw).error?.issues.map((issue) => issue.path)).toEqual([
+        ['jobs', 0, 'sector', 'name'],
+      ]);
+    });
+
+    it('rejects a sector tint the code does not know', () => {
+      const raw = rawContent();
+      Object.assign(raw.jobs[0] ?? {}, { sector: { ...medTech(), tint: 'magenta' } });
+      expect(homeContentSchema.safeParse(raw).success).toBe(false);
+    });
+  });
+
   it('requires a screenshot or a placeholder caption', () => {
     const raw = rawContent();
     const [project] = raw.projects;

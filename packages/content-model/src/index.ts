@@ -10,5 +10,5 @@ export type { LocaleProblem, LocaleRules, LocalizedItem } from './localeProblems
 export { COUNTRY_CODE_PATTERN } from './location';
 export { DEFAULT_LOCALE, isLocale, LOCALES } from './locales';
 export type { Locale, Localized } from './locales';
-export { JOB_TINTS, PROJECT_TINTS, TINTS } from './tints';
+export { PROJECT_TINTS, SECTOR_TINTS, TINTS } from './tints';
 export type { Tint } from './tints';
