@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { stubMatchMedia } from '../testing';
+import { stubIntersectionObserver, stubMatchMedia } from '../testing';
 import {
   armScrollReveal,
   columnDirection,
@@ -9,35 +9,6 @@ import {
   revealStagger,
   rowRanks,
 } from './scrollReveal';
-
-type IntersectionCallback = (entries: Array<{ isIntersecting: boolean; target: Element }>) => void;
-
-/** Minimal IntersectionObserver double: records observed elements, lets the test fire entries. */
-function stubIntersectionObserver() {
-  const observed = new Set<Element>();
-  let notify: IntersectionCallback = () => {};
-  class FakeIntersectionObserver {
-    constructor(callback: IntersectionCallback) {
-      notify = callback;
-    }
-    observe(element: Element) {
-      observed.add(element);
-    }
-    unobserve(element: Element) {
-      observed.delete(element);
-    }
-    disconnect() {
-      observed.clear();
-    }
-  }
-  vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver);
-  return {
-    observed,
-    enter(element: Element) {
-      notify([{ isIntersecting: true, target: element }]);
-    },
-  };
-}
 
 function placeAt(element: Element, top: number) {
   element.getBoundingClientRect = () => new DOMRect(0, top, 300, 200);
@@ -63,7 +34,7 @@ describe('armScrollReveal', () => {
   afterEach(() => vi.unstubAllGlobals());
 
   it('hides what is below the fold and leaves what is on screen alone', () => {
-    const observer = stubIntersectionObserver();
+    const observers = stubIntersectionObserver();
     const { root, visibleHeading, heading, list } = buildPage();
 
     armScrollReveal(root);
@@ -71,26 +42,26 @@ describe('armScrollReveal', () => {
     expect(visibleHeading.hasAttribute('data-reveal-state')).toBe(false);
     expect(heading.getAttribute('data-reveal-state')).toBe('pending');
     expect(list.getAttribute('data-reveal-state')).toBe('pending');
-    expect(observer.observed.size).toBe(2);
+    expect(observers.find().observed.size).toBe(2);
   });
 
   it('reveals once on entering the viewport', () => {
-    const observer = stubIntersectionObserver();
+    const observers = stubIntersectionObserver();
     const { root, heading } = buildPage();
     armScrollReveal(root);
 
-    observer.enter(heading);
+    observers.enter(heading);
 
     expect(heading.getAttribute('data-reveal-state')).toBe('shown');
-    expect(observer.observed.has(heading)).toBe(false);
+    expect(observers.find().observed.has(heading)).toBe(false);
   });
 
   it('numbers the children of a staggered group, capping the rank', () => {
-    const observer = stubIntersectionObserver();
+    const observers = stubIntersectionObserver();
     const { root, list } = buildPage();
     armScrollReveal(root);
 
-    observer.enter(list);
+    observers.enter(list);
 
     const ranks = Array.from(list.children).map((child) =>
       child instanceof HTMLElement ? child.style.getPropertyValue('--reveal-index') : null,
@@ -101,7 +72,7 @@ describe('armScrollReveal', () => {
   });
 
   it('sends each card of a two-column grid in from its own side, row by row', () => {
-    const observer = stubIntersectionObserver();
+    const observers = stubIntersectionObserver();
     const root = document.createElement('div');
     root.innerHTML = `<ul data-reveal="stagger" data-reveal-from="columns">${'<li>card</li>'.repeat(4)}</ul>`;
     const grid = root.querySelector('ul');
@@ -118,7 +89,7 @@ describe('armScrollReveal', () => {
     });
     armScrollReveal(root);
 
-    observer.enter(grid);
+    observers.enter(grid);
 
     const entrances = Array.from(grid.children).map((card) => [
       card.getAttribute('data-reveal-from'),

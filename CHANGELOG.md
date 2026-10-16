@@ -53,6 +53,7 @@ All notable changes are recorded here, following [Keep a Changelog](https://keep
 
 ### Fixed
 
+- The Work timeline keeps its state across scroll jumps (#33). It follows the scroll only while its track is in the viewport and no jump runs, so a menu link, back to top or browser back/forward that lands elsewhere no longer moves it; entering the track by hand snaps it to the scroll position without transitions; a link back to `#experience` lands on the step the timeline is on instead of its first step. A direct load of `/#experience` still opens on the first step.
 - The pre-commit secret scan, `pnpm secrets` and `pnpm sast` work inside git worktrees: the Docker fallback of `scripts/tool.sh` also mounts the shared git directory, read-only.
 
 ## [0.1.0] - 2026-10-13
