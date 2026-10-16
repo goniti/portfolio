@@ -1,11 +1,13 @@
 /**
- * A programmatic scroll in flight (an in-page link, back to top). Scroll-driven effects hold
- * still while it runs, so a jump across a pinned timeline does not play it step by step, then
- * snap to where the jump lands, without transitions.
+ * A programmatic scroll in flight (an in-page link, back to top, back/forward between anchors).
+ * Scroll-driven effects hold still while it runs, so a jump across a pinned timeline does not
+ * play it step by step, then snap to where the jump lands, without transitions.
  *
  * `<html>` carries `data-scroll-jump` while the jump runs, and `data-scroll-still` from its start
  * until the frame after the snap: the `still-on-scroll-jump` utility turns transitions off then.
  */
+
+import { isPlainLinkClick } from './linkClick';
 
 const JUMP_ATTRIBUTE = 'data-scroll-jump';
 const STILL_ATTRIBUTE = 'data-scroll-still';
@@ -37,14 +39,25 @@ function afterNextPaint(callback: () => void) {
   requestAnimationFrame(() => requestAnimationFrame(callback));
 }
 
+/**
+ * Runs a snap (a state change that must not animate) with transitions off, and turns them back
+ * on after the next paint unless a jump is running.
+ */
+export function holdStillThroughSnap(snap: () => void): void {
+  const root = document.documentElement;
+  root.setAttribute(STILL_ATTRIBUTE, '');
+  snap();
+  afterNextPaint(() => {
+    if (!jumping) root.removeAttribute(STILL_ATTRIBUTE);
+  });
+}
+
 function finishScrollJump() {
   stopWatching?.();
   jumping = false;
-  const root = document.documentElement;
-  root.removeAttribute(JUMP_ATTRIBUTE);
-  for (const listener of endListeners) listener();
-  afterNextPaint(() => {
-    if (!jumping) root.removeAttribute(STILL_ATTRIBUTE);
+  document.documentElement.removeAttribute(JUMP_ATTRIBUTE);
+  holdStillThroughSnap(() => {
+    for (const listener of endListeners) listener();
   });
 }
 
@@ -76,18 +89,20 @@ export function startScrollJump(): void {
   };
 }
 
-/** A plain click (no modifier) on a link to an anchor of this page. */
-function isInPageLinkClick(event: MouseEvent): boolean {
-  if (event.defaultPrevented || event.button !== 0) return false;
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
-  return event.target instanceof Element && event.target.closest('a[href^="#"]') !== null;
-}
+const IN_PAGE_LINK = 'a[href^="#"]';
 
-/** Starts a scroll jump on every click on an in-page link; returns the cleanup. */
+/**
+ * Starts a scroll jump on every click on an in-page link and on every `hashchange` (back/forward
+ * between anchors); returns the cleanup.
+ */
 export function watchInPageLinkJumps(): () => void {
   const onClick = (event: MouseEvent) => {
-    if (isInPageLinkClick(event)) startScrollJump();
+    if (isPlainLinkClick(event, IN_PAGE_LINK)) startScrollJump();
   };
   document.addEventListener('click', onClick);
-  return () => document.removeEventListener('click', onClick);
+  window.addEventListener('hashchange', startScrollJump);
+  return () => {
+    document.removeEventListener('click', onClick);
+    window.removeEventListener('hashchange', startScrollJump);
+  };
 }

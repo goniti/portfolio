@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  holdStillThroughSnap,
   isScrollJumping,
   onScrollJumpEnd,
   startScrollJump,
@@ -83,5 +84,48 @@ describe('scroll jumps', () => {
     stopWatching();
     inPage.remove();
     elsewhere.remove();
+  });
+
+  it('starts a jump on back/forward between anchors (hashchange), until the cleanup', () => {
+    const stopWatching = watchInPageLinkJumps();
+
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    expect(isScrollJumping()).toBe(true);
+    expect(root.hasAttribute('data-scroll-jump')).toBe(true);
+
+    window.dispatchEvent(new Event('scrollend'));
+    stopWatching();
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    expect(isScrollJumping()).toBe(false);
+  });
+
+  describe('holdStillThroughSnap', () => {
+    it('runs the snap with transitions off, and turns them back on once it has painted', () => {
+      const stillDuringSnap: boolean[] = [];
+      const snap = vi.fn(() => stillDuringSnap.push(root.hasAttribute('data-scroll-still')));
+
+      holdStillThroughSnap(snap);
+
+      expect(snap).toHaveBeenCalledOnce();
+      expect(stillDuringSnap).toEqual([true]);
+      expect(root.hasAttribute('data-scroll-still')).toBe(true);
+      vi.advanceTimersToNextFrame();
+      expect(root.hasAttribute('data-scroll-still')).toBe(true);
+      vi.advanceTimersToNextFrame();
+      expect(root.hasAttribute('data-scroll-still')).toBe(false);
+    });
+
+    it('keeps transitions off while a jump runs', () => {
+      holdStillThroughSnap(() => {});
+      startScrollJump();
+      vi.advanceTimersToNextFrame();
+      vi.advanceTimersToNextFrame();
+      expect(root.hasAttribute('data-scroll-still')).toBe(true);
+
+      window.dispatchEvent(new Event('scrollend'));
+      vi.advanceTimersToNextFrame();
+      vi.advanceTimersToNextFrame();
+      expect(root.hasAttribute('data-scroll-still')).toBe(false);
+    });
   });
 });

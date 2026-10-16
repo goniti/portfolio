@@ -10,7 +10,12 @@ import {
   useTransform,
 } from 'motion/react';
 import { usePrefersReducedMotion } from '../media';
-import { isScrollJumping, onScrollJumpEnd } from './scrollJump';
+import {
+  holdStillThroughSnap,
+  isScrollJumping,
+  onScrollJumpEnd,
+  startScrollJump,
+} from './scrollJump';
 import { clampOpenCount, scrollStepAt, scrollStepCount, stepScrollTop } from './scrollSteps';
 
 /** Progress runs from the track's top reaching the viewport top to its bottom reaching the bottom. */
@@ -26,8 +31,10 @@ export interface ScrollSteps<Track extends HTMLElement> {
   /** The tall element the scroll runs through; it gets `--scroll-step-count` to size itself. */
   trackRef: RefObject<Track | null>;
   /**
-   * Scroll progress through the track, 0 → 1 (no re-render). It holds still during a
-   * programmatic scroll jump (`startScrollJump`) and catches up when the jump lands.
+   * Scroll progress through the track, 0 → 1 (no re-render). It holds still while the track is
+   * outside the viewport and during a programmatic scroll jump (`startScrollJump`); it catches up
+   * when a jump lands inside the track, and snaps, without transitions, as soon as the track
+   * enters the viewport by hand.
    */
   progress: MotionValue<number>;
   /** Progress through the current step, 0 → 1 (no re-render). */
@@ -39,6 +46,11 @@ export interface ScrollSteps<Track extends HTMLElement> {
   stepCount: number;
   /** Scrolls the page to a step (smoothly, unless the user prefers reduced motion). */
   scrollToStep: (step: number) => void;
+  /**
+   * Jumps back to the landing point of the step the timeline is on (a scroll jump, so the steps
+   * hold still on the way; at once under reduced motion).
+   */
+  scrollToCurrentStep: () => void;
 }
 
 /**
@@ -77,17 +89,29 @@ export function useScrollSteps<Track extends HTMLElement = HTMLElement>({
     },
     [progress, syncStep],
   );
-  // A jump across the track (a menu link) does not play the steps: they wait for it to land.
+  // Back by hand after leaving (from the contact form, say), the track shows the right step as
+  // soon as it enters the viewport, with no animated catch-up. Entering during a jump waits for
+  // the jump end.
+  const snapOnEnter = useCallback(() => {
+    if (!isScrollJumping()) holdStillThroughSnap(() => followScroll(scrollYProgress.get()));
+  }, [followScroll, scrollYProgress]);
+  const isInViewRef = useTrackInView(trackRef, snapOnEnter);
+  // The steps follow the scroll through the track only: a jump across it (a menu link) or a scroll
+  // elsewhere on the page leaves them where they are.
   const onScroll = useCallback(
     (latest: number) => {
-      if (!isScrollJumping()) followScroll(latest);
+      if (isInViewRef.current && !isScrollJumping()) followScroll(latest);
     },
-    [followScroll],
+    [followScroll, isInViewRef],
   );
   useMotionValueEvent(scrollYProgress, 'change', onScroll);
+  // A jump landing inside the track (a card, a dot, a link back) syncs, already without transitions.
   useEffect(
-    () => onScrollJumpEnd(() => followScroll(scrollYProgress.get())),
-    [followScroll, scrollYProgress],
+    () =>
+      onScrollJumpEnd(() => {
+        if (isInViewRef.current) followScroll(scrollYProgress.get());
+      }),
+    [followScroll, scrollYProgress, isInViewRef],
   );
   // A new item count or window size moves the steps under the current scroll position.
   useEffect(() => syncStep(progress.get()), [syncStep, progress]);
@@ -110,6 +134,10 @@ export function useScrollSteps<Track extends HTMLElement = HTMLElement>({
     },
     [stepCount, prefersReducedMotion],
   );
+  const scrollToCurrentStep = useCallback(() => {
+    startScrollJump();
+    scrollToStep(activeStartRef.current);
+  }, [scrollToStep]);
 
   return {
     trackRef,
@@ -119,5 +147,34 @@ export function useScrollSteps<Track extends HTMLElement = HTMLElement>({
     openCount,
     stepCount,
     scrollToStep,
+    scrollToCurrentStep,
   };
+}
+
+/**
+ * Tracks whether the track is in the viewport (always, where `IntersectionObserver` is missing),
+ * and calls `onEnter` each time it enters. The observer is not rebuilt when `onEnter` changes.
+ */
+function useTrackInView(
+  trackRef: RefObject<HTMLElement | null>,
+  onEnter: () => void,
+): RefObject<boolean> {
+  const isInViewRef = useRef(true);
+  const onEnterRef = useRef(onEnter);
+  useEffect(() => {
+    onEnterRef.current = onEnter;
+  }, [onEnter]);
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver((entries) => {
+      const latest = entries.at(-1);
+      if (!latest) return;
+      isInViewRef.current = latest.isIntersecting;
+      if (latest.isIntersecting) onEnterRef.current();
+    });
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [trackRef]);
+  return isInViewRef;
 }

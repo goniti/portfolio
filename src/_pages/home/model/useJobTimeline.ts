@@ -1,20 +1,25 @@
 'use client';
 
-import { type RefObject, useCallback } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 import { MOTION_ALLOWED_QUERY, useMediaQuery } from '@/shared/lib/media';
 import {
+  isPlainLinkClick,
   itemPhase,
   type ScrollStepPhase,
   stepRevealing,
   useScrollSteps,
 } from '@/shared/lib/motion';
 import { formatIndex } from './format';
+import type { SectionId } from './sections';
 import { useTimelineRail } from './useTimelineRail';
 
 /** From this width two cards are open at once (the owner's mockup breakpoint). */
 const WIDE_TIMELINE_QUERY = '(min-width: 700px)';
 const WIDE_OPEN_COUNT = 2;
 const NARROW_OPEN_COUNT = 1;
+const TIMELINE_SECTION: SectionId = 'experience';
+const TIMELINE_HASH = `#${TIMELINE_SECTION}`;
+const TIMELINE_LINK = `a[href="${TIMELINE_HASH}"]`;
 
 /** "01–02 / 04": the open cards and the total, two digits each. */
 export interface TimelineCounter {
@@ -55,12 +60,20 @@ export function useJobTimeline(jobCount: number): JobTimeline {
   const pinned = useMediaQuery(MOTION_ALLOWED_QUERY);
   const wide = useMediaQuery(WIDE_TIMELINE_QUERY);
   const requestedOpenCount = wide ? WIDE_OPEN_COUNT : NARROW_OPEN_COUNT;
-  const { trackRef, progress, activeStart, openCount, stepCount, scrollToStep } =
-    useScrollSteps<HTMLDivElement>({
-      itemCount: jobCount,
-      openCount: pinned ? requestedOpenCount : jobCount,
-    });
+  const {
+    trackRef,
+    progress,
+    activeStart,
+    openCount,
+    stepCount,
+    scrollToStep,
+    scrollToCurrentStep,
+  } = useScrollSteps<HTMLDivElement>({
+    itemCount: jobCount,
+    openCount: pinned ? requestedOpenCount : jobCount,
+  });
   const panelRef = useTimelineRail<HTMLDivElement>({ progress, itemCount: jobCount, openCount });
+  useReturnToCurrentStep(pinned, scrollToCurrentStep);
 
   const cardState = useCallback(
     (jobIndex: number): TimelineCardState =>
@@ -89,4 +102,23 @@ export function useJobTimeline(jobCount: number): JobTimeline {
     cardState,
     openCard,
   };
+}
+
+/**
+ * While pinned, a link to the section brings the visitor back to the step the timeline is on,
+ * not to the track top. The capture phase runs before the in-page link jumps, which then skip
+ * the cancelled click; `pushState` keeps the hash without a `hashchange` (no second jump).
+ */
+function useReturnToCurrentStep(pinned: boolean, scrollToCurrentStep: () => void): void {
+  useEffect(() => {
+    if (!pinned) return;
+    const onClick = (event: MouseEvent) => {
+      if (!isPlainLinkClick(event, TIMELINE_LINK)) return;
+      event.preventDefault();
+      scrollToCurrentStep();
+      window.history.pushState(null, '', TIMELINE_HASH);
+    };
+    document.addEventListener('click', onClick, { capture: true });
+    return () => document.removeEventListener('click', onClick, { capture: true });
+  }, [pinned, scrollToCurrentStep]);
 }

@@ -1,3 +1,4 @@
+export { isPlainLinkClick } from './linkClick';
 export { magnetOffset, useMagnet } from './useMagnet';
 export type { MagnetHandlers, UseMagnetOptions } from './useMagnet';
 export { armScrollReveal, MAX_STAGGER_INDEX, REVEAL, reveal, revealStagger } from './scrollReveal';
@@ -17,7 +18,12 @@ export {
   stepScrollTop,
 } from './scrollSteps';
 export type { ScrollStepPhase, ScrollStepPosition, ScrollTrackGeometry } from './scrollSteps';
-export { isScrollJumping, onScrollJumpEnd, startScrollJump } from './scrollJump';
+export {
+  holdStillThroughSnap,
+  isScrollJumping,
+  onScrollJumpEnd,
+  startScrollJump,
+} from './scrollJump';
 export { useInPageLinkJumps } from './useInPageLinkJumps';
 export { useMotionCssVariable } from './useMotionCssVariable';
 export { useScrollSteps } from './useScrollSteps';
