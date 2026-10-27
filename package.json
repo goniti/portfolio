@@ -44,7 +44,7 @@
     "size": "size-limit"
   },
   "dependencies": {
-    "@sanity/client": "^8.9.0",
+    "@sanity/client": "^8.10.0",
     "@sanity/image-url": "^2.1.1",
     "goniui": "^0.1.0",
     "groq": "^6.19.0",
